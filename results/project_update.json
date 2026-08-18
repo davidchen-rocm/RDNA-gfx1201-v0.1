@@ -1,0 +1,86 @@
+{
+  "schema": "q4rdna-project-update-v1",
+  "experiment_date": "2026-08-17",
+  "hardware": {
+    "gpu": "AMD Radeon RX 9070 XT",
+    "gfx_target": "gfx1201",
+    "vram_gib": 16
+  },
+  "q4_rdna": {
+    "status": "selected_hybrid",
+    "baseline": "llama.cpp Q4_K_M",
+    "selected": "Q4_RDNA split-K with Q/K/V fallback",
+    "tg128_gain_percent": 10.80,
+    "tg512_gain_percent": 10.64,
+    "peak_full_q4_rdna_gain_percent": 15.7,
+    "lesson": "The compact format required a wave32 split-K execution mapping; the first one-lane-per-row mapping was about 36% slower."
+  },
+  "q8_exploration": {
+    "model_format": "Q8_0",
+    "model_sha256": "6d205720f8a41e3156d7fce154ad9bad49c474b501253040efb5a11af6600df0",
+    "kernel_experiment": "RDNA4 VDR4 mapping",
+    "tg128_gain_percent": 1.9777069327380215,
+    "tg512_gain_percent": 1.8673692941707953,
+    "decision": "REJECT",
+    "reason": "The kernel-only change was stable but did not meet the 10% performance objective.",
+    "private_gate_artifact_sha256": "0b6fd26573afea5324e8a5ca05928c9ac457b4f7af1d5c768c49b56c73c9509b"
+  },
+  "mixed_bit_followup": {
+    "source": {
+      "format": "BF16",
+      "sha256": "89ed102cc1b85f25298b4d2637273bd329b9a4593e8cf2315af54caa58228517"
+    },
+    "importance_matrix_sha256": "4d321ad5964780af62ae922f3d1422a09ab203eb95733fe0034d449cc3079a9f",
+    "no_requantization": true,
+    "note": "Q8-to-Q5 describes the project direction only. Q5_K_M and Q4_K_M were quantized independently from BF16, not converted from Q8_0.",
+    "baseline": {
+      "format": "Q6_K",
+      "model_bytes": 6725899648,
+      "model_sha256": "b5445085f052d9df572d3df7034d9fcfabaf63c17ed3a92f37e03c059180cc9c",
+      "tg128_tokens_per_second": 79.628634,
+      "tg512_tokens_per_second": 79.250515,
+      "math_correct": 62,
+      "math_total": 100,
+      "perplexity": 2.34,
+      "private_benchmark_sha256": "5107d16cc1c78d38a9aebc735ab5355dc2d29b5df11a22471188fcb16a4251f3"
+    },
+    "q5_k_m": {
+      "model_bytes": 5851113184,
+      "model_sha256": "fd96f1387d8d3465385338a636a27b6427381304059de23e234f72c466ab183a",
+      "tg128_tokens_per_second": 87.861151,
+      "tg512_tokens_per_second": 87.602273,
+      "tg128_gain_percent": 10.338638987578253,
+      "tg512_gain_percent": 10.538427415897544,
+      "size_reduction_vs_q6_percent": 13.006237228950102,
+      "math_correct": 64,
+      "math_total": 100,
+      "perplexity": 2.3413,
+      "provisional_decision": "EXPERIMENTAL_ACCEPTED",
+      "private_benchmark_sha256": "7eb3844b864e4f79211b94860eb76917b80af4167052ad105c66dcd7c696eed3",
+      "private_quality_sha256": "513e196dd171af3aa8ef1ecc2d9fe8bc31063e646ce0c0e5ccfa1af5fbb302c5"
+    },
+    "q4_k_m": {
+      "model_bytes": 5027784416,
+      "model_sha256": "5a4e54d654371cf89413d6cb26136ced63e2ec5a874cbabc4169522e871d357b",
+      "tg128_tokens_per_second": 96.192827,
+      "tg512_tokens_per_second": 96.170562,
+      "tg128_gain_percent": 20.801804787961053,
+      "tg512_gain_percent": 21.350078292866637,
+      "size_reduction_vs_q6_percent": 25.247406605374323,
+      "math_correct": 59,
+      "math_total": 100,
+      "perplexity": 2.3386,
+      "provisional_decision": "REJECT",
+      "reason": "The 100-question score dropped by three, exceeding the temporary two-question budget.",
+      "private_benchmark_sha256": "179189fa22f2c78eb118b4a1dc95446dd72598c131d3e3b8b5d2c9f65adf422a",
+      "private_quality_sha256": "8fb99c2bcf916829483084932686bb1de78179bc2cb16a7ea7105f8a25950c05"
+    },
+    "quality_scope": {
+      "protocol": "provisional stratified 100-question math evaluation",
+      "ppl_budget_percent": 0.5,
+      "maximum_math_drop_questions": 2,
+      "production_ready": false,
+      "note": "The project owner plans to replace this temporary quality evaluation."
+    }
+  }
+}

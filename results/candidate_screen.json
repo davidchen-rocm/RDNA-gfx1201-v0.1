@@ -1,0 +1,49 @@
+{
+  "schema": "q4rdna-public-candidate-screen-v1",
+  "protocol": {
+    "perplexity_tokens": 4096,
+    "sequence_length": 256,
+    "batch": 4,
+    "q4_rdna_representation_changed": false,
+    "q4_rdna_kernel_changed": false,
+    "variable": "Which tensor subset falls back to real Q4_K_M dequantized weights."
+  },
+  "candidates": {
+    "first_12_layers": {
+      "q4_rdna_weight_coverage_percent": 66.66666666666666,
+      "q4_k_fallback_tensors": 84,
+      "packed_bytes": 3846635520,
+      "effective_bpw": 4.4304800724637685,
+      "perplexity": 3.510575386464805
+    },
+    "last_12_layers": {
+      "q4_rdna_weight_coverage_percent": 66.66666666666666,
+      "q4_k_fallback_tensors": 84,
+      "packed_bytes": 3874750464,
+      "effective_bpw": 4.46286231884058,
+      "perplexity": 3.571562449440039
+    },
+    "ffn_down": {
+      "q4_rdna_weight_coverage_percent": 73.91304347826086,
+      "q4_k_fallback_tensors": 36,
+      "packed_bytes": 3980132352,
+      "effective_bpw": 4.584239130434782,
+      "perplexity": 3.572543117210941
+    },
+    "all_attention": {
+      "q4_rdna_weight_coverage_percent": 78.2608695652174,
+      "q4_k_fallback_tensors": 144,
+      "packed_bytes": 3756589056,
+      "effective_bpw": 4.326766304347826,
+      "perplexity": 3.4629908871420327
+    },
+    "qkv_only": {
+      "q4_rdna_weight_coverage_percent": 86.95652173913044,
+      "q4_k_fallback_tensors": 108,
+      "packed_bytes": 3737714688,
+      "effective_bpw": 4.305027173913044,
+      "perplexity": 3.4535848709073145,
+      "selected_for_full_evaluation": true
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "schema": "q4rdna-public-performance-v1",
+  "units": {
+    "throughput": "tokens_per_second",
+    "elapsed": "nanoseconds"
+  },
+  "protocol": {
+    "runtime": "llama.cpp ROCm",
+    "gpu": "AMD Radeon RX 9070 XT",
+    "gfx": "gfx1201",
+    "n_gpu_layers": 999,
+    "n_prompt": 0,
+    "n_batch": 2048,
+    "n_ubatch": 512,
+    "n_threads": 12,
+    "repetitions": 3,
+    "profiler_attached": false,
+    "comparison_rule": "Compare candidates only with the baseline in the same round."
+  },
+  "rounds": {
+    "mapping_ablation": {
+      "purpose": "Production baseline to first mapping to split-K, with identical Q4_RDNA sidecar for both Q4_RDNA paths.",
+      "series": {
+        "production_q4_k_m": {
+          "128": {
+            "mean": 96.7334,
+            "sample_stddev": 0.396791,
+            "samples": [96.2762, 96.9878, 96.9362],
+            "elapsed_samples": [1329508282, 1319753430, 1320456268]
+          },
+          "512": {
+            "mean": 96.331745,
+            "sample_stddev": 0.077904,
+            "samples": [96.4143, 96.3215, 96.2595],
+            "elapsed_samples": [5310416643, 5315534007, 5318955812]
+          }
+        },
+        "q4_rdna_old_mapping": {
+          "128": {
+            "mean": 61.045029,
+            "sample_stddev": 0.599833,
+            "samples": [60.3524, 61.3941, 61.3885],
+            "elapsed_samples": [2120876425, 2084889445, 2085079887]
+          },
+          "512": {
+            "mean": 61.211838,
+            "sample_stddev": 0.015662,
+            "samples": [61.2202, 61.2215, 61.1938],
+            "elapsed_samples": [8363250330, 8363071068, 8366864906]
+          }
+        },
+        "q4_rdna_split_k": {
+          "128": {
+            "mean": 111.557533,
+            "sample_stddev": 0.172711,
+            "samples": [111.359, 111.669, 111.645],
+            "elapsed_samples": [1149439808, 1146243674, 1146492090]
+          },
+          "512": {
+            "mean": 111.100102,
+            "sample_stddev": 0.067558,
+            "samples": [111.176, 111.077, 111.047],
+            "elapsed_samples": [4605306776, 4609398963, 4610667521]
+          }
+        }
+      },
+      "derived_gain_percent": {
+        "old_vs_q4_k_m_tg128": -36.893535221547054,
+        "old_vs_q4_k_m_tg512": -36.45725196818557,
+        "split_k_vs_q4_k_m_tg128": 15.324730651460605,
+        "split_k_vs_q4_k_m_tg512": 15.330727165795665
+      }
+    },
+    "selected_tradeoff": {
+      "purpose": "Final same-build comparison of production, full split-K Q4_RDNA, and selected Q/K/V fallback.",
+      "series": {
+        "production_q4_k_m": {
+          "128": {
+            "mean": 96.484117,
+            "sample_stddev": 0.396407,
+            "samples": [96.027, 96.7339, 96.6914],
+            "elapsed_samples": [1332957845, 1323217835, 1323798868]
+          },
+          "512": {
+            "mean": 96.134543,
+            "sample_stddev": 0.074224,
+            "samples": [96.212, 96.1277, 96.064],
+            "elapsed_samples": [5321583941, 5326248925, 5329781085]
+          }
+        },
+        "q4_rdna_full_split_k": {
+          "128": {
+            "mean": 111.60909,
+            "sample_stddev": 0.24914,
+            "samples": [111.322, 111.76, 111.745],
+            "elapsed_samples": [1149822455, 1145308843, 1145460109]
+          },
+          "512": {
+            "mean": 111.203335,
+            "sample_stddev": 0.066029,
+            "samples": [111.27, 111.202, 111.138],
+            "elapsed_samples": [4601428951, 4604213470, 4606896178]
+          }
+        },
+        "q4_rdna_qkv_fallback": {
+          "128": {
+            "mean": 106.902742,
+            "sample_stddev": 0.269023,
+            "samples": [106.593, 107.077, 107.038],
+            "elapsed_samples": [1200829958, 1195396482, 1195838805]
+          },
+          "512": {
+            "mean": 106.36783,
+            "sample_stddev": 0.090214,
+            "samples": [106.46, 106.364, 106.28],
+            "elapsed_samples": [4809315585, 4813673954, 4817473675]
+          }
+        }
+      },
+      "derived_gain_percent": {
+        "full_vs_q4_k_m_tg128": 15.676127294609543,
+        "full_vs_q4_k_m_tg512": 15.674690417990544,
+        "qkv_fallback_vs_q4_k_m_tg128": 10.798279886833617,
+        "qkv_fallback_vs_q4_k_m_tg512": 10.644755444460795
+      }
+    }
+  }
+}

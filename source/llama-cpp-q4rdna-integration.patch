@@ -1,0 +1,50 @@
+diff --git a/ggml/src/ggml-cuda/ggml-cuda.cu b/ggml/src/ggml-cuda/ggml-cuda.cu
+index 561ab7a..089d532 100644
+--- a/ggml/src/ggml-cuda/ggml-cuda.cu
++++ b/ggml/src/ggml-cuda/ggml-cuda.cu
+@@ -32,6 +32,7 @@
+ #include "ggml-cuda/mmq.cuh"
+ #include "ggml-cuda/mmvf.cuh"
+ #include "ggml-cuda/mmvq.cuh"
++#include "ggml-cuda/q4rdna.cuh"
+ #include "ggml-cuda/norm.cuh"
+ #include "ggml-cuda/opt-step-adamw.cuh"
+ #include "ggml-cuda/opt-step-sgd.cuh"
+@@ -1812,6 +1813,10 @@ static bool ggml_cuda_should_fuse_mul_mat_vec_q(const ggml_tensor * tensor) {
+ static void ggml_cuda_mul_mat(ggml_backend_cuda_context & ctx, const ggml_tensor * src0, const ggml_tensor * src1, ggml_tensor * dst) {
+     GGML_TENSOR_BINARY_OP_LOCALS
+ 
++    if (ggml_cuda_q4rdna_mul_mat(ctx, src0, src1, dst)) {
++        return;
++    }
++
+     const int32_t hint = ggml_get_op_params_i32(dst, 1);
+     if (hint == GGML_HINT_SRC0_IS_HADAMARD && ggml_cuda_op_fwht(ctx, src1, dst)) {
+         return;
+@@ -3660,6 +3665,13 @@ static int ggml_cuda_try_fuse(ggml_backend_cuda_context * cuda_ctx, ggml_cgraph
+             const ggml_tensor * src1 = up->src[1];
+             const ggml_tensor * ids  = up->src[2];
+ 
++            if (ids == nullptr && ggml_cuda_q4rdna_mul_mat_glu(
++                    *cuda_ctx, up->src[0], gate->src[0], src1, ggml_get_glu_op(glu), glu)) {
++                fused_mul_mat_vec = true;
++                fused_node_count  = 3;
++                break;
++            }
++
+             if (ggml_cuda_should_fuse_mul_mat_vec_f(up)) {
+                 ggml_cuda_mm_fusion_args_host fusion_data{};
+                 fusion_data.gate   = gate->src[0];
+@@ -3821,6 +3833,12 @@ static int ggml_cuda_try_fuse(ggml_backend_cuda_context * cuda_ctx, ggml_cgraph
+         ggml_cuda_mm_fusion_args_host fusion_data{};
+         fusion_data.x_bias = bias_tensor;
+ 
++        if (ids == nullptr && ggml_cuda_q4rdna_mul_mat_add(*cuda_ctx, src0, src1, bias_tensor, bias_node)) {
++            fused_mul_mat_vec = true;
++            fused_node_count  = 2;
++            break;
++        }
++
+         if (ggml_cuda_should_fuse_mul_mat_vec_f(mm_node)) {
+             ggml_cuda_mul_mat_vec_f(*cuda_ctx, src0, src1, ids, bias_node, &fusion_data);
+             fused_mul_mat_vec = true;

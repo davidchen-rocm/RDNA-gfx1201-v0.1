@@ -1,0 +1,94 @@
+{
+  "schema": "q4rdna-public-quality-v1",
+  "protocol": {
+    "perplexity_corpus": "First 16,384 scored tokens of deterministic MATH-500 test problem+solution concatenation.",
+    "perplexity_tokens": 16384,
+    "perplexity_sequence_length": 256,
+    "perplexity_batch": 4,
+    "math": "All 848 test questions in four MMLU math subjects, deterministic zero-shot A/B/C/D next-token scoring.",
+    "math_shuffle_seed": 20260815,
+    "subjects": {
+      "abstract_algebra": 100,
+      "college_mathematics": 100,
+      "high_school_mathematics": 270,
+      "elementary_mathematics": 378
+    },
+    "scope": "252 linear weights in all 36 transformer blocks; embeddings, lm_head, and norms remain BF16.",
+    "threeway_protocol_sha256": "2873923a42d9d7110e3898305b36994654a50846717d7a599aa90d1e98501dd1"
+  },
+  "variants": {
+    "bf16": {
+      "loss": 1.2147720232605934,
+      "perplexity": 3.3695258032461366,
+      "math_correct": 521,
+      "math_total": 848,
+      "math_accuracy": 0.6143867924528302,
+      "by_subject_correct": {
+        "abstract_algebra": 59,
+        "college_mathematics": 55,
+        "high_school_mathematics": 138,
+        "elementary_mathematics": 269
+      }
+    },
+    "q4_k_m": {
+      "loss": 1.2340111061930656,
+      "perplexity": 3.434980010140082,
+      "math_correct": 512,
+      "math_total": 848,
+      "math_accuracy": 0.6037735849056604,
+      "by_subject_correct": {
+        "abstract_algebra": 59,
+        "college_mathematics": 54,
+        "high_school_mathematics": 133,
+        "elementary_mathematics": 266
+      }
+    },
+    "q4_rdna_full": {
+      "loss": 1.2483241632580757,
+      "perplexity": 3.4844986109449088,
+      "math_correct": 499,
+      "math_total": 848,
+      "math_accuracy": 0.5884433962264151,
+      "by_subject_correct": {
+        "abstract_algebra": 56,
+        "college_mathematics": 58,
+        "high_school_mathematics": 138,
+        "elementary_mathematics": 247
+      }
+    },
+    "q4_rdna_qkv_fallback": {
+      "loss": 1.21997856721282,
+      "perplexity": 3.3871151375254724,
+      "math_correct": 509,
+      "math_total": 848,
+      "math_accuracy": 0.6002358490566038,
+      "by_subject_correct": {
+        "abstract_algebra": 54,
+        "college_mathematics": 55,
+        "high_school_mathematics": 135,
+        "elementary_mathematics": 265
+      }
+    }
+  },
+  "comparisons": {
+    "full_q4_rdna_vs_q4_k_m": {
+      "ppl_delta_percent": 1.4415950177895765,
+      "math_delta_percentage_points": -1.533018867924528,
+      "q4_k_m_correct_q4_rdna_wrong": 74,
+      "q4_k_m_wrong_q4_rdna_correct": 61,
+      "identical_predictions": 650,
+      "paired_exact_p": 0.302
+    },
+    "qkv_fallback_vs_q4_k_m": {
+      "ppl_delta_percent": -1.393454182362408,
+      "ppl_delta_vs_bf16_percent": 0.5220121556092749,
+      "math_delta_percentage_points": -0.3537735849056589,
+      "q4_k_m_correct_hybrid_wrong": 59,
+      "q4_k_m_wrong_hybrid_correct": 56,
+      "identical_predictions": 688,
+      "paired_exact_p": 0.8521555266297131,
+      "interpretation": "No statistically meaningful math difference was detected on this set. The lower PPL is specific to this corpus and is not claimed as general quality superiority."
+    }
+  },
+  "implementation_note": "Quality was evaluated with CPU-loaded BF16 model weights replaced by dequantized Q4_K_M or fake-quantized Q4_RDNA values. It did not execute the HIP runtime."
+}

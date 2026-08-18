@@ -1,0 +1,62 @@
+{
+  "schema": "q4rdna-public-provenance-v1",
+  "experiment_date": "2026-08-16",
+  "llama_cpp": {
+    "base_commit": "a7a6d0d269c896218b6c78e0933bd6a17519d3f6",
+    "working_tree_state": "dirty experimental tree",
+    "disclosure": "Only Q4_RDNA source and its narrow dispatcher patch are included; unrelated local modifications are excluded."
+  },
+  "runtime_binary_sha256": {
+    "llama-bench": "2081cc2facca2788a16cefb47b5f8a9974c062ecb0f97d6a414ffc9a87db219c",
+    "libggml-hip.so": "5675bf4f00231f69be26ef075b6bb056edb977fbb1d4841ba7b5cf1de3edca03",
+    "libggml.so": "7deb7aa5d53984683aba7dba17364fc3f4b71c52fdabd141bbfbde464d1bf413",
+    "libllama.so": "1d731611ca3d720f7f802d0018bc88a4534b2a397e1a4eb60debd7079bf2a6e3"
+  },
+  "q4_k_m_gguf": {
+    "filename": "Qwen3-8B-Q4_K_M.gguf",
+    "bytes": 5021827072,
+    "sha256": "77aa55af4ee7d18a44d31eb2aadd2b6e9bf754b5ea3bed43d10101263ea48d10"
+  },
+  "bf16_model_snapshot_sha256": {
+    "config.json": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+    "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+    "model.safetensors.index.json": "f9fdbcb91c23971c13ec5d5f2573d2349e8f61f2f049371ec699281748fdb1bc",
+    "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "model-00001-of-00005.safetensors": "31d6a825ae35f11fb85b195b4c42c146c051e446433125a215336abdf95cbf5f",
+    "model-00002-of-00005.safetensors": "5991236cea6fe21f3d43cab0f0e84448734fbbe0789816202989f2ddc9d18282",
+    "model-00003-of-00005.safetensors": "c5185c4794be2d8a9784d5753c9922db38df478ce11f9ed0b415b7304d896836",
+    "model-00004-of-00005.safetensors": "b5ee7de71fbf17db3d5704e0c8f2bc7d005ca9e1d7ca2aeb19827b0cfcaa917a",
+    "model-00005-of-00005.safetensors": "20c2d6366ab85c90786ccdd829cd2b9e7d30ef3b2ebbb998280e7e4014b542ff"
+  },
+  "q4_rdna_sidecar": {
+    "included": false,
+    "packed_data_bytes": 3689938944,
+    "sha256": "68f086c9d4992f317d3737ccfd50e24da275420766531d6f47e414068f23e7b8"
+  },
+  "private_source_artifact_sha256": {
+    "mapping_ablation_q4_k_m_benchmark": "a80708b953b20ffdd9ec093f80669bbe36265810fde89c97255871395d7a364a",
+    "mapping_ablation_old_benchmark": "5810b0deb8d4610e81b504b700bcc6731ac70859ee6d2363b49d70806f44b386",
+    "mapping_ablation_split_k_benchmark": "ae59cf71286c0305344d0d1de6968230df80060010e5ff727c511457fbdb0cd7",
+    "kernel_profile_summary": "ba10a16b70f68aca582e9a98c71af87483a4fad84dbf49ccc2936c1e77ab9fd9",
+    "expanded_threeway_quality": "5cf1d5289a17d74e626a4efbcbe491fc1abc2f23b06b62e3eb8dee9315e1eeee",
+    "selected_round_q4_k_m_benchmark": "3dbe3f7896f74e957081449a7c0b0a7a3ec6c57008e2e3743450012b2f281174",
+    "selected_round_full_q4_rdna_benchmark": "3a3fdf80ae7594a86fec79686fa0522dd782afe4bf281d0ed80e15d22a0596ea",
+    "selected_round_qkv_hybrid_benchmark": "697b4e275f61d49a70d7f1d6aebb6b272db451fa8e3614dc5e874fb83f03b3ab",
+    "hybrid_candidate_screen": "bbc45df3575ada01af7eb5ce4a4b17c0721e48a890ed975cfc4ad256d9a48e62",
+    "qkv_full_quality": "26e67000415b8fc257917fe092ca2a66320ddef6d5b34f1de8be5c57c4371dd6",
+    "derived_phase4_summary": "2068cfe09e15ef087551f190d316132c03e09c5218af0d21453ef0751aea645f"
+  },
+  "public_source_snapshot_sha256": {
+    "pack_q4rdna_sidecar.py": "25635a28f471c4efd3ed5f2e1696eacbdf0608607bcfd54fe0e1546fe99acb07",
+    "q4rdna.cu": "46b24d2a747ee4497aa5f36d6f380718bc27ad867a9e94bc684018783bad7840",
+    "q4rdna.cuh": "178b2471e209ae71f80fe9f8af36b7ce3b22c2e2d503efc1aa57c58545ee1676",
+    "q4rdna_cpu_experiment.cpp": "b76184740d623d335a6bfc1337401b7f2f3b5d9822b927d806d4de95aaba4cd6",
+    "q4rdna_gemv_bench.hip": "694fa8bb31f74760f4e34bd1b92ab09c881a3e9117a11df6825c15bbaf6cdb3b",
+    "q4rdna_hybrid_quality_sweep.py": "b0dacb3fe8b37269a9ec85d4b0a88fa2df7fa94581715911f7460ef363593b62",
+    "q4rdna_quality_smoke.py": "1f0686854570ffe900083b969b792539bd5aa3bbe384a1913c91a8c4a1879ef7",
+    "q4rdna_sidecar_pack.cpp": "ffa4aac2a8551b66f18db1d9e12b8fd4a8deb470bf51ac726adc6a90e19ea636",
+    "q4rdna_threeway_quality_eval.py": "46ae4528bec74376db4a751b1fa29c6d083b897ad3e83c45537211b33743959a"
+  },
+  "privacy_note": "Original private artifacts are identified by content hash only. Local paths, hostnames, usernames, and raw trace directories are not disclosed."
+}
