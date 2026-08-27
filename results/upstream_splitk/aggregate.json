@@ -1,0 +1,94 @@
+{
+  "schema": "q4rdna-splitk-suite-v1",
+  "kind": "aggregate",
+  "generated_at": "2026-08-27T19:09:51.105521Z",
+  "requested_suite": "all",
+  "status": "passed",
+  "artifacts": {
+    "environment": "environment.json",
+    "correctness": "correctness.json",
+    "microbench": "microbench.json",
+    "dispatch": "dispatch.json",
+    "summary": "SUMMARY.md",
+    "raw": "raw/"
+  },
+  "correctness_summary": {
+    "positive_cases": 336,
+    "positive_passed": 336,
+    "positive_failed": 0,
+    "invalid_cases": 4,
+    "invalid_passed": 4,
+    "invalid_failed": 0,
+    "maximum_relative_l2": 1.55429763417e-05,
+    "maximum_absolute_error": 0.0103759765625,
+    "relative_l2_policy_by_mode": {
+      "plain": {
+        "relative_l2_limits_reported_by_harness": [
+          1e-05
+        ],
+        "maximum_relative_l2_observed": 2.70491209853e-06
+      },
+      "add": {
+        "relative_l2_limits_reported_by_harness": [
+          1e-05
+        ],
+        "maximum_relative_l2_observed": 8.50293092387e-07
+      },
+      "gate-up": {
+        "relative_l2_limits_reported_by_harness": [
+          2e-05
+        ],
+        "maximum_relative_l2_observed": 1.55429763417e-05
+      }
+    }
+  },
+  "microbench_summary": {
+    "measurements": 216,
+    "measurements_passed": 216,
+    "measurements_failed": 0,
+    "relative_l2_policy_by_mode": {
+      "plain": {
+        "relative_l2_limits_reported_by_harness": [
+          1e-05
+        ],
+        "maximum_relative_l2_observed": 2.43929033999e-06
+      },
+      "add": {
+        "relative_l2_limits_reported_by_harness": [],
+        "maximum_relative_l2_observed": null
+      },
+      "gate-up": {
+        "relative_l2_limits_reported_by_harness": [
+          2e-05
+        ],
+        "maximum_relative_l2_observed": 1.66155267209e-06
+      }
+    },
+    "primary_cache": "rotating",
+    "shape_mode_count": 18,
+    "selected_split_k_count": 18,
+    "old_fallback_count": 0,
+    "median_dispatch_speedup": 2.3840000834594193,
+    "worst_dispatch_speedup": 1.0325771929684047,
+    "best_dispatch_speedup": 6.2728960146174,
+    "baseline_latency_weighted_speedup": 1.73331656503465,
+    "weight_definition": "number of model-role references for each deduplicated shape and mode",
+    "total_weight": 20,
+    "worst_no_regression_threshold": 0.99,
+    "worst_no_regression_passed": true
+  },
+  "dispatch_summary": {
+    "primary_cache": "rotating",
+    "shape_mode_count": 18,
+    "selected_split_k_count": 18,
+    "old_fallback_count": 0,
+    "median_dispatch_speedup": 2.3840000834594193,
+    "worst_dispatch_speedup": 1.0325771929684047,
+    "best_dispatch_speedup": 6.2728960146174,
+    "baseline_latency_weighted_speedup": 1.73331656503465,
+    "weight_definition": "number of model-role references for each deduplicated shape and mode",
+    "total_weight": 20,
+    "worst_no_regression_threshold": 0.99,
+    "worst_no_regression_passed": true
+  }
+}

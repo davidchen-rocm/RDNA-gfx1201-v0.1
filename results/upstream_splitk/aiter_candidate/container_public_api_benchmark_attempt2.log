@@ -1,0 +1,11 @@
++ python op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py --sweep --mappings old auto selected --cache rotating --rotate 0 --warmup 100 --samples 30 --timing both --calibration-iterations 100 --target-sample-ms 100 -o /evidence/container_public_api_summary.csv --json /evidence/container_public_api_raw.json
+[aiter] import [module_aiter_core] under /jit/aiter/module_aiter_core.so
+Traceback (most recent call last):
+  File "/workspace/aiter/op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py", line 683, in <module>
+    main()
+  File "/workspace/aiter/op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py", line 602, in main
+    device_identity = _check_arch()
+                      ^^^^^^^^^^^^^
+  File "/workspace/aiter/op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py", line 522, in _check_arch
+    raise RuntimeError(
+RuntimeError: 14-shape benchmark requires RX 9070 XT identity: gfx1201, PCI chip ID 0x7550, 32 HIP-reported multiprocessors, and an empty runtime name or exact AMD Radeon RX 9070 XT; got arch='gfx1201', chip=0x100, multiprocessors=32, name=''

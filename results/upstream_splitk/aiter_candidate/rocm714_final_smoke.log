@@ -1,0 +1,166 @@
++ export ROCM_PATH=/opt/rocm/core-7.14
++ ROCM_PATH=/opt/rocm/core-7.14
++ export HIP_PATH=/opt/rocm/core-7.14
++ HIP_PATH=/opt/rocm/core-7.14
++ export LD_LIBRARY_PATH=/opt/rocm/core-7.14/lib
++ LD_LIBRARY_PATH=/opt/rocm/core-7.14/lib
++ /opt/rocm/core-7.14/bin/hipcc --version
+HIP version: 7.14.60850-0000000
+AMD clang version 23.0.0git (https://github.com/ROCm/llvm-project.git 46fcb339fb61119b337f973c7ca9e710a319fdd0+PATCHED:440716f8b87be9d8e20ed910e10e5b6d14d57cf6)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /opt/rocm/core-7.14/lib/llvm/bin
++ sha256sum /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu /home/david/Desktop/aiter-q4rdna/csrc/include/q4_group64_gemv.h /tmp/aiter-q4-build/harness.cpp
+8baacf5ecec2ac4d717c5ccbec17a8f8f97a6f4ddf8f5be7acc9d2b7b5e724cc  /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu
+045bca28d315bf0e7fdd2d1d8914ff69f2806db047c9824f8d1a0d2629a0f517  /home/david/Desktop/aiter-q4rdna/csrc/include/q4_group64_gemv.h
+cb5a4a578ebebb3b6929d89504163fd484bbf179d94996087246cdbac7c22dde  /tmp/aiter-q4-build/harness.cpp
++ /opt/rocm/core-7.14/bin/hipcc -std=c++20 -O3 -D__HIP_PLATFORM_AMD__=1 -DUSE_ROCM=1 -I/home/david/Desktop/aiter-q4rdna/csrc/include --offload-arch=gfx1201 -fno-gpu-rdc -c /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu -o /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_gemv.o
+In file included from /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu:5:
+In file included from /home/david/Desktop/aiter-q4rdna/csrc/include/q4_group64_gemv.h:4:
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:149:17: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  149 |                 hipFreeAsync(ptr, stream_);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:151:17: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  151 |                 hipFree(ptr);
+      |                 ^~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:175:21: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  175 |                     hipFreeAsync(ptr, stream_);
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:177:21: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  177 |                     hipFree(ptr);
+      |                     ^~~~~~~~~~~~
+4 warnings generated when compiling for gfx1201.
+In file included from /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu:5:
+In file included from /home/david/Desktop/aiter-q4rdna/csrc/include/q4_group64_gemv.h:4:
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:149:17: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  149 |                 hipFreeAsync(ptr, stream_);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:151:17: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  151 |                 hipFree(ptr);
+      |                 ^~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:175:21: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  175 |                     hipFreeAsync(ptr, stream_);
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:177:21: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  177 |                     hipFree(ptr);
+      |                     ^~~~~~~~~~~~
+4 warnings generated when compiling for host.
++ /opt/rocm/core-7.14/bin/hipcc -std=c++20 -O3 -D__HIP_PLATFORM_AMD__=1 -DUSE_ROCM=1 -I/home/david/Desktop/aiter-q4rdna/csrc/include -c /tmp/aiter-q4-build/harness.cpp -o /tmp/aiter-rocm714-final-smoke.WqCMpN/harness.o
+In file included from /tmp/aiter-q4-build/harness.cpp:2:
+In file included from /home/david/Desktop/aiter-q4rdna/csrc/include/q4_group64_gemv.h:4:
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:149:17: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  149 |                 hipFreeAsync(ptr, stream_);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:151:17: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  151 |                 hipFree(ptr);
+      |                 ^~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:175:21: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  175 |                     hipFreeAsync(ptr, stream_);
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:177:21: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  177 |                     hipFree(ptr);
+      |                     ^~~~~~~~~~~~
+/tmp/aiter-q4-build/harness.cpp:31:13: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+   31 |             hipFree(ptr);
+      |             ^~~~~~~~~~~~
+5 warnings generated when compiling for gfx1036.
+In file included from /tmp/aiter-q4-build/harness.cpp:2:
+In file included from /home/david/Desktop/aiter-q4rdna/csrc/include/q4_group64_gemv.h:4:
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:149:17: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  149 |                 hipFreeAsync(ptr, stream_);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:151:17: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  151 |                 hipFree(ptr);
+      |                 ^~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:175:21: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  175 |                     hipFreeAsync(ptr, stream_);
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:177:21: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  177 |                     hipFree(ptr);
+      |                     ^~~~~~~~~~~~
+/tmp/aiter-q4-build/harness.cpp:31:13: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+   31 |             hipFree(ptr);
+      |             ^~~~~~~~~~~~
+5 warnings generated when compiling for gfx1201.
+In file included from /tmp/aiter-q4-build/harness.cpp:2:
+In file included from /home/david/Desktop/aiter-q4rdna/csrc/include/q4_group64_gemv.h:4:
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:149:17: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  149 |                 hipFreeAsync(ptr, stream_);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:151:17: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  151 |                 hipFree(ptr);
+      |                 ^~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:175:21: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  175 |                     hipFreeAsync(ptr, stream_);
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/david/Desktop/aiter-q4rdna/csrc/include/aiter_tensor.h:177:21: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+  177 |                     hipFree(ptr);
+      |                     ^~~~~~~~~~~~
+/tmp/aiter-q4-build/harness.cpp:31:13: warning: ignoring return value of type 'hipError_t' declared with 'nodiscard' attribute [-Wunused-value]
+   31 |             hipFree(ptr);
+      |             ^~~~~~~~~~~~
+5 warnings generated when compiling for host.
++ /opt/rocm/core-7.14/bin/hipcc /tmp/aiter-rocm714-final-smoke.WqCMpN/harness.o /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_gemv.o -L/opt/rocm/core-7.14/lib -lamdhip64 -o /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_smoke
++ sha256sum /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_gemv.o /tmp/aiter-rocm714-final-smoke.WqCMpN/harness.o /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_smoke
+0f9dee5d9ae4d8dca62209ab65be03b03d6df154feb513d26d48e07ef5668213  /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_gemv.o
+aa7ea01347df632edc8666f08354040152c8686ffca66a3aeb12f7092df31f7f  /tmp/aiter-rocm714-final-smoke.WqCMpN/harness.o
+ff7f67120146dfb92365d43ff48aa34897f042dc704c0906012e10c9e2d05eb2  /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_smoke
++ /opt/rocm/core-7.14/lib/llvm/bin/llvm-nm -C /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_smoke
++ rg 'aiter::q4_group64_gemv_out|q4_group64_gemv_(old|split|small)_kernel'
+000000000001aea8 d void (anonymous namespace)::q4_group64_gemv_old_kernel<false>(unsigned char const*, float const*, float*, int, int)
+000000000001aeb0 d void (anonymous namespace)::q4_group64_gemv_old_kernel<true>(unsigned char const*, float const*, float*, int, int)
+000000000001aee8 d void (anonymous namespace)::q4_group64_gemv_small_kernel<16, 16>(unsigned char const*, float const*, float*, int)
+000000000001aef0 d void (anonymous namespace)::q4_group64_gemv_small_kernel<16, 32>(unsigned char const*, float const*, float*, int)
+000000000001aef8 d void (anonymous namespace)::q4_group64_gemv_small_kernel<32, 32>(unsigned char const*, float const*, float*, int)
+000000000001aed8 d void (anonymous namespace)::q4_group64_gemv_small_kernel<8, 16>(unsigned char const*, float const*, float*, int)
+000000000001aee0 d void (anonymous namespace)::q4_group64_gemv_small_kernel<8, 32>(unsigned char const*, float const*, float*, int)
+000000000001aed0 d void (anonymous namespace)::q4_group64_gemv_small_kernel<8, 8>(unsigned char const*, float const*, float*, int)
+000000000001aeb8 d void (anonymous namespace)::q4_group64_gemv_split_kernel<2>(unsigned char const*, float const*, float*, int)
+000000000001aec0 d void (anonymous namespace)::q4_group64_gemv_split_kernel<4>(unsigned char const*, float const*, float*, int)
+000000000001aec8 d void (anonymous namespace)::q4_group64_gemv_split_kernel<8>(unsigned char const*, float const*, float*, int)
+0000000000015c80 t void (anonymous namespace)::__device_stub__q4_group64_gemv_old_kernel<false>(unsigned char const*, float const*, float*, int, int)
+0000000000015d20 t void (anonymous namespace)::__device_stub__q4_group64_gemv_old_kernel<true>(unsigned char const*, float const*, float*, int, int)
+0000000000016120 t void (anonymous namespace)::__device_stub__q4_group64_gemv_small_kernel<16, 16>(unsigned char const*, float const*, float*, int)
+00000000000161b0 t void (anonymous namespace)::__device_stub__q4_group64_gemv_small_kernel<16, 32>(unsigned char const*, float const*, float*, int)
+0000000000016240 t void (anonymous namespace)::__device_stub__q4_group64_gemv_small_kernel<32, 32>(unsigned char const*, float const*, float*, int)
+0000000000016000 t void (anonymous namespace)::__device_stub__q4_group64_gemv_small_kernel<8, 16>(unsigned char const*, float const*, float*, int)
+0000000000016090 t void (anonymous namespace)::__device_stub__q4_group64_gemv_small_kernel<8, 32>(unsigned char const*, float const*, float*, int)
+0000000000015f70 t void (anonymous namespace)::__device_stub__q4_group64_gemv_small_kernel<8, 8>(unsigned char const*, float const*, float*, int)
+0000000000015dc0 t void (anonymous namespace)::__device_stub__q4_group64_gemv_split_kernel<2>(unsigned char const*, float const*, float*, int)
+0000000000015e50 t void (anonymous namespace)::__device_stub__q4_group64_gemv_split_kernel<4>(unsigned char const*, float const*, float*, int)
+0000000000015ee0 t void (anonymous namespace)::__device_stub__q4_group64_gemv_split_kernel<8>(unsigned char const*, float const*, float*, int)
+0000000000014190 T aiter::q4_group64_gemv_out(aiter_tensor_t&, aiter_tensor_t&, aiter_tensor_t&, int)
++ set +e
++ env -u AITER_ENABLE_EXPERIMENTAL /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_smoke
+device=AMD Radeon RX 9070 XT arch=gfx1201
+[AITER] /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu:408 q4_group64_gemv is experimental; set AITER_ENABLE_EXPERIMENTAL=1 before calling it
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  [AITER] /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu:408 q4_group64_gemv is experimental; set AITER_ENABLE_EXPERIMENTAL=1 before calling it
+/bin/bash: line 21: 116088 Aborted                 (core dumped) env -u AITER_ENABLE_EXPERIMENTAL /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_smoke
++ gate_status=134
++ set -e
++ echo experimental_gate_unset_exit=134
+experimental_gate_unset_exit=134
++ test 134 -ne 0
++ AITER_ENABLE_EXPERIMENTAL=1
++ /tmp/aiter-rocm714-final-smoke.WqCMpN/q4_group64_smoke
+device=AMD Radeon RX 9070 XT arch=gfx1201
+mapping-1 passed max_abs=0
+mapping-2 passed max_abs=7.45058e-08
+mapping-3 passed max_abs=7.45058e-08
+mapping-4 passed max_abs=7.45058e-08
+mapping-5 passed max_abs=7.45058e-08
+mapping-6 passed max_abs=7.45058e-08
+mapping-7 passed max_abs=7.45058e-08
+mapping-8 passed max_abs=7.45058e-08
+mapping-9 passed max_abs=7.45058e-08
+mapping-10 passed max_abs=7.45058e-08
+non-default-stream passed max_abs=7.45058e-08
+unseen-auto passed max_abs=0
+unseen-auto-equals-old passed max_abs=0
+[AITER] /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu:467 split2 requires N divisible by 128
+invalid-split2 passed: [AITER] /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu:467 split2 requires N divisible by 128
+[AITER] /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu:451 invalid q4_group64_gemv mapping
+invalid-mapping passed: [AITER] /home/david/Desktop/aiter-q4rdna/csrc/kernels/q4_group64_gemv.cu:451 invalid q4_group64_gemv mapping
+known-auto passed max_abs=2.26498e-06
+known-auto-equals-small32x32 passed max_abs=0

@@ -1,0 +1,4 @@
+"Kind","Agent_Id","Queue_Id","Stream_Id","Thread_Id","Dispatch_Id","Kernel_Id","Kernel_Name","Correlation_Id","Start_Timestamp","End_Timestamp","LDS_Block_Size","Scratch_Size","VGPR_Count","Accum_VGPR_Count","SGPR_Count","Workgroup_Size_X","Workgroup_Size_Y","Workgroup_Size_Z","Grid_Size_X","Grid_Size_Y","Grid_Size_Z"
+"KERNEL_DISPATCH","Agent 1",1,0,54660,1,6,"__amd_rocclr_copyBuffer",1,7388959500875,7388959505435,0,0,16,0,128,512,1,1,1024,1,1
+"KERNEL_DISPATCH","Agent 1",1,0,54660,2,6,"__amd_rocclr_copyBuffer",2,7388959552695,7388959556255,0,0,16,0,128,512,1,1,1024,1,1
+"KERNEL_DISPATCH","Agent 1",1,0,54660,3,32,"void q4rdna_kernel::gemv_old<false, false>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",3,7388961164177,7388961224618,2048,0,88,0,128,256,1,1,4096,1,1

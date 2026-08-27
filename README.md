@@ -1,8 +1,30 @@
 # Q4_RDNA on gfx1201
 
-This technical report documents an experimental model-to-kernel optimization
-for Qwen3-8B decode on an AMD Radeon RX 9070 XT (`gfx1201`, wave32). It includes
-the measured results, implementation snapshot, methodology, and limitations.
+This technical report began as an experimental Qwen3-8B model-to-kernel
+optimization on an AMD Radeon RX 9070 XT (`gfx1201`, wave32). It now also
+contains a DCO-signed, standalone AITER Q4 group-64 GEMV candidate, multi-model
+shape evidence, reproducible source patches, and independent verification.
+
+## AITER upstream candidate
+
+The formal candidate is commit
+`c60cc076871cc849d2f6e18d595beefbbf18e954`, whose parent and tested upstream
+AITER base is `48718fa7bb1b73d0800130144449fca3c625aba1`. The repository
+pre-commit hook and a fresh targeted GPU regression passed; the commit contains
+the required DCO `Signed-off-by` trailer.
+
+On the RX 9070 XT, public `auto` beat `old` for all 14 model-derived shapes.
+Synchronized host-wall geometric-mean speedup was 1.6074x at the single-call
+boundary and 1.9031x for calibrated batched AITER entries. See the
+[readiness report](docs/UPSTREAM_SPLITK_READINESS.md),
+[formal PR body](docs/AITER_Q4_GROUP64_PR.md), and
+[reproduction guide](docs/UPSTREAM_SPLITK_REPRODUCE.md). Verify the entire
+bundle with:
+
+```bash
+python3 verify_upstream_splitk.py
+python3 verify_upstream_splitk.py --aiter-source /path/to/aiter
+```
 
 ## Latest project update
 
@@ -69,7 +91,7 @@ quality/speed tradeoff.
 - Negative results are included: the first runtime mapping was roughly 36%
   slower even though it moved fewer weight bytes.
 
-## Scope
+## Original llama.cpp report scope
 
 The measurements cover Qwen3-8B single-batch decode on an RX 9070 XT. In this
 setup, the Q4_RDNA split-K path improved end-to-end token generation throughput
@@ -102,8 +124,13 @@ results/quality.json              PPL, task counts, paired statistics
 results/candidate_screen.json     five hybrid assignments tested
 results/provenance.json           model, artifact, and source hashes
 results/project_update.json       Q4, Q8, Q6/Q5/Q4 follow-up summary
+results/upstream_splitk/           multi-model and AITER upstream evidence
+docs/AITER_Q4_GROUP64_PR.md        formal upstream PR body
+docs/UPSTREAM_SPLITK_READINESS.md  upstream decision and qualification
+docs/UPSTREAM_SPLITK_REPRODUCE.md  full Split-K/AITER reproduction guide
 source/                           experimental source snapshot and patch
 verify_report.py                  local integrity and arithmetic verifier
+verify_upstream_splitk.py          independent upstream-evidence verifier
 MANIFEST.sha256                   hashes of report files
 ```
 

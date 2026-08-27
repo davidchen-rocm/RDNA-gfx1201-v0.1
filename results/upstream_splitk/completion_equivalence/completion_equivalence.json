@@ -1,0 +1,134 @@
+{
+  "schema": "q4rdna-completion-equivalence-v1",
+  "created_utc": "2026-08-27T19:20:03Z",
+  "verdict": "pass",
+  "protocol_status": "legacy-seeded-distribution-superseded-by-v2-greedy",
+  "protocol_note": "The requested sampler name 'greedy' was not recognized by this pinned llama.cpp build. Raw stderr shows the effective chain 'logits -> dist' with seed 20260827, so this artifact proves fixed-seed old/Split-K equality but is not greedy evidence.",
+  "superseded_by": "../completion_equivalence_qwen3_greedy/completion_equivalence.json",
+  "all_byte_identical": true,
+  "first_difference": null,
+  "runtime": {
+    "os": "Linux 7.0.0-30-generic x86_64 GNU/Linux",
+    "gpu": "AMD Radeon RX 9070 XT",
+    "gpu_arch": "gfx1201",
+    "binary": "/tmp/q4rdna-llama-audit.2vKpBB/build/bin/llama-completion",
+    "binary_version": "1 (a7a6d0d)",
+    "binary_sha256": "02adf6fbf0b6f8eb5c679e263d4334fa2c0c9a92f946838952ade915a8c93b17",
+    "ggml_hip_sha256": "2424eb1ec0be45aec76f83eabfa38350b79c6e5dd205f8e1a775f37785f7ce83",
+    "model": "/home/david/Desktop/math-rule-loop/models/qwen3-8b-q4/Qwen3-8B-Q4_K_M.gguf",
+    "model_sha256": "77aa55af4ee7d18a44d31eb2aadd2b6e9bf754b5ea3bed43d10101263ea48d10",
+    "sidecar": "/home/david/Desktop/math-rule-loop/artifacts/q4rdna-phase2/qwen3-8b.q4rdna",
+    "sidecar_sha256": "68f086c9d4992f317d3737ccfd50e24da275420766531d6f47e414068f23e7b8",
+    "ld_library_path": "/tmp/q4rdna-llama-audit.2vKpBB/build/bin:/opt/rocm/core-7.14/lib",
+    "hip_visible_devices": "0",
+    "rocr_visible_devices": "0"
+  },
+  "generation": {
+    "samplers": "seeded distribution",
+    "requested_sampler": "greedy",
+    "requested_sampler_recognized": false,
+    "effective_sampler_chain": "logits -> dist",
+    "is_greedy": false,
+    "seed": 20260827,
+    "n_predict": 64,
+    "gpu_layers": "all",
+    "common_arguments": [
+      "--samplers",
+      "greedy",
+      "--seed",
+      "20260827",
+      "-n",
+      "64",
+      "--no-display-prompt",
+      "--no-conversation",
+      "--simple-io"
+    ],
+    "old_environment": {
+      "LLAMA_Q4_RDNA_MAPPING": "old",
+      "LLAMA_Q4_RDNA_SCOPE": null,
+      "LLAMA_Q4_RDNA_COOP": null,
+      "LLAMA_Q4_RDNA_SMALL_ROWS": null
+    },
+    "split_environment": {
+      "LLAMA_Q4_RDNA_MAPPING": null,
+      "LLAMA_Q4_RDNA_SCOPE": null,
+      "LLAMA_Q4_RDNA_COOP": null,
+      "LLAMA_Q4_RDNA_SMALL_ROWS": null
+    },
+    "shared_environment": {
+      "LLAMA_Q4_RDNA_TRACE": "1",
+      "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/math-rule-loop/artifacts/q4rdna-phase2/qwen3-8b.q4rdna"
+    }
+  },
+  "runs": [
+    {
+      "id": "prompt1",
+      "prompt": "The first three prime numbers are",
+      "old_exit_code": 0,
+      "split_exit_code": 0,
+      "byte_identical": true,
+      "stdout_bytes": 237,
+      "stdout_sha256": "b477f5b3e98ff09076cd9b59e0edb956fbe9db8cef43c086370b09d183c353df",
+      "old_stdout": "raw/prompt1.old.stdout",
+      "split_stdout": "raw/prompt1.split.stdout",
+      "old_stderr": "raw/prompt1.old.stderr",
+      "split_stderr": "raw/prompt1.split.stderr",
+      "old_stderr_sha256": "784556645b18359768586c866aaa1378ea129cc4eb80f200bcd86b764505469e",
+      "split_stderr_sha256": "2606875da7a6a26626e8f3a3599157cd128889321df7da109f9b469a4cf3c451",
+      "old_q4rdna_launches": 436,
+      "split_q4rdna_launches": 436,
+      "old_sidecar_loaded": true,
+      "split_sidecar_loaded": true
+    },
+    {
+      "id": "prompt2",
+      "prompt": "Write one short sentence about the moon:",
+      "old_exit_code": 0,
+      "split_exit_code": 0,
+      "byte_identical": true,
+      "stdout_bytes": 296,
+      "stdout_sha256": "8d3cafe44cd6c70ba781258ada2ed18c0e8f4e1868a9b27534a35a11363efab4",
+      "old_stdout": "raw/prompt2.old.stdout",
+      "split_stdout": "raw/prompt2.split.stdout",
+      "old_stderr": "raw/prompt2.old.stderr",
+      "split_stderr": "raw/prompt2.split.stderr",
+      "old_stderr_sha256": "10e1645c73dd93e525e8e006e618817de95804c60cecbdd0418657d18c37ceed",
+      "split_stderr_sha256": "85cca96202ce1b334df56d0d16dd67b3b590a9d477c8f81c20d7b0f0ceb7ee9d",
+      "old_q4rdna_launches": 436,
+      "split_q4rdna_launches": 436,
+      "old_sidecar_loaded": true,
+      "split_sidecar_loaded": true
+    },
+    {
+      "id": "prompt3",
+      "prompt": "In Python, a list comprehension for squares from 0 to 4 is",
+      "old_exit_code": 0,
+      "split_exit_code": 0,
+      "byte_identical": true,
+      "stdout_bytes": 158,
+      "stdout_sha256": "fa6c86ecfac6a06c973b7e2ff5de73b1bf7ea91380fbfd5cd91370819d91f838",
+      "old_stdout": "raw/prompt3.old.stdout",
+      "split_stdout": "raw/prompt3.split.stdout",
+      "old_stderr": "raw/prompt3.old.stderr",
+      "split_stderr": "raw/prompt3.split.stderr",
+      "old_stderr_sha256": "2f11e585213dc53c52ebb5f635620d30493988815e06de0e428bc22fa43bfd76",
+      "split_stderr_sha256": "6e49b608ae65bb735a34319bb16aa987be053aff049936ec3be666bdb23ef18d",
+      "old_q4rdna_launches": 436,
+      "split_q4rdna_launches": 436,
+      "old_sidecar_loaded": true,
+      "split_sidecar_loaded": true
+    }
+  ],
+  "launch_summary_per_run": {
+    "loaded_tensors": 252,
+    "loaded_device_gib": 3.44,
+    "unique_tensors_hit": 252,
+    "hits_by_shape": {
+      "12288x4096": 148,
+      "4096x12288": 74,
+      "4096x4096": 144,
+      "1024x4096": 144,
+      "other": 0
+    }
+  }
+}

@@ -1,0 +1,5 @@
+ggml_cuda_init: found 1 ROCm devices (Total VRAM: 16304 MiB):
+  Device 0: AMD Radeon RX 9070 XT, gfx1201 (0x1201), VMM: no, Wave Size: 32, VRAM: 16304 MiB
+Q4_RDNA: loaded 224 tensors, 3.45 GiB on device 0 from /home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna
+Q4_RDNA: launched 1152 decode GEMV kernels
+Q4_RDNA: unique=224, hits by rows x columns: 12288x4096=0, 4096x12288=0, 4096x4096=384, 1024x4096=384, other=576

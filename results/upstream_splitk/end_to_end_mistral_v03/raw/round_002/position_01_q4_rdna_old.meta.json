@@ -1,0 +1,188 @@
+{
+  "id": "round-002-position-01-q4_rdna_old",
+  "phase": "measurement",
+  "round": 2,
+  "order_position": 1,
+  "route": "q4_rdna_old",
+  "route_label": "Q4_RDNA old",
+  "expected_mapping": "old",
+  "started_at": "2026-08-27T19:41:27.239715Z",
+  "duration_seconds": 10.848198372999832,
+  "returncode": 0,
+  "timed_out": false,
+  "passed": true,
+  "errors": [],
+  "command": [
+    "/tmp/q4rdna-llama-audit.2vKpBB/build/bin/llama-bench",
+    "-m",
+    "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+    "-ngl",
+    "999",
+    "-p",
+    "0",
+    "-n",
+    "128,512",
+    "-b",
+    "2048",
+    "-ub",
+    "512",
+    "-t",
+    "12",
+    "-r",
+    "1",
+    "-o",
+    "json"
+  ],
+  "environment_summary": {
+    "cleared_inherited_q4rdna_variables": [],
+    "controlled_environment": {
+      "HIP_VISIBLE_DEVICES": "0",
+      "LD_LIBRARY_PATH": "/opt/rocm/core-7.14/lib",
+      "LLAMA_Q4_RDNA_MAPPING": "old",
+      "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+      "ROCR_VISIBLE_DEVICES": "0"
+    }
+  },
+  "artifacts": {
+    "stdout_json": "raw/round_002/position_01_q4_rdna_old.stdout.json",
+    "stderr": "raw/round_002/position_01_q4_rdna_old.stderr.log",
+    "metadata": "raw/round_002/position_01_q4_rdna_old.meta.json"
+  },
+  "runtime_evidence": {
+    "passed": true,
+    "expected_mapping": "old",
+    "mapping_contract": "old is selected by LLAMA_Q4_RDNA_MAPPING=old; auto/default Split-K is selected by explicitly leaving LLAMA_Q4_RDNA_MAPPING unset",
+    "mapping_marker_emitted": false,
+    "mapping_markers": [],
+    "expected_q4rdna_environment": {
+      "LLAMA_Q4_RDNA_MAPPING": "old",
+      "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna"
+    },
+    "observed_q4rdna_environment": {
+      "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+      "LLAMA_Q4_RDNA_MAPPING": "old"
+    },
+    "environment_matches": true,
+    "sidecar_loads": [
+      {
+        "tensors": 224,
+        "gib": 3.45,
+        "device": 0,
+        "path": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna"
+      }
+    ],
+    "decode_launch_counts": [
+      1152
+    ],
+    "unique_tensor_counts": [
+      224
+    ],
+    "q4rdna_error_lines": [],
+    "errors": []
+  },
+  "results": [
+    {
+      "build_commit": "a7a6d0d",
+      "build_number": 1,
+      "cpu_info": "AMD Ryzen 9 7900X 12-Core Processor",
+      "gpu_info": "AMD Radeon RX 9070 XT",
+      "backends": "ROCm",
+      "model_filename": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+      "model_type": "llama 7B Q4_K - Medium",
+      "model_size": 4372054016,
+      "model_n_params": 7248023552,
+      "n_batch": 2048,
+      "n_ubatch": 512,
+      "n_threads": 12,
+      "cpu_mask": "0x0",
+      "cpu_strict": false,
+      "poll": 50,
+      "type_k": "f16",
+      "type_v": "f16",
+      "n_gpu_layers": 999,
+      "n_cpu_moe": 0,
+      "split_mode": "layer",
+      "main_gpu": 0,
+      "no_kv_offload": false,
+      "flash_attn": -1,
+      "devices": "auto",
+      "tensor_split": "0.00",
+      "tensor_buft_overrides": "none",
+      "load_mode": "mmap",
+      "embeddings": false,
+      "no_op_offload": 0,
+      "no_host": false,
+      "fit_target": 0,
+      "fit_min_ctx": 0,
+      "n_prompt": 0,
+      "n_gen": 128,
+      "n_depth": 0,
+      "test_time": "2026-08-27T19:41:27Z",
+      "avg_ns": 2066635807,
+      "stddev_ns": 0,
+      "avg_ts": 61.936409,
+      "stddev_ts": 0.0,
+      "samples_ns": [
+        2066635807
+      ],
+      "samples_ts": [
+        61.9364
+      ]
+    },
+    {
+      "build_commit": "a7a6d0d",
+      "build_number": 1,
+      "cpu_info": "AMD Ryzen 9 7900X 12-Core Processor",
+      "gpu_info": "AMD Radeon RX 9070 XT",
+      "backends": "ROCm",
+      "model_filename": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+      "model_type": "llama 7B Q4_K - Medium",
+      "model_size": 4372054016,
+      "model_n_params": 7248023552,
+      "n_batch": 2048,
+      "n_ubatch": 512,
+      "n_threads": 12,
+      "cpu_mask": "0x0",
+      "cpu_strict": false,
+      "poll": 50,
+      "type_k": "f16",
+      "type_v": "f16",
+      "n_gpu_layers": 999,
+      "n_cpu_moe": 0,
+      "split_mode": "layer",
+      "main_gpu": 0,
+      "no_kv_offload": false,
+      "flash_attn": -1,
+      "devices": "auto",
+      "tensor_split": "0.00",
+      "tensor_buft_overrides": "none",
+      "load_mode": "mmap",
+      "embeddings": false,
+      "no_op_offload": 0,
+      "no_host": false,
+      "fit_target": 0,
+      "fit_min_ctx": 0,
+      "n_prompt": 0,
+      "n_gen": 512,
+      "n_depth": 0,
+      "test_time": "2026-08-27T19:41:30Z",
+      "avg_ns": 7593126934,
+      "stddev_ns": 0,
+      "avg_ts": 67.429401,
+      "stddev_ts": 0.0,
+      "samples_ns": [
+        7593126934
+      ],
+      "samples_ts": [
+        67.4294
+      ]
+    }
+  ],
+  "stderr_tail": [
+    "ggml_cuda_init: found 1 ROCm devices (Total VRAM: 16304 MiB):",
+    "  Device 0: AMD Radeon RX 9070 XT, gfx1201 (0x1201), VMM: no, Wave Size: 32, VRAM: 16304 MiB",
+    "Q4_RDNA: loaded 224 tensors, 3.45 GiB on device 0 from /home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+    "Q4_RDNA: launched 1152 decode GEMV kernels",
+    "Q4_RDNA: unique=224, hits by rows x columns: 12288x4096=0, 4096x12288=0, 4096x4096=384, 1024x4096=384, other=576"
+  ]
+}

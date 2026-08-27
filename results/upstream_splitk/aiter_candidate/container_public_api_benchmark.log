@@ -1,0 +1,165 @@
++ python op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py --sweep --mappings old auto selected --cache rotating --rotate 0 --warmup 100 --samples 30 --timing both --calibration-iterations 100 --target-sample-ms 100 -o /evidence/container_public_api_summary.csv --json /evidence/container_public_api_raw.json
+[aiter] import [module_aiter_core] under /jit/aiter/module_aiter_core.so
+[aiter] import [module_q4_group64_gemv] under /jit/aiter/module_q4_group64_gemv.so
+      N       K  requested    resolved      timing     wall_us    event_us  wall_GB/s   wall_TF
+-----------------------------------------------------------------------------------------------
+    512    3584        old         old integration     114.534      87.341       8.65     0.032
+    512    3584       auto runtime-guarded:small32x32 integration      58.675      32.941      16.89     0.063
+    512    3584   selected  small32x32 integration      59.064      33.200      16.78     0.062
+    512    3584        old         old     batched      37.509      37.485      26.43     0.098
+    512    3584       auto runtime-guarded:small32x32     batched      16.840      16.832      58.86     0.218
+    512    3584   selected  small32x32     batched      16.791      16.786      59.03     0.219
+                      ring          69 copies packed=64.15 MiB total=64.16 MiB
+   1024    3072        old         old integration      72.169      52.215      23.38     0.087
+   1024    3072       auto runtime-guarded:small32x32 integration      47.475      27.220      35.55     0.133
+   1024    3072   selected  small32x32 integration      47.315      27.190      35.67     0.133
+   1024    3072        old         old     batched      31.040      31.028      54.37     0.203
+   1024    3072       auto runtime-guarded:small32x32     batched      16.834      16.826     100.25     0.374
+   1024    3072   selected  small32x32     batched      16.738      16.730     100.82     0.376
+                      ring          41 copies packed=65.34 MiB total=65.36 MiB
+   1024    4096        old         old integration      79.174      59.491      28.40     0.106
+   1024    4096       auto runtime-guarded:small32x32 integration      48.100      27.700      46.75     0.174
+   1024    4096   selected  small32x32 integration      47.675      27.695      47.17     0.176
+   1024    4096        old         old     batched      38.714      38.703      58.09     0.217
+   1024    4096       auto runtime-guarded:small32x32     batched      16.847      16.841     133.47     0.498
+   1024    4096   selected  small32x32     batched      16.784      16.779     133.98     0.500
+                      ring          31 copies packed=65.88 MiB total=65.89 MiB
+   3072    3072        old         old integration      74.139      53.925      67.95     0.255
+   3072    3072       auto runtime-guarded:split8 integration      56.124      34.510      89.77     0.336
+   3072    3072   selected      split8 integration      54.615      34.805      92.25     0.346
+   3072    3072        old         old     batched      29.459      29.445     171.02     0.641
+   3072    3072       auto runtime-guarded:split8     batched      16.966      16.953     296.95     1.112
+   3072    3072   selected      split8     batched      16.929      16.920     297.60     1.115
+                      ring          14 copies packed=66.94 MiB total=66.96 MiB
+   3072    8192        old         old integration     169.409     145.222      79.18     0.297
+   3072    8192       auto runtime-guarded:split8 integration      87.109      62.501     153.99     0.578
+   3072    8192   selected      split8 integration      86.795      62.500     154.55     0.580
+   3072    8192        old         old     batched      82.374      82.319     162.85     0.611
+   3072    8192       auto runtime-guarded:split8     batched      29.883      29.870     448.90     1.684
+   3072    8192   selected      split8     batched      30.140      30.123     445.06     1.670
+                      ring           6 copies packed=76.50 MiB total=76.54 MiB
+   3584    3584        old         old integration      97.855      73.121      70.03     0.263
+   3584    3584       auto runtime-guarded:split8 integration      64.684      40.141     105.94     0.397
+   3584    3584   selected      split8 integration      64.530      39.840     106.19     0.398
+   3584    3584        old         old     batched      34.200      34.186     200.37     0.751
+   3584    3584       auto runtime-guarded:split8     batched      16.887      16.880     405.79     1.521
+   3584    3584   selected      split8     batched      16.865      16.858     406.33     1.523
+                      ring          10 copies packed=65.08 MiB total=65.11 MiB
+   3584   18944        old         old integration     331.217     306.463     109.17     0.410
+   3584   18944       auto runtime-guarded:split8 integration     148.594     123.181     243.34     0.914
+   3584   18944   selected      split8 integration     148.459     123.821     243.57     0.915
+   3584   18944        old         old     batched     184.030     183.939     196.49     0.738
+   3584   18944       auto runtime-guarded:split8     batched      66.159      66.129     546.56     2.052
+   3584   18944   selected      split8     batched      68.492      68.464     527.94     1.983
+                      ring           2 copies packed=68.80 MiB total=68.88 MiB
+   4096    4096        old         old integration     109.209      84.161      81.91     0.307
+   4096    4096       auto runtime-guarded:split8 integration      69.120      44.300     129.42     0.485
+   4096    4096   selected      split8 integration      69.520      45.020     128.68     0.483
+   4096    4096        old         old     batched      42.418      42.401     210.89     0.791
+   4096    4096       auto runtime-guarded:split8     batched      17.699      17.685     505.42     1.896
+   4096    4096   selected      split8     batched      17.857      17.849     500.95     1.879
+                      ring           8 copies packed=68.00 MiB total=68.03 MiB
+   4096   12288        old         old integration     248.288     222.923     107.96     0.405
+   4096   12288       auto runtime-guarded:split8 integration     122.679      96.201     218.49     0.821
+   4096   12288   selected      split8 integration     122.334      97.591     219.11     0.823
+   4096   12288        old         old     batched     126.041     125.900     212.66     0.799
+   4096   12288       auto runtime-guarded:split8     batched      48.055      48.036     557.78     2.095
+   4096   12288   selected      split8     batched      49.342      49.279     543.24     2.040
+                      ring           3 copies packed=76.50 MiB total=76.56 MiB
+   4096   14336        old         old integration     271.843     245.583     115.03     0.432
+   4096   14336       auto runtime-guarded:split8 integration     124.845     100.361     250.46     0.941
+   4096   14336   selected      split8 integration     125.574     100.301     249.01     0.935
+   4096   14336        old         old     batched     147.228     147.132     212.38     0.798
+   4096   14336       auto runtime-guarded:split8     batched      56.577      56.555     552.68     2.076
+   4096   14336   selected      split8     batched      57.860      57.827     540.42     2.030
+                      ring           3 copies packed=89.25 MiB total=89.32 MiB
+   8192    3072        old         old integration      94.345      69.901     142.18     0.533
+   8192    3072       auto runtime-guarded:split4 integration      80.289      55.541     167.08     0.627
+   8192    3072   selected      split4 integration      80.229      55.921     167.20     0.627
+   8192    3072        old         old     batched      33.896      33.874     395.76     1.485
+   8192    3072       auto runtime-guarded:split4     batched      27.256      27.242     492.15     1.847
+   8192    3072   selected      split4     batched      27.238      27.222     492.49     1.848
+                      ring           6 copies packed=76.50 MiB total=76.54 MiB
+  12288    4096        old         old integration     133.994     109.381     200.04     0.751
+  12288    4096       auto runtime-guarded:split8 integration      98.925      74.460     270.96     1.018
+  12288    4096   selected      split8 integration      98.865      74.201     271.12     1.018
+  12288    4096        old         old     batched      55.155      55.091     485.98     1.825
+  12288    4096       auto runtime-guarded:split8     batched      47.737      47.722     561.50     2.109
+  12288    4096   selected      split8     batched      47.545      47.506     563.77     2.117
+                      ring           3 copies packed=76.50 MiB total=76.56 MiB
+  14336    4096        old         old integration     134.349     111.202     232.74     0.874
+  14336    4096       auto runtime-guarded:split8 integration     107.929      83.381     289.72     1.088
+  14336    4096   selected      split8 integration     109.559      83.841     285.41     1.072
+  14336    4096        old         old     batched      61.137      61.096     511.45     1.921
+  14336    4096       auto runtime-guarded:split8     batched      56.423      56.396     554.19     2.081
+  14336    4096   selected      split8     batched      56.427      56.396     554.14     2.081
+                      ring           3 copies packed=89.25 MiB total=89.32 MiB
+  18944    3584        old         old integration     149.544     124.902     241.80     0.908
+  18944    3584       auto runtime-guarded:split8 integration     113.529      88.981     318.50     1.196
+  18944    3584   selected      split8 integration     115.094      90.361     314.17     1.180
+  18944    3584        old         old     batched      65.475      65.415     552.26     2.074
+  18944    3584       auto runtime-guarded:split8     batched      51.899      51.877     696.72     2.616
+  18944    3584   selected      split8     batched      52.296      52.265     691.44     2.597
+                      ring           2 copies packed=68.80 MiB total=68.88 MiB
+
+auto / old speedup (host wall primary; HIP event supplemental)
+  512x3584 integration: wall=1.952x event=2.651x
+  512x3584 batched: wall=2.227x event=2.227x
+  1024x3072 integration: wall=1.520x event=1.918x
+  1024x3072 batched: wall=1.844x event=1.844x
+  1024x4096 integration: wall=1.646x event=2.148x
+  1024x4096 batched: wall=2.298x event=2.298x
+  3072x3072 integration: wall=1.321x event=1.563x
+  3072x3072 batched: wall=1.736x event=1.737x
+  3072x8192 integration: wall=1.945x event=2.324x
+  3072x8192 batched: wall=2.757x event=2.756x
+  3584x3584 integration: wall=1.513x event=1.822x
+  3584x3584 batched: wall=2.025x event=2.025x
+  3584x18944 integration: wall=2.229x event=2.488x
+  3584x18944 batched: wall=2.782x event=2.782x
+  4096x4096 integration: wall=1.580x event=1.900x
+  4096x4096 batched: wall=2.397x event=2.398x
+  4096x12288 integration: wall=2.024x event=2.317x
+  4096x12288 batched: wall=2.623x event=2.621x
+  4096x14336 integration: wall=2.177x event=2.447x
+  4096x14336 batched: wall=2.602x event=2.602x
+  8192x3072 integration: wall=1.175x event=1.259x
+  8192x3072 batched: wall=1.244x event=1.243x
+  12288x4096 integration: wall=1.355x event=1.469x
+  12288x4096 batched: wall=1.155x event=1.154x
+  14336x4096 integration: wall=1.245x event=1.334x
+  14336x4096 batched: wall=1.084x event=1.083x
+  18944x3584 integration: wall=1.317x event=1.404x
+  18944x3584 batched: wall=1.262x event=1.261x
+
+selected / auto latency ratio (host wall primary; HIP event supplemental)
+  512x3584 integration: wall=1.007x event=1.008x
+  512x3584 batched: wall=0.997x event=0.997x
+  1024x3072 integration: wall=0.997x event=0.999x
+  1024x3072 batched: wall=0.994x event=0.994x
+  1024x4096 integration: wall=0.991x event=1.000x
+  1024x4096 batched: wall=0.996x event=0.996x
+  3072x3072 integration: wall=0.973x event=1.009x
+  3072x3072 batched: wall=0.998x event=0.998x
+  3072x8192 integration: wall=0.996x event=1.000x
+  3072x8192 batched: wall=1.009x event=1.008x
+  3584x3584 integration: wall=0.998x event=0.993x
+  3584x3584 batched: wall=0.999x event=0.999x
+  3584x18944 integration: wall=0.999x event=1.005x
+  3584x18944 batched: wall=1.035x event=1.035x
+  4096x4096 integration: wall=1.006x event=1.016x
+  4096x4096 batched: wall=1.009x event=1.009x
+  4096x12288 integration: wall=0.997x event=1.014x
+  4096x12288 batched: wall=1.027x event=1.026x
+  4096x14336 integration: wall=1.006x event=0.999x
+  4096x14336 batched: wall=1.023x event=1.022x
+  8192x3072 integration: wall=0.999x event=1.007x
+  8192x3072 batched: wall=0.999x event=0.999x
+  12288x4096 integration: wall=0.999x event=0.997x
+  12288x4096 batched: wall=0.996x event=0.995x
+  14336x4096 integration: wall=1.015x event=1.006x
+  14336x4096 batched: wall=1.000x event=1.000x
+  18944x3584 integration: wall=1.014x event=1.016x
+  18944x3584 batched: wall=1.008x event=1.007x
+wrote /evidence/container_public_api_summary.csv
+wrote /evidence/container_public_api_raw.json

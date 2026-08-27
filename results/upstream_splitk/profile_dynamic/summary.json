@@ -1,0 +1,286 @@
+{
+  "schema": "q4rdna-rocprof-summary-v1",
+  "scope": "single instrumented launch per case; diagnostic, not benchmark",
+  "benchmark_source": "results/upstream_splitk/microbench.json",
+  "environment": {
+    "gpu": "AMD Radeon RX 9070 XT",
+    "gfx": "gfx1201",
+    "hip_multiprocessor_count": 32,
+    "warp_size": 32,
+    "runtime_version": 71460850,
+    "driver_version": 71460850
+  },
+  "case_count": 7,
+  "all_correctness_passed": true,
+  "cases": [
+    {
+      "rows": 1024,
+      "columns": 4096,
+      "mode": "plain",
+      "requested_mapping": "old",
+      "resolved_mapping": "old",
+      "correctness_passed": true,
+      "relative_l2": 0,
+      "kernel_name": "void q4rdna_kernel::gemv_old<false, false>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+      "duration_ns": 69160,
+      "launch": {
+        "lds_block_bytes": 2048,
+        "scratch_bytes": 0,
+        "vgpr_count": 88,
+        "accum_vgpr_count": 0,
+        "sgpr_count": 128,
+        "workgroup": [
+          256,
+          1,
+          1
+        ],
+        "grid": [
+          1024,
+          1,
+          1
+        ]
+      },
+      "source_files": {
+        "harness": "results/upstream_splitk/profile_dynamic/1024x4096_old/harness.json",
+        "kernel_stats": "results/upstream_splitk/profile_dynamic/1024x4096_old/trace_kernel_stats.csv",
+        "kernel_trace": "results/upstream_splitk/profile_dynamic/1024x4096_old/trace_kernel_trace.csv"
+      }
+    },
+    {
+      "rows": 1024,
+      "columns": 4096,
+      "mode": "plain",
+      "requested_mapping": "small32x32",
+      "resolved_mapping": "small32x32",
+      "correctness_passed": true,
+      "relative_l2": 1.05133496374e-06,
+      "kernel_name": "void q4rdna_kernel::gemv_small_split_k<false, false, 32, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+      "duration_ns": 8080,
+      "launch": {
+        "lds_block_bytes": 4096,
+        "scratch_bytes": 0,
+        "vgpr_count": 32,
+        "accum_vgpr_count": 0,
+        "sgpr_count": 128,
+        "workgroup": [
+          1024,
+          1,
+          1
+        ],
+        "grid": [
+          32768,
+          1,
+          1
+        ]
+      },
+      "source_files": {
+        "harness": "results/upstream_splitk/profile_dynamic/1024x4096_small32x32/harness.json",
+        "kernel_stats": "results/upstream_splitk/profile_dynamic/1024x4096_small32x32/trace_kernel_stats.csv",
+        "kernel_trace": "results/upstream_splitk/profile_dynamic/1024x4096_small32x32/trace_kernel_trace.csv"
+      }
+    },
+    {
+      "rows": 18944,
+      "columns": 3584,
+      "mode": "plain",
+      "requested_mapping": "old",
+      "resolved_mapping": "old",
+      "correctness_passed": true,
+      "relative_l2": 0,
+      "kernel_name": "void q4rdna_kernel::gemv_old<false, false>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+      "duration_ns": 113921,
+      "launch": {
+        "lds_block_bytes": 2048,
+        "scratch_bytes": 0,
+        "vgpr_count": 88,
+        "accum_vgpr_count": 0,
+        "sgpr_count": 128,
+        "workgroup": [
+          256,
+          1,
+          1
+        ],
+        "grid": [
+          18944,
+          1,
+          1
+        ]
+      },
+      "source_files": {
+        "harness": "results/upstream_splitk/profile_dynamic/18944x3584_old/harness.json",
+        "kernel_stats": "results/upstream_splitk/profile_dynamic/18944x3584_old/trace_kernel_stats.csv",
+        "kernel_trace": "results/upstream_splitk/profile_dynamic/18944x3584_old/trace_kernel_trace.csv"
+      }
+    },
+    {
+      "rows": 18944,
+      "columns": 3584,
+      "mode": "plain",
+      "requested_mapping": "split8",
+      "resolved_mapping": "split8",
+      "correctness_passed": true,
+      "relative_l2": 1.04470122505e-06,
+      "kernel_name": "void q4rdna_kernel::gemv_split_k<false, false, 8>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+      "duration_ns": 67561,
+      "launch": {
+        "lds_block_bytes": 1024,
+        "scratch_bytes": 0,
+        "vgpr_count": 32,
+        "accum_vgpr_count": 0,
+        "sgpr_count": 128,
+        "workgroup": [
+          256,
+          1,
+          1
+        ],
+        "grid": [
+          151552,
+          1,
+          1
+        ]
+      },
+      "source_files": {
+        "harness": "results/upstream_splitk/profile_dynamic/18944x3584_split8/harness.json",
+        "kernel_stats": "results/upstream_splitk/profile_dynamic/18944x3584_split8/trace_kernel_stats.csv",
+        "kernel_trace": "results/upstream_splitk/profile_dynamic/18944x3584_split8/trace_kernel_trace.csv"
+      }
+    },
+    {
+      "rows": 4096,
+      "columns": 4096,
+      "mode": "plain",
+      "requested_mapping": "old",
+      "resolved_mapping": "old",
+      "correctness_passed": true,
+      "relative_l2": 0,
+      "kernel_name": "void q4rdna_kernel::gemv_old<false, false>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+      "duration_ns": 60441,
+      "launch": {
+        "lds_block_bytes": 2048,
+        "scratch_bytes": 0,
+        "vgpr_count": 88,
+        "accum_vgpr_count": 0,
+        "sgpr_count": 128,
+        "workgroup": [
+          256,
+          1,
+          1
+        ],
+        "grid": [
+          4096,
+          1,
+          1
+        ]
+      },
+      "source_files": {
+        "harness": "results/upstream_splitk/profile_dynamic/4096x4096_old/harness.json",
+        "kernel_stats": "results/upstream_splitk/profile_dynamic/4096x4096_old/trace_kernel_stats.csv",
+        "kernel_trace": "results/upstream_splitk/profile_dynamic/4096x4096_old/trace_kernel_trace.csv"
+      }
+    },
+    {
+      "rows": 4096,
+      "columns": 4096,
+      "mode": "plain",
+      "requested_mapping": "split2",
+      "resolved_mapping": "split2",
+      "correctness_passed": true,
+      "relative_l2": 1.07325321025e-06,
+      "kernel_name": "void q4rdna_kernel::gemv_split_k<false, false, 2>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+      "duration_ns": 64001,
+      "launch": {
+        "lds_block_bytes": 1024,
+        "scratch_bytes": 0,
+        "vgpr_count": 32,
+        "accum_vgpr_count": 0,
+        "sgpr_count": 128,
+        "workgroup": [
+          256,
+          1,
+          1
+        ],
+        "grid": [
+          8192,
+          1,
+          1
+        ]
+      },
+      "source_files": {
+        "harness": "results/upstream_splitk/profile_dynamic/4096x4096_split2/harness.json",
+        "kernel_stats": "results/upstream_splitk/profile_dynamic/4096x4096_split2/trace_kernel_stats.csv",
+        "kernel_trace": "results/upstream_splitk/profile_dynamic/4096x4096_split2/trace_kernel_trace.csv"
+      }
+    },
+    {
+      "rows": 4096,
+      "columns": 4096,
+      "mode": "plain",
+      "requested_mapping": "split8",
+      "resolved_mapping": "split8",
+      "correctness_passed": true,
+      "relative_l2": 1.06798529921e-06,
+      "kernel_name": "void q4rdna_kernel::gemv_split_k<false, false, 8>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+      "duration_ns": 27120,
+      "launch": {
+        "lds_block_bytes": 1024,
+        "scratch_bytes": 0,
+        "vgpr_count": 32,
+        "accum_vgpr_count": 0,
+        "sgpr_count": 128,
+        "workgroup": [
+          256,
+          1,
+          1
+        ],
+        "grid": [
+          32768,
+          1,
+          1
+        ]
+      },
+      "source_files": {
+        "harness": "results/upstream_splitk/profile_dynamic/4096x4096_split8/harness.json",
+        "kernel_stats": "results/upstream_splitk/profile_dynamic/4096x4096_split8/trace_kernel_stats.csv",
+        "kernel_trace": "results/upstream_splitk/profile_dynamic/4096x4096_split8/trace_kernel_trace.csv"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "rows": 1024,
+      "columns": 4096,
+      "mode": "plain",
+      "candidate": "small32x32",
+      "old_duration_ns": 69160,
+      "candidate_duration_ns": 8080,
+      "single_trace_old_over_candidate": 8.55940594059406
+    },
+    {
+      "rows": 4096,
+      "columns": 4096,
+      "mode": "plain",
+      "candidate": "split2",
+      "old_duration_ns": 60441,
+      "candidate_duration_ns": 64001,
+      "single_trace_old_over_candidate": 0.9443758691270449
+    },
+    {
+      "rows": 4096,
+      "columns": 4096,
+      "mode": "plain",
+      "candidate": "split8",
+      "old_duration_ns": 60441,
+      "candidate_duration_ns": 27120,
+      "single_trace_old_over_candidate": 2.228650442477876
+    },
+    {
+      "rows": 18944,
+      "columns": 3584,
+      "mode": "plain",
+      "candidate": "split8",
+      "old_duration_ns": 113921,
+      "candidate_duration_ns": 67561,
+      "single_trace_old_over_candidate": 1.6861946981246576
+    }
+  ]
+}

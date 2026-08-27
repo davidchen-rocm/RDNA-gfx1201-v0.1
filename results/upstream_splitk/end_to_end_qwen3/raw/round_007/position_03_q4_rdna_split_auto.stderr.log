@@ -1,0 +1,5 @@
+ggml_cuda_init: found 1 ROCm devices (Total VRAM: 16304 MiB):
+  Device 0: AMD Radeon RX 9070 XT, gfx1201 (0x1201), VMM: no, Wave Size: 32, VRAM: 16304 MiB
+Q4_RDNA: loaded 252 tensors, 3.44 GiB on device 0 from /home/david/Desktop/math-rule-loop/artifacts/q4rdna-phase2/qwen3-8b.q4rdna
+Q4_RDNA: launched 1296 decode GEMV kernels
+Q4_RDNA: unique=252, hits by rows x columns: 12288x4096=432, 4096x12288=216, 4096x4096=432, 1024x4096=432, other=0

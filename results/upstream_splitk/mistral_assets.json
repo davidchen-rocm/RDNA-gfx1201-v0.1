@@ -1,0 +1,110 @@
+{
+  "schema": "q4rdna-model-assets-v1",
+  "generated_at": "2026-08-27T19:48:48Z",
+  "model": {
+    "label": "Mistral-7B-Instruct-v0.3",
+    "hugging_face_repository": "mistralai/Mistral-7B-Instruct-v0.3",
+    "revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+    "access": "public, non-gated",
+    "configuration": {
+      "model_type": "mistral",
+      "layers": 32,
+      "hidden_size": 4096,
+      "intermediate_size": 14336,
+      "attention_heads": 32,
+      "key_value_heads": 8,
+      "source_dtype": "BF16"
+    },
+    "files": [
+      {
+        "path": "/home/david/Desktop/model-library/origin/Mistral-7B-Instruct-v0.3/config.json",
+        "size_bytes": 601,
+        "sha256": "affafc6478ec0fd07a32f0ca57aa2fc57743f4d17d6730f86a96ac24d1507f99"
+      },
+      {
+        "path": "/home/david/Desktop/model-library/origin/Mistral-7B-Instruct-v0.3/model.safetensors.index.json",
+        "size_bytes": 23950,
+        "sha256": "e489ba553b87cde188d921b1a8283c2e0b9d33d635b88147d96ff0fcd6250016"
+      },
+      {
+        "path": "/home/david/Desktop/model-library/origin/Mistral-7B-Instruct-v0.3/model-00001-of-00003.safetensors",
+        "size_bytes": 4949453792,
+        "sha256": "ce6fb6f6f4d0183f4813cbf4ece24109da629a08d4210da46f77e1d8b0bd5c19"
+      },
+      {
+        "path": "/home/david/Desktop/model-library/origin/Mistral-7B-Instruct-v0.3/model-00002-of-00003.safetensors",
+        "size_bytes": 4999819336,
+        "sha256": "8c0e72f148366b6a3709e002a98706a33d31aec8515090c856c95b2044f92ae0"
+      },
+      {
+        "path": "/home/david/Desktop/model-library/origin/Mistral-7B-Instruct-v0.3/model-00003-of-00003.safetensors",
+        "size_bytes": 4546807800,
+        "sha256": "905dd405363e43d95779c1c1155a2dbfd36155914ae95dbd934e12e490cfb4ca"
+      }
+    ],
+    "safetensors_validation": {
+      "index_tensor_payload_bytes": 14496047104,
+      "parsed_shard_payload_bytes": 14496047104,
+      "index_keys": 291,
+      "header_keys": 291,
+      "missing_or_extra_keys": 0,
+      "target_tensors_expected": 224,
+      "target_tensors_found": 224,
+      "target_tensors_bf16": 224,
+      "rows_divisible_by_32": 224,
+      "columns_divisible_by_64": 224
+    }
+  },
+  "production_gguf": {
+    "hugging_face_repository": "bartowski/Mistral-7B-Instruct-v0.3-GGUF",
+    "revision": "61fd4167fff3ab01ee1cfe0da183fa27a944db48",
+    "path": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+    "size_bytes": 4372812000,
+    "sha256": "1270d22c0fbb3d092fb725d4d96c457b7b687a5f5a715abe1e818da303e562b6",
+    "gguf_version": 3,
+    "tensor_count": 291,
+    "target_tensors_found": 224,
+    "target_quantization_types": {
+      "Q4_K": 192,
+      "Q6_K": 32
+    }
+  },
+  "q4_rdna_sidecar": {
+    "manifest": {
+      "path": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.manifest",
+      "size_bytes": 31860,
+      "sha256": "f015a5796e0ec055b7dcb513598e8dc4a6318520d9dde114316c5853c8eb6080"
+    },
+    "sidecar": {
+      "path": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+      "size_bytes": 3707789312,
+      "sha256": "9f1eedf1132e9ed2cc0e710249cf72dcd712f8801276f06e9cb2df292b0ed6b4",
+      "entries": 224,
+      "structurally_valid_entries": 224
+    },
+    "layout": "[N/32,K/64,1088] bytes per tile: 32 FP16 scales followed by 1024 signed-INT4 payload bytes",
+    "packer": {
+      "implementation": "native C++ OpenMP packer",
+      "source_path": "/home/david/Desktop/q4rdna-gfx1201-public-evidence/source/q4rdna_sidecar_pack.cpp",
+      "source_size_bytes": 11358,
+      "source_sha256": "ffa4aac2a8551b66f18db1d9e12b8fd4a8deb470bf51ac726adc6a90e19ea636",
+      "manifest_generator_path": "/home/david/Desktop/q4rdna-gfx1201-public-evidence/source/make_q4rdna_manifest.py",
+      "manifest_generator_size_bytes": 3933,
+      "manifest_generator_sha256": "b4f532ab9159cab5e509ec7ce95e2b4e5d813af96835dd4ff281c35e0d4a38fc",
+      "temporary_binary_path": "/tmp/q4rdna_sidecar_pack_v1",
+      "temporary_binary_size_bytes": 47056,
+      "temporary_binary_sha256": "ca8acab90ab5f091be89d86be3f0eaca7cc5a74c1b7476f533b5222855ab124c",
+      "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "compile_flags": "-O3 -std=c++17 -fopenmp",
+      "omp_num_threads": 12,
+      "wall_seconds": 226.7,
+      "max_rss_kib": 159064
+    },
+    "cross_model_packer_check": {
+      "reference_model": "Qwen3-8B",
+      "scope": "first sidecar tensor payload",
+      "native_packer_matches_published_sidecar_byte_for_byte": true,
+      "reason": "Use the same native reduction order for the mapping-only cross-model ablation."
+    }
+  }
+}

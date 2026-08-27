@@ -1,0 +1,2349 @@
+diff --git a/aiter/__init__.py b/aiter/__init__.py
+index 5aac376c0dbf9b6818bc4ebc1d68c175e0d6fdcb..f5c6d9c506ee0d16b9beaff0057ade17dbeaf681 100644
+--- a/aiter/__init__.py
++++ b/aiter/__init__.py
+@@ -137,6 +137,7 @@ else:
+     from .ops.causal_conv1d_update import *
+     from .ops.fused_split_gdr_update import *
+     from .ops.gdr_decode_packed_bf16 import *
++    from .ops.q4_group64_gemv import *
+     from . import mla  # noqa: F401
+ 
+     # isort: on
+diff --git a/aiter/jit/optCompilerConfig.json b/aiter/jit/optCompilerConfig.json
+index ee2e6347a90cf250b224b7710aa4f5903ee10d76..0214b9aac641fdc6000c374cdb2abdd69021e07b 100644
+--- a/aiter/jit/optCompilerConfig.json
++++ b/aiter/jit/optCompilerConfig.json
+@@ -1830,6 +1830,23 @@
+         "verbose": "False",
+         "blob_gen_cmd": "''"
+     },
++    "module_q4_group64_gemv": {
++        "srcs": [
++            "f'{AITER_CSRC_DIR}/pybind/q4_group64_gemv_pybind.cu'",
++            "f'{AITER_CSRC_DIR}/kernels/q4_group64_gemv.cu'"
++        ],
++        "flags_extra_cc": [
++            "'-O3'"
++        ],
++        "flags_extra_hip": [
++            "'-O3'"
++        ],
++        "extra_ldflags": "None",
++        "extra_include": [],
++        "verbose": "False",
++        "blob_gen_cmd": "''",
++        "is_experimental": "True"
++    },
+     "module_fused_split_gdr_update": {
+         "srcs": [
+             "f'{AITER_CSRC_DIR}/pybind/fused_split_gdr_update_pybind.cu'",
+diff --git a/aiter/ops/q4_group64_gemv.py b/aiter/ops/q4_group64_gemv.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..ea7a2f06050acaebdf4716af01a516c1c986e070
+--- /dev/null
++++ b/aiter/ops/q4_group64_gemv.py
+@@ -0,0 +1,172 @@
++# SPDX-License-Identifier: MIT
++
++"""Packed group-64 signed INT4 GEMV for gfx1201.
++
++The packed weight layout is ``[N / 32, K / 64, 1088]`` bytes per tile.  Each
++tile starts with 32 little-endian FP16 row scales followed by 32 pairs of
++signed INT4 values for each of the 32 rows.
++"""
++
++from __future__ import annotations
++
++from functools import cache
++
++import torch
++from torch import Tensor
++
++from ..jit.core import compile_ops, is_experimental_enabled
++
++__all__ = ["q4_group64_gemv"]
++
++_MODULE = "module_q4_group64_gemv"
++_MAPPING_IDS = {
++    "auto": 0,
++    "old": 1,
++    "split2": 2,
++    "split4": 3,
++    "split8": 4,
++    "small8x8": 5,
++    "small8x16": 6,
++    "small8x32": 7,
++    "small16x16": 8,
++    "small16x32": 9,
++    "small32x32": 10,
++}
++
++# Dispatch choices measured with rotating inputs on gfx1201.  Shape is the
++# complete key; unlisted shapes deliberately retain the conservative kernel.
++_AUTO_MAPPING = {
++    (512, 3584): "small32x32",
++    (1024, 3072): "small32x32",
++    (1024, 4096): "small32x32",
++    (3072, 3072): "split8",
++    (3072, 8192): "split8",
++    (3584, 3584): "split8",
++    (3584, 18944): "split8",
++    (4096, 4096): "split8",
++    (4096, 12288): "split8",
++    (4096, 14336): "split8",
++    (8192, 3072): "split4",
++    (12288, 4096): "split8",
++    (14336, 4096): "split8",
++    (18944, 3584): "split8",
++}
++
++
++@compile_ops(_MODULE, fc_name="q4_group64_gemv_out", develop=True)
++def _q4_group64_gemv_out(
++    x: Tensor,
++    packed_weight: Tensor,
++    out: Tensor,
++    mapping: int,
++) -> None: ...
++
++
++@cache
++def _gfx_arch_for_index(index: int) -> str:
++    arch = getattr(torch.cuda.get_device_properties(index), "gcnArchName", "")
++    return arch.lower().split(":", maxsplit=1)[0]
++
++
++def _gfx_arch(device: torch.device) -> str:
++    index = device.index
++    if index is None:
++        index = torch.cuda.current_device()
++    return _gfx_arch_for_index(index)
++
++
++def _require_experimental_enabled() -> None:
++    if not is_experimental_enabled():
++        raise RuntimeError(
++            "q4_group64_gemv is experimental; set "
++            "AITER_ENABLE_EXPERIMENTAL=1 before calling it"
++        )
++
++
++def _validate_inputs(x: Tensor, packed_weight: Tensor, out: Tensor | None) -> int:
++    if not x.is_cuda or not packed_weight.is_cuda:
++        raise ValueError("x and packed_weight must be CUDA/HIP tensors")
++    if x.device != packed_weight.device:
++        raise ValueError("x and packed_weight must be on the same device")
++    arch = _gfx_arch(x.device)
++    if arch != "gfx1201":
++        raise RuntimeError(f"q4_group64_gemv requires gfx1201, got {arch!r}")
++
++    if x.dtype != torch.float32 or x.ndim != 1 or not x.is_contiguous():
++        raise ValueError("x must be a contiguous FP32 vector [K]")
++    k = x.numel()
++    if k <= 0 or k % 64:
++        raise ValueError(f"K must be positive and divisible by 64, got {k}")
++    if packed_weight.dtype != torch.uint8:
++        raise ValueError("packed_weight must have dtype uint8")
++    if packed_weight.ndim != 3 or not packed_weight.is_contiguous():
++        raise ValueError("packed_weight must be contiguous [N/32,K/64,1088]")
++    if packed_weight.shape[0] <= 0 or packed_weight.shape[2] != 1088:
++        raise ValueError("packed_weight must have shape [N/32,K/64,1088]")
++    if packed_weight.shape[1] * 64 != k:
++        raise ValueError(
++            "packed_weight K dimension does not match x: "
++            f"{packed_weight.shape[1] * 64} != {k}"
++        )
++    if packed_weight.data_ptr() % 2:
++        raise ValueError("packed_weight must be 2-byte aligned for FP16 scales")
++
++    n = packed_weight.shape[0] * 32
++    if out is not None:
++        if out.device != x.device:
++            raise ValueError("out must be on the same device as x")
++        if out.dtype != torch.float32 or out.shape != (n,) or not out.is_contiguous():
++            raise ValueError(f"out must be a contiguous FP32 vector [{n}]")
++    return n
++
++
++def _selected_mapping(n: int, k: int) -> str:
++    """Return the private RX 9070 XT candidate; unseen shapes use ``old``."""
++
++    return _AUTO_MAPPING.get((n, k), "old")
++
++
++def _q4_group64_gemv(
++    x: Tensor,
++    packed_weight: Tensor,
++    *,
++    mapping: str = "auto",
++    out: Tensor | None = None,
++) -> Tensor:
++    """Private correctness/ablation entry point with an explicit mapping knob."""
++
++    _require_experimental_enabled()
++    n = _validate_inputs(x, packed_weight, out)
++    try:
++        mapping_id = _MAPPING_IDS[mapping]
++    except KeyError as exc:
++        choices = ", ".join(_MAPPING_IDS)
++        raise ValueError(
++            f"unknown mapping {mapping!r}; expected one of {choices}"
++        ) from exc
++    if mapping == "split2" and n % 128:
++        raise ValueError(f"split2 requires N divisible by 128, got {n}")
++    if mapping == "split4" and n % 64:
++        raise ValueError(f"split4 requires N divisible by 64, got {n}")
++    if out is None:
++        out = torch.empty(n, dtype=torch.float32, device=x.device)
++    with torch.cuda.device(x.device):
++        _q4_group64_gemv_out(x, packed_weight, out, mapping_id)
++    return out
++
++
++def q4_group64_gemv(x: Tensor, packed_weight: Tensor) -> Tensor:
++    """Multiply a packed group-64 signed INT4 matrix by an FP32 vector.
++
++    Args:
++        x: Contiguous FP32 vector with shape ``[K]``; ``K`` is divisible by 64.
++        packed_weight: Contiguous uint8 tensor with shape
++            ``[N / 32, K / 64, 1088]``.  The first 64 bytes of each tile are
++            32 FP16 row scales and the remaining 1024 bytes contain signed
++            low/high INT4 pairs in row-interleaved order.
++
++    Returns:
++        A contiguous FP32 vector with shape ``[N]``.
++    """
++
++    return _q4_group64_gemv(x, packed_weight)
+diff --git a/csrc/include/q4_group64_gemv.h b/csrc/include/q4_group64_gemv.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..f80bf6e789190e39db12e9e4cf6b7d10ec182f1d
+--- /dev/null
++++ b/csrc/include/q4_group64_gemv.h
+@@ -0,0 +1,36 @@
++#pragma once
++// SPDX-License-Identifier: MIT
++
++#include "aiter_tensor.h"
++
++#include <string_view>
++
++namespace aiter {
++
++namespace detail {
++
++constexpr bool q4_group64_is_tuned_rx_9070_xt(int pci_chip_id,
++                                              int multiprocessor_count,
++                                              std::string_view name) noexcept
++{
++    return pci_chip_id == 0x7550 && multiprocessor_count == 32 &&
++           (name.empty() || name == "AMD Radeon RX 9070 XT");
++}
++
++static_assert(q4_group64_is_tuned_rx_9070_xt(0x7550, 32, "AMD Radeon RX 9070 XT"));
++static_assert(q4_group64_is_tuned_rx_9070_xt(0x7550, 32, ""));
++static_assert(!q4_group64_is_tuned_rx_9070_xt(0x7550, 28, "AMD Radeon RX 9070"));
++static_assert(!q4_group64_is_tuned_rx_9070_xt(0x7550, 24, "AMD Radeon RX 9070 GRE"));
++static_assert(!q4_group64_is_tuned_rx_9070_xt(0x7551, 32, "AMD Radeon AI PRO R9700"));
++static_assert(!q4_group64_is_tuned_rx_9070_xt(0x7550, 32, "AMD Radeon AI PRO R9700"));
++static_assert(!q4_group64_is_tuned_rx_9070_xt(0x7550, 32, "AMD Radeon RX 9070 XT Future"));
++static_assert(!q4_group64_is_tuned_rx_9070_xt(0, 0, "unknown"));
++
++} // namespace detail
++
++void q4_group64_gemv_out(aiter_tensor_t& x,
++                         aiter_tensor_t& packed_weight,
++                         aiter_tensor_t& out,
++                         int mapping);
++
++} // namespace aiter
+diff --git a/csrc/kernels/q4_group64_gemv.cu b/csrc/kernels/q4_group64_gemv.cu
+new file mode 100644
+index 0000000000000000000000000000000000000000..3de2b1d672789fc89f04c8e4c3bd5d60d3cdf360
+--- /dev/null
++++ b/csrc/kernels/q4_group64_gemv.cu
+@@ -0,0 +1,542 @@
++// SPDX-License-Identifier: MIT
++
++#include "aiter_hip_common.h"
++#include "aiter_stream.h"
++#include "q4_group64_gemv.h"
++
++#include <hip/hip_fp16.h>
++#include <hip/hip_runtime.h>
++
++#include <cassert>
++#include <cctype>
++#include <cerrno>
++#include <cstdint>
++#include <cstdlib>
++#include <limits>
++#include <mutex>
++#include <string>
++#include <unordered_map>
++
++namespace {
++
++constexpr int kGroup     = 64;
++constexpr int kTileRows  = 32;
++constexpr int kTileBytes = 1088;
++constexpr int kWaves     = 8;
++constexpr int kThreads   = kTileRows * kWaves;
++
++enum class Mapping : int
++{
++    Auto       = 0,
++    Old        = 1,
++    Split2     = 2,
++    Split4     = 3,
++    Split8     = 4,
++    Small8x8   = 5,
++    Small8x16  = 6,
++    Small8x32  = 7,
++    Small16x16 = 8,
++    Small16x32 = 9,
++    Small32x32 = 10,
++};
++
++struct DispatchEntry
++{
++    int rows;
++    int columns;
++    Mapping mapping;
++};
++
++constexpr DispatchEntry kMeasuredDispatch[] = {
++    {512, 3584, Mapping::Small32x32},
++    {1024, 3072, Mapping::Small32x32},
++    {1024, 4096, Mapping::Small32x32},
++    {3072, 3072, Mapping::Split8},
++    {3072, 8192, Mapping::Split8},
++    {3584, 3584, Mapping::Split8},
++    {3584, 18944, Mapping::Split8},
++    {4096, 4096, Mapping::Split8},
++    {4096, 12288, Mapping::Split8},
++    {4096, 14336, Mapping::Split8},
++    {8192, 3072, Mapping::Split4},
++    {12288, 4096, Mapping::Split8},
++    {14336, 4096, Mapping::Split8},
++    {18944, 3584, Mapping::Split8},
++};
++
++Mapping select_mapping(int rows, int columns)
++{
++    for(const auto& entry : kMeasuredDispatch)
++    {
++        if(entry.rows == rows && entry.columns == columns)
++        {
++            return entry.mapping;
++        }
++    }
++    return Mapping::Old;
++}
++
++std::string cached_gpu_arch(int device_id)
++{
++    static std::mutex mutex;
++    static std::unordered_map<int, std::string> cache;
++    const std::lock_guard<std::mutex> lock(mutex);
++    const auto found = cache.find(device_id);
++    if(found != cache.end())
++    {
++        return found->second;
++    }
++    const std::string arch = get_gpu_arch();
++    cache.emplace(device_id, arch);
++    return arch;
++}
++
++bool cached_is_tuned_rx_9070_xt(int device_id)
++{
++    static std::mutex mutex;
++    static std::unordered_map<int, bool> cache;
++    const std::lock_guard<std::mutex> lock(mutex);
++    const auto found = cache.find(device_id);
++    if(found != cache.end())
++    {
++        return found->second;
++    }
++
++    hipDeviceProp_t properties{};
++    int pci_chip_id                    = 0;
++    const hipError_t properties_status = hipGetDeviceProperties(&properties, device_id);
++    const hipError_t chip_status =
++        hipDeviceGetAttribute(&pci_chip_id, hipDeviceAttributePciChipId, device_id);
++    const bool tuned = properties_status == hipSuccess && chip_status == hipSuccess &&
++                       aiter::detail::q4_group64_is_tuned_rx_9070_xt(
++                           pci_chip_id, properties.multiProcessorCount, properties.name);
++    if(properties_status != hipSuccess || chip_status != hipSuccess)
++    {
++        // Identity discovery is an optimization guard. Clear a possible sticky
++        // runtime error and fail closed to the conservative mapping.
++        (void)hipGetLastError();
++    }
++    cache.emplace(device_id, tuned);
++    return tuned;
++}
++
++bool ranges_overlap(const void* lhs, size_t lhs_bytes, const void* rhs, size_t rhs_bytes)
++{
++    const auto lhs_begin = reinterpret_cast<uintptr_t>(lhs);
++    const auto rhs_begin = reinterpret_cast<uintptr_t>(rhs);
++    return lhs_begin < rhs_begin + rhs_bytes && rhs_begin < lhs_begin + lhs_bytes;
++}
++
++bool experimental_runtime_enabled()
++{
++    // Follow the integer contract of aiter.jit.core.is_experimental_enabled.
++    // Check every entry so removing the opt-in immediately disables an
++    // already-loaded module. Full consumption prevents values such as "1junk"
++    // from enabling a direct C++ call.
++    const char* value = std::getenv("AITER_ENABLE_EXPERIMENTAL");
++    if(value == nullptr)
++    {
++        return false;
++    }
++    errno             = 0;
++    char* end         = nullptr;
++    const long parsed = std::strtol(value, &end, 10);
++    if(errno == ERANGE || end == value)
++    {
++        return false;
++    }
++    while(*end != '\0' && std::isspace(static_cast<unsigned char>(*end)) != 0)
++    {
++        ++end;
++    }
++    return *end == '\0' && parsed != 0;
++}
++
++class AiterCheckThrowGuard
++{
++    public:
++    AiterCheckThrowGuard() : previous_(aiter_detail::g_aiter_can_throw)
++    {
++        aiter_detail::g_aiter_can_throw = true;
++    }
++
++    ~AiterCheckThrowGuard() { aiter_detail::g_aiter_can_throw = previous_; }
++
++    AiterCheckThrowGuard(const AiterCheckThrowGuard&)            = delete;
++    AiterCheckThrowGuard& operator=(const AiterCheckThrowGuard&) = delete;
++
++    private:
++    bool previous_;
++};
++
++#if defined(__gfx1201__)
++
++__device__ __forceinline__ int low_nibble(uint8_t value)
++{
++    return int(static_cast<int8_t>(value << 4)) >> 4;
++}
++
++__device__ __forceinline__ int high_nibble(uint8_t value)
++{
++    return int(static_cast<int8_t>(value)) >> 4;
++}
++
++template <bool CheckRowBounds>
++__global__
++__launch_bounds__(kThreads) void q4_group64_gemv_old_kernel(const uint8_t* __restrict__ weights,
++                                                            const float* __restrict__ x,
++                                                            float* __restrict__ out,
++                                                            int row_tiles,
++                                                            int columns)
++{
++    __shared__ float x_tile[kWaves][kGroup];
++    const int lane     = static_cast<int>(threadIdx.x) & (kTileRows - 1);
++    const int wave     = static_cast<int>(threadIdx.x) / kTileRows;
++    const int row_tile = static_cast<int>(blockIdx.x) * kWaves + wave;
++    if constexpr(CheckRowBounds)
++    {
++        if(row_tile >= row_tiles)
++        {
++            return;
++        }
++    }
++
++    const int groups = columns / kGroup;
++    float sum        = 0.0f;
++    for(int group = 0; group < groups; ++group)
++    {
++        x_tile[wave][lane]             = x[group * kGroup + lane];
++        x_tile[wave][lane + kTileRows] = x[group * kGroup + lane + kTileRows];
++        __syncwarp();
++
++        const uint8_t* tile =
++            weights + (static_cast<int64_t>(row_tile) * groups + group) * kTileBytes;
++        const float scale = __half2float(reinterpret_cast<const __half*>(tile)[lane]);
++#pragma unroll
++        for(int i = 0; i < kGroup / 2; ++i)
++        {
++            const uint8_t packed = tile[64 + i * kTileRows + lane];
++            sum = fmaf(scale * float(low_nibble(packed)), x_tile[wave][2 * i], sum);
++            sum = fmaf(scale * float(high_nibble(packed)), x_tile[wave][2 * i + 1], sum);
++        }
++        __syncwarp();
++    }
++    out[row_tile * kTileRows + lane] = sum;
++}
++
++template <int SplitWaves>
++__global__
++__launch_bounds__(kThreads) void q4_group64_gemv_split_kernel(const uint8_t* __restrict__ weights,
++                                                              const float* __restrict__ x,
++                                                              float* __restrict__ out,
++                                                              int columns)
++{
++    static_assert(SplitWaves == 2 || SplitWaves == 4 || SplitWaves == 8);
++    constexpr int kTilesPerBlock = kWaves / SplitWaves;
++    __shared__ float partial[kWaves][kTileRows];
++
++    const int lane          = static_cast<int>(threadIdx.x) & (kTileRows - 1);
++    const int wave          = static_cast<int>(threadIdx.x) / kTileRows;
++    const int split         = wave & (SplitWaves - 1);
++    const int tile_in_block = wave / SplitWaves;
++    const int row_tile      = static_cast<int>(blockIdx.x) * kTilesPerBlock + tile_in_block;
++    const int groups        = columns / kGroup;
++    float sum               = 0.0f;
++
++    for(int group = split; group < groups; group += SplitWaves)
++    {
++        const uint8_t* tile =
++            weights + (static_cast<int64_t>(row_tile) * groups + group) * kTileBytes;
++        float partial_low  = 0.0f;
++        float partial_high = 0.0f;
++#pragma unroll 4
++        for(int i = 0; i < kGroup / 2; ++i)
++        {
++            const float x_low    = x[group * kGroup + 2 * i];
++            const float x_high   = x[group * kGroup + 2 * i + 1];
++            const uint8_t packed = tile[64 + i * kTileRows + lane];
++            partial_low          = fmaf(float(low_nibble(packed)), x_low, partial_low);
++            partial_high         = fmaf(float(high_nibble(packed)), x_high, partial_high);
++        }
++        const float scale = __half2float(reinterpret_cast<const __half*>(tile)[lane]);
++        sum               = fmaf(scale, partial_low + partial_high, sum);
++    }
++
++    partial[wave][lane] = sum;
++    __syncthreads();
++    if(split == 0)
++    {
++#pragma unroll
++        for(int other = 1; other < SplitWaves; ++other)
++        {
++            sum += partial[wave + other][lane];
++        }
++        out[row_tile * kTileRows + lane] = sum;
++    }
++}
++
++template <int SplitWaves, int SliceRows>
++__global__ __launch_bounds__(SplitWaves* kTileRows) void q4_group64_gemv_small_kernel(
++    const uint8_t* __restrict__ weights,
++    const float* __restrict__ x,
++    float* __restrict__ out,
++    int columns)
++{
++    static_assert(SplitWaves == 8 || SplitWaves == 16 || SplitWaves == 32);
++    static_assert(SliceRows == 8 || SliceRows == 16 || SliceRows == 32);
++    constexpr int kSlicesPerTile = kTileRows / SliceRows;
++    __shared__ float partial[SplitWaves][kTileRows];
++
++    const int lane      = static_cast<int>(threadIdx.x) & (kTileRows - 1);
++    const int wave      = static_cast<int>(threadIdx.x) / kTileRows;
++    const int row_slice = static_cast<int>(blockIdx.x);
++    const int row_tile  = row_slice / kSlicesPerTile;
++    const int row_lane  = (row_slice % kSlicesPerTile) * SliceRows + lane;
++    const int groups    = columns / kGroup;
++    float sum           = 0.0f;
++
++    if(lane < SliceRows)
++    {
++        for(int group = wave; group < groups; group += SplitWaves)
++        {
++            const uint8_t* tile =
++                weights + (static_cast<int64_t>(row_tile) * groups + group) * kTileBytes;
++            float partial_low  = 0.0f;
++            float partial_high = 0.0f;
++#pragma unroll 4
++            for(int i = 0; i < kGroup / 2; ++i)
++            {
++                const float x_low    = x[group * kGroup + 2 * i];
++                const float x_high   = x[group * kGroup + 2 * i + 1];
++                const uint8_t packed = tile[64 + i * kTileRows + row_lane];
++                partial_low          = fmaf(float(low_nibble(packed)), x_low, partial_low);
++                partial_high         = fmaf(float(high_nibble(packed)), x_high, partial_high);
++            }
++            const float scale = __half2float(reinterpret_cast<const __half*>(tile)[row_lane]);
++            sum               = fmaf(scale, partial_low + partial_high, sum);
++        }
++    }
++
++    partial[wave][lane] = sum;
++    __syncthreads();
++    if(wave == 0 && lane < SliceRows)
++    {
++#pragma unroll
++        for(int other = 1; other < SplitWaves; ++other)
++        {
++            sum += partial[other][lane];
++        }
++        out[row_tile * kTileRows + row_lane] = sum;
++    }
++}
++
++#else
++
++template <bool CheckRowBounds>
++__global__ __launch_bounds__(kThreads) void q4_group64_gemv_old_kernel(
++    const uint8_t*, const float*, float*, int, int)
++{
++    assert(false && "q4_group64_gemv requires gfx1201 device code");
++}
++
++template <int SplitWaves>
++__global__ __launch_bounds__(kThreads) void q4_group64_gemv_split_kernel(const uint8_t*,
++                                                                         const float*,
++                                                                         float*,
++                                                                         int)
++{
++    assert(false && "q4_group64_gemv requires gfx1201 device code");
++}
++
++template <int SplitWaves, int SliceRows>
++__global__ __launch_bounds__(SplitWaves* kTileRows) void q4_group64_gemv_small_kernel(
++    const uint8_t*, const float*, float*, int)
++{
++    assert(false && "q4_group64_gemv requires gfx1201 device code");
++}
++
++#endif
++
++template <int SplitWaves>
++void launch_split(
++    const uint8_t* weights, const float* x, float* out, int rows, int columns, hipStream_t stream)
++{
++    constexpr int kTilesPerBlock = kWaves / SplitWaves;
++    const int row_tiles          = rows / kTileRows;
++    const dim3 grid(row_tiles / kTilesPerBlock);
++    const dim3 block(kThreads);
++    hipLaunchKernelGGL((q4_group64_gemv_split_kernel<SplitWaves>),
++                       grid,
++                       block,
++                       0,
++                       stream,
++                       weights,
++                       x,
++                       out,
++                       columns);
++}
++
++template <int SplitWaves, int SliceRows>
++void launch_small(
++    const uint8_t* weights, const float* x, float* out, int rows, int columns, hipStream_t stream)
++{
++    const dim3 grid(rows / SliceRows);
++    const dim3 block(SplitWaves * kTileRows);
++    hipLaunchKernelGGL((q4_group64_gemv_small_kernel<SplitWaves, SliceRows>),
++                       grid,
++                       block,
++                       0,
++                       stream,
++                       weights,
++                       x,
++                       out,
++                       columns);
++}
++
++} // namespace
++
++namespace aiter {
++
++void q4_group64_gemv_out(aiter_tensor_t& x,
++                         aiter_tensor_t& packed_weight,
++                         aiter_tensor_t& out,
++                         int mapping_value)
++{
++    AiterCheckThrowGuard check_throw_guard;
++    AITER_CHECK(experimental_runtime_enabled(),
++                "q4_group64_gemv is experimental; set AITER_ENABLE_EXPERIMENTAL=1 before "
++                "calling it");
++    AITER_CHECK(x.is_gpu() && packed_weight.is_gpu() && out.is_gpu(),
++                "x, packed_weight, and out must be GPU tensors");
++    AITER_CHECK(x.device_id == packed_weight.device_id && x.device_id == out.device_id,
++                "x, packed_weight, and out must be on the same device");
++    AITER_CHECK(x.dtype() == AITER_DTYPE_fp32, "x must be FP32");
++    AITER_CHECK(packed_weight.dtype() == AITER_DTYPE_u8, "packed_weight must be uint8");
++    AITER_CHECK(out.dtype() == AITER_DTYPE_fp32, "out must be FP32");
++    AITER_CHECK(x.dim() == 1 && x.is_contiguous(), "x must be contiguous [K]");
++    AITER_CHECK(packed_weight.dim() == 3 && packed_weight.is_contiguous(),
++                "packed_weight must be contiguous [N/32,K/64,1088]");
++    AITER_CHECK(out.dim() == 1 && out.is_contiguous(), "out must be contiguous [N]");
++
++    const int64_t columns64 = x.size(0);
++    AITER_CHECK(columns64 > 0 && columns64 % kGroup == 0, "K must be positive and divisible by 64");
++    AITER_CHECK(columns64 <= std::numeric_limits<int>::max(), "K is too large");
++    AITER_CHECK(packed_weight.size(0) > 0 && packed_weight.size(2) == kTileBytes,
++                "packed_weight must have shape [N/32,K/64,1088]");
++    AITER_CHECK(packed_weight.size(1) * kGroup == columns64,
++                "packed_weight K dimension must match x");
++    const int64_t rows64 = packed_weight.size(0) * kTileRows;
++    AITER_CHECK(rows64 <= std::numeric_limits<int>::max(), "N is too large");
++    AITER_CHECK(out.size(0) == rows64, "out shape must be [N]");
++
++    AITER_CHECK(reinterpret_cast<uintptr_t>(x.data_ptr()) % alignof(float) == 0,
++                "x must be naturally aligned");
++    AITER_CHECK(reinterpret_cast<uintptr_t>(packed_weight.data_ptr()) % alignof(__half) == 0,
++                "packed_weight must be 2-byte aligned for FP16 scales");
++    AITER_CHECK(reinterpret_cast<uintptr_t>(out.data_ptr()) % alignof(float) == 0,
++                "out must be naturally aligned");
++    AITER_CHECK(!ranges_overlap(out.data_ptr(),
++                                out.numel() * out.element_size(),
++                                x.data_ptr(),
++                                x.numel() * x.element_size()),
++                "out must not overlap x");
++    AITER_CHECK(!ranges_overlap(out.data_ptr(),
++                                out.numel() * out.element_size(),
++                                packed_weight.data_ptr(),
++                                packed_weight.numel() * packed_weight.element_size()),
++                "out must not overlap packed_weight");
++
++    AITER_CHECK(mapping_value >= static_cast<int>(Mapping::Auto) &&
++                    mapping_value <= static_cast<int>(Mapping::Small32x32),
++                "invalid q4_group64_gemv mapping");
++    const int rows    = static_cast<int>(rows64);
++    const int columns = static_cast<int>(columns64);
++    HipDeviceGuard device_guard(x.device_id);
++    const std::string arch = cached_gpu_arch(x.device_id);
++    AITER_CHECK(arch == "gfx1201", "q4_group64_gemv requires gfx1201, got ", arch);
++
++    Mapping mapping = static_cast<Mapping>(mapping_value);
++    if(mapping == Mapping::Auto)
++    {
++        mapping =
++            cached_is_tuned_rx_9070_xt(x.device_id) ? select_mapping(rows, columns) : Mapping::Old;
++    }
++
++    if(mapping == Mapping::Split2)
++    {
++        AITER_CHECK(rows % 128 == 0, "split2 requires N divisible by 128");
++    }
++    else if(mapping == Mapping::Split4)
++    {
++        AITER_CHECK(rows % 64 == 0, "split4 requires N divisible by 64");
++    }
++    // split8 and every small mapping accept the packed layout's N % 32 contract.
++
++    const auto* weights      = reinterpret_cast<const uint8_t*>(packed_weight.data_ptr());
++    const auto* x_ptr        = reinterpret_cast<const float*>(x.data_ptr());
++    auto* out_ptr            = reinterpret_cast<float*>(out.data_ptr());
++    const hipStream_t stream = aiter::getCurrentHIPStream();
++
++    switch(mapping)
++    {
++    case Mapping::Old: {
++        const int row_tiles = rows / kTileRows;
++        const dim3 grid((row_tiles + kWaves - 1) / kWaves);
++        const dim3 block(kThreads);
++        // Preserve the original check-free path for full eight-tile blocks,
++        // while keeping the conservative fallback safe for every legal N % 32.
++        if(row_tiles % kWaves == 0)
++        {
++            hipLaunchKernelGGL((q4_group64_gemv_old_kernel<false>),
++                               grid,
++                               block,
++                               0,
++                               stream,
++                               weights,
++                               x_ptr,
++                               out_ptr,
++                               row_tiles,
++                               columns);
++        }
++        else
++        {
++            hipLaunchKernelGGL((q4_group64_gemv_old_kernel<true>),
++                               grid,
++                               block,
++                               0,
++                               stream,
++                               weights,
++                               x_ptr,
++                               out_ptr,
++                               row_tiles,
++                               columns);
++        }
++        break;
++    }
++    case Mapping::Split2: launch_split<2>(weights, x_ptr, out_ptr, rows, columns, stream); break;
++    case Mapping::Split4: launch_split<4>(weights, x_ptr, out_ptr, rows, columns, stream); break;
++    case Mapping::Split8: launch_split<8>(weights, x_ptr, out_ptr, rows, columns, stream); break;
++    case Mapping::Small8x8:
++        launch_small<8, 8>(weights, x_ptr, out_ptr, rows, columns, stream);
++        break;
++    case Mapping::Small8x16:
++        launch_small<8, 16>(weights, x_ptr, out_ptr, rows, columns, stream);
++        break;
++    case Mapping::Small8x32:
++        launch_small<8, 32>(weights, x_ptr, out_ptr, rows, columns, stream);
++        break;
++    case Mapping::Small16x16:
++        launch_small<16, 16>(weights, x_ptr, out_ptr, rows, columns, stream);
++        break;
++    case Mapping::Small16x32:
++        launch_small<16, 32>(weights, x_ptr, out_ptr, rows, columns, stream);
++        break;
++    case Mapping::Small32x32:
++        launch_small<32, 32>(weights, x_ptr, out_ptr, rows, columns, stream);
++        break;
++    case Mapping::Auto: AITER_CHECK(false, "unreachable auto mapping");
++    }
++    HIP_CALL_LAUNCH(hipGetLastError());
++}
++
++} // namespace aiter
+diff --git a/csrc/pybind/q4_group64_gemv_pybind.cu b/csrc/pybind/q4_group64_gemv_pybind.cu
+new file mode 100644
+index 0000000000000000000000000000000000000000..9679664b3c660c57237d0267a054936eec083039
+--- /dev/null
++++ b/csrc/pybind/q4_group64_gemv_pybind.cu
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: MIT
++
++#include "aiter_stream.h"
++#include "q4_group64_gemv.h"
++#include "rocm_ops.hpp"
++
++PYBIND11_MODULE(TORCH_EXTENSION_NAME, m)
++{
++    AITER_SET_STREAM_PYBIND
++    m.def("q4_group64_gemv_out",
++          &aiter::q4_group64_gemv_out,
++          "q4_group64_gemv_out(x, packed_weight, out, mapping)",
++          py::arg("x"),
++          py::arg("packed_weight"),
++          py::arg("out"),
++          py::arg("mapping"));
++}
+diff --git a/docs/q4_group64_gemv.md b/docs/q4_group64_gemv.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..c5d9aa1fb2fa01fbf9b9060c306fc5b35bc694b9
+--- /dev/null
++++ b/docs/q4_group64_gemv.md
+@@ -0,0 +1,187 @@
++# Experimental Q4 group-64 GEMV (gfx1201)
++
++The public API `q4_group64_gemv(x, packed_weight)` is a low-level,
++experimental operator for inference code that already owns weights in its
++prepacked format. It multiplies one FP32 activation vector by one signed-INT4
++matrix with one FP16 scale per row and group of 64 columns:
++
++```text
++x:             contiguous FP32  [K]
++packed_weight: contiguous uint8  [N / 32, K / 64, 1088]
++result:        contiguous FP32  [N]
++```
++
++`N` must be positive and divisible by 32, and `K` must be positive and
++divisible by 64. The input tensors must be on the same HIP device. `x` must be
++naturally aligned for FP32 (4 bytes), and the packed tensor must be at least
++2-byte aligned for its FP16 scales; the returned output is an AITER-allocated,
++naturally aligned FP32 tensor. The implementation currently supports `gfx1201`
++only. Set `AITER_ENABLE_EXPERIMENTAL=1` while calling the operator (and before an
++all-ops build). Both the Python wrapper and the directly callable C++ entry
++check this opt-in on every call. Removing or setting the variable to zero
++immediately disables an already-loaded module.
++
++## Packed tile format
++
++For row tile `rt` and column group `g`, let
++`tile = packed_weight[rt, g]`. Each tile describes 32 rows by 64 columns and
++contains exactly 1088 bytes:
++
++| Byte offset | Size | Meaning |
++| --- | ---: | --- |
++| `0 + 2*r` | 2 bytes | Little-endian FP16 scale for row `r`, where `0 <= r < 32` |
++| `64 + 32*p + r` | 1 byte | Two signed INT4 values for pair `p` and row `r`, where `0 <= p < 32` |
++
++For `b = tile[64 + 32*p + r]`, decode a nibble with
++`signed4(v) = v if v < 8 else v - 16`. Then:
++
++```text
++q[32*rt + r, 64*g + 2*p    ] = signed4(b & 0x0f)
++q[32*rt + r, 64*g + 2*p + 1] = signed4(b >> 4)
++```
++
++Thus values are pair-major and row-interleaved: the low nibble is the even
++column and the high nibble is the following odd column. The operator computes
++
++```text
++y[n] = sum_g scale[n, g] * sum_j=0..63 q[n, 64*g + j] * x[64*g + j]
++```
++
++## Producing and loading weights
++
++Quantization and packing are intentionally outside the runtime operator. An
++integration is responsible for the following offline/loader flow:
++
++1. Quantize each matrix to values in `[-8, 7]` and produce one scale per
++   `(row, 64-column group)`. Scale selection is a quantizer policy, not part of
++   this operator.
++2. Pack those values and FP16-rounded scales into the byte layout above.
++   [`op_tests/q4_group64_reference.py`](../op_tests/q4_group64_reference.py)
++   contains the CPU reference `pack_group64` implementation shared by the
++   correctness test and benchmark. It is a conformance reference for an
++   offline exporter, not a public runtime packing API.
++3. Store the packed bytes in a sidecar/checkpoint together with at least its
++   format version, `N`, and `K`. At model load, validate that metadata and move
++   the tensor to the target GPU as contiguous `torch.uint8` storage.
++4. Keep the packed GPU tensor with the layer and call the operator for each
++   FP32 activation vector. Do not quantize or repack weights per token.
++
++A minimal source-tree example is:
++
++```bash
++export AITER_ENABLE_EXPERIMENTAL=1
++python - <<'PY'
++import torch
++
++from aiter import q4_group64_gemv
++from op_tests.q4_group64_reference import pack_group64
++
++N, K = 32, 64
++q = torch.randint(-8, 8, (N, K), dtype=torch.int8)  # offline quantizer output
++scales = torch.full((N, K // 64), 0.02, dtype=torch.float32)
++packed_cpu = pack_group64(q, scales)
++
++# A real integration stores packed_cpu plus format/N/K metadata in a sidecar,
++# then performs this transfer once while loading the layer.
++packed_weight = packed_cpu.contiguous().to("cuda")
++x = torch.randn(K, dtype=torch.float32, device="cuda")
++y = q4_group64_gemv(x, packed_weight)
++print(y.shape)
++PY
++```
++
++There is currently no vLLM call site or AITER model-level call site for this
++format. The present consumer is direct operator integration and benchmarking;
++a framework adapter must supply the offline exporter and sidecar loader before
++an end-to-end model can use it. Quantizer and packer time is therefore not
++included in the kernel benchmark and is not on its inference hot path.
++
++## Dispatch and benchmarking
++
++The public API has no mapping knob. `auto` selects tuned mappings only when the
++runtime identity matches `gfx1201`, PCI chip ID `0x7550`, and 32 HIP-reported
++multiprocessors (WGP reporting on this stack). The runtime name must be either
++exactly `AMD Radeon RX 9070 XT` or empty. The empty-name case is a narrowly
++scoped ROCm 7.2 compatibility path because that runtime leaves both
++`hipDeviceProp_t.name` and PyTorch's device name blank on this GPU; the numeric
++chip and multiprocessor checks remain mandatory. Any other nonempty name fails
++closed. Identity queries run after selecting the tensor's HIP device and are
++cached by device id. Other `gfx1201` identities and every unseen `(N, K)` shape
++use the conservative `old` mapping; non-`gfx1201` devices are rejected. Explicit
++private benchmark mappings remain available for controlled ablation and are not
++changed by the SKU guard. Dispatch is based on device identity and shape, never
++on model name.
++
++Run the measured-shape sweep on a `gfx1201` GPU with:
++
++```bash
++AITER_ENABLE_EXPERIMENTAL=1 python \
++  op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py \
++  --sweep --mappings old auto selected \
++  --cache rotating --rotate 0 \
++  --warmup 100 --samples 30 --timing both \
++  --calibration-iterations 100 --target-sample-ms 100 \
++  -o q4_group64_summary.csv --json q4_group64_raw.json
++```
++
++The sweep requires PCI chip ID `0x7550` via
++`aiter.jit.utils.chip_info._get_pci_chip_id(0)`, 32 HIP-reported
++multiprocessors, and either an exact `AMD Radeon RX 9070 XT` name or the blank
++ROCm 7.2 compatibility case. It records the actual arch, chip ID,
++multiprocessor count, name, and fallback status in the raw configuration. This
++prevents a different `gfx1201` SKU from producing results labeled as the tuned
++14-shape protocol.
++
++The existing AITER helper hard-codes HIP attribute `10019`; in the ROCm 7.2
++container that query returns the unrelated value `0x100`. Both the container's
++ROCm 7.2 headers and the host ROCm 7.14 headers compile
++`hipDeviceAttributePciChipId` as `10020`. If the helper returns a value outside
++the benchmark's plausible AMD PCI-ID range, the benchmark alone retries
++`libamdhip64` with attribute `10020` and still requires `0x7550`. Raw output
++records the helper value, attribute number, fallback value, and whether the
++fallback was used. Runtime dispatch does not use this workaround: its C++ guard
++uses the HIP symbolic enum.
++
++The benchmark treats synchronized host wall-clock latency as the primary public
++API metric and records HIP-event elapsed time as a device-timeline supplement.
++For `auto`, it calls the public `q4_group64_gemv` function object directly.
++`old`, `selected`, and other explicit mappings are allocation-equivalent private
++controls: they call `_q4_group64_gemv(..., out=None)` and therefore perform the
++same output allocation, validation, runtime gate, and C++ entry work. They are
++not public API call paths. Every raw row records this distinction in
++`call_path`, and every sample records both `wall_us` and `event_us`.
++
++The benchmark reports two batching boundaries:
++
++- `integration` synchronizes and measures one call, including output allocation.
++- `batched` synchronizes and measures calibrated repeated calls, including one
++  output allocation per call, and divides by the call count. It amortizes the
++  first submission gap, but can still contain host queue starvation.
++
++Both boundaries report host wall and HIP-event views. The correctness check also
++records maximum absolute error and relative L2 error for every requested mapping.
++
++### Roofline context
++
++Each packed tile stores 2,048 signed-INT4 weights in 1,088 bytes (1,024 value
++bytes plus 64 FP16-scale bytes). Counting one multiply and one add per weight,
++the weight-only arithmetic intensity is therefore 3.765 FLOP/byte
++(`4096 / 1088`). Including the benchmark's activation read and output write gives
++`3.702-3.756 FLOP/byte` over the 14 measured shapes. This is far below the RX
++9070 XT ridge point: AMD specifies up to 48.7 FP32 TFLOP/s and 640 GB/s of
++memory bandwidth, or about 76 FLOP/byte. The corresponding DRAM roof for this
++operator is approximately 2.41 TFLOP/s before activation and output traffic.
++
++For the calibrated batched public-entry boundary, `auto` reaches
++58.9-696.7 GB/s of timing-derived logical bandwidth (498.8 GB/s median). This
++quantity is packed bytes plus activation and output bytes divided by
++synchronized host-wall time; it is cache-sensitive and is not a hardware DRAM
++counter. Values above the nominal 640 GB/s can therefore occur and must not be
++reported as greater-than-100% physical DRAM utilization. No physical bandwidth
++counter was collected, so this benchmark makes no measured percent-of-peak
++claim. RX 9070 XT specifications: https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070xt.html
++
++A strict kernel-event result requires a native direct-launch harness with HIP
++events around a batch of kernel launches, divided by the launch count. Such a
++result excludes Python, public input validation, dispatch-cache lookup, and
++pybind overhead and must be labeled separately from the command above.
+diff --git a/op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py b/op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py
+new file mode 100755
+index 0000000000000000000000000000000000000000..f370eb8d35ef739ec3e140ca411f51e13b14fe70
+--- /dev/null
++++ b/op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py
+@@ -0,0 +1,733 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: MIT
++
++"""Benchmark gfx1201 packed group-64 INT4 GEMV mappings.
++
++Examples:
++    python op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py --shape 512 3584
++    python op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py --sweep \
++        -o q4.csv --json q4_raw.json
++    python op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py --sweep --mappings all
++
++Every sample records synchronized host wall-clock latency as the primary public
++API metric and HIP-event latency as a device-timeline supplement. ``integration``
++measures one public auto call or allocation-equivalent private control, including
++output allocation. ``batched`` measures a calibrated batch of the same calls
++and divides by its launch count. Neither is a claim of host-overhead-free kernel
++time; use a native direct-launch benchmark for the strict kernel-only boundary.
++"""
++
++from __future__ import annotations
++
++import argparse
++import csv
++import ctypes
++import json
++import math
++import statistics
++import time
++from pathlib import Path
++
++import torch
++
++from aiter import q4_group64_gemv
++from aiter.jit.utils.chip_info import _get_pci_chip_id
++from aiter.ops.q4_group64_gemv import (
++    _MAPPING_IDS,
++    _q4_group64_gemv,
++    _selected_mapping,
++)
++from op_tests.q4_group64_reference import pack_group64
++
++SWEEP_SHAPES = [
++    (512, 3584),
++    (1024, 3072),
++    (1024, 4096),
++    (3072, 3072),
++    (3072, 8192),
++    (3584, 3584),
++    (3584, 18944),
++    (4096, 4096),
++    (4096, 12288),
++    (4096, 14336),
++    (8192, 3072),
++    (12288, 4096),
++    (14336, 4096),
++    (18944, 3584),
++]
++
++MIN_PACKED_RING_BYTES = 64 * 1024 * 1024
++DEFAULT_TARGET_SAMPLE_MS = 100.0
++DEFAULT_CALIBRATION_ITERATIONS = 100
++MAX_BATCH_ITERATIONS = 2_000_000
++PCI_CHIP_ID_ATTRIBUTE = 10020
++
++
++def _make_case(
++    n: int, k: int, seed: int
++) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
++    generator = torch.Generator(device="cpu")
++    generator.manual_seed(seed)
++    q = torch.randint(-8, 8, (n, k), generator=generator, dtype=torch.int8)
++    scales = torch.empty((n, k // 64), dtype=torch.float32).uniform_(
++        0.005, 0.05, generator=generator
++    )
++    scales = scales.to(torch.float16).float()
++    x = torch.empty(k, dtype=torch.float32).uniform_(-0.25, 0.25, generator=generator)
++    packed = pack_group64(q, scales)
++
++    q_groups = q.float().reshape(n, k // 64, 64)
++    x_groups = x.reshape(1, k // 64, 64)
++    reference = ((q_groups * x_groups).sum(dim=-1) * scales).sum(dim=-1)
++    return x.cuda(), packed.cuda(), reference.cuda()
++
++
++def _percentile(sorted_values: list[float], fraction: float) -> float:
++    if len(sorted_values) == 1:
++        return sorted_values[0]
++    position = fraction * (len(sorted_values) - 1)
++    lower = int(position)
++    upper = min(lower + 1, len(sorted_values) - 1)
++    weight = position - lower
++    return sorted_values[lower] * (1.0 - weight) + sorted_values[upper] * weight
++
++
++def _legal_mapping(mapping: str, n: int) -> bool:
++    if mapping == "split2":
++        return n % 128 == 0
++    if mapping == "split4":
++        return n % 64 == 0
++    return True
++
++
++def _resolve_requested(mapping: str, n: int, k: int) -> tuple[str, str]:
++    if mapping == "selected":
++        selected = _selected_mapping(n, k)
++        return selected, selected
++    if mapping == "auto":
++        candidate = _selected_mapping(n, k)
++        return "auto", f"runtime-guarded:{candidate}"
++    return mapping, mapping
++
++
++def _rotation_count(cache: str, rotate: int, packed_bytes: int) -> int:
++    if cache == "hot":
++        return 1
++    if rotate > 0:
++        return rotate
++    return max(2, MIN_PACKED_RING_BYTES // packed_bytes + 1)
++
++
++def _cyclic_order(requests: list[str], round_index: int) -> list[str]:
++    offset = round_index % len(requests)
++    return requests[offset:] + requests[:offset]
++
++
++def _invoke_request(
++    x: torch.Tensor,
++    packed_weight: torch.Tensor,
++    requested: str,
++    mapping: str,
++) -> torch.Tensor:
++    if requested == "auto":
++        return q4_group64_gemv(x, packed_weight)
++    return _q4_group64_gemv(x, packed_weight, mapping=mapping)
++
++
++def _call_path(requested: str) -> str:
++    if requested == "auto":
++        return "public:q4_group64_gemv"
++    return "private-allocation-equivalent:_q4_group64_gemv(out=None)"
++
++
++def _time_launches(
++    x: torch.Tensor,
++    packed_ring: torch.Tensor,
++    requested: str,
++    mapping: str,
++    iterations: int,
++    rotation: int,
++) -> tuple[float, float, int]:
++    start = torch.cuda.Event(enable_timing=True)
++    end = torch.cuda.Event(enable_timing=True)
++    copies = packed_ring.shape[0]
++    torch.cuda.synchronize()
++    wall_start = time.perf_counter()
++    start.record()
++    for _ in range(iterations):
++        _invoke_request(x, packed_ring[rotation], requested, mapping)
++        rotation = (rotation + 1) % copies
++    end.record()
++    end.synchronize()
++    wall_us = (time.perf_counter() - wall_start) * 1.0e6 / float(iterations)
++    event_us = start.elapsed_time(end) * 1000.0 / float(iterations)
++    return event_us, wall_us, rotation
++
++
++def _summarize(
++    event_latencies_us: list[float],
++    wall_latencies_us: list[float],
++    traffic_bytes: int,
++) -> dict[str, float | list[float]]:
++    ordered_event = sorted(event_latencies_us)
++    ordered_wall = sorted(wall_latencies_us)
++    median_event_us = statistics.median(ordered_event)
++    median_wall_us = statistics.median(ordered_wall)
++    return {
++        "raw_us": event_latencies_us,
++        "raw_event_us": event_latencies_us,
++        "raw_wall_us": wall_latencies_us,
++        "median_us": median_event_us,
++        "median_event_us": median_event_us,
++        "p10_us": _percentile(ordered_event, 0.10),
++        "p90_us": _percentile(ordered_event, 0.90),
++        "p10_event_us": _percentile(ordered_event, 0.10),
++        "p90_event_us": _percentile(ordered_event, 0.90),
++        "median_wall_us": median_wall_us,
++        "p10_wall_us": _percentile(ordered_wall, 0.10),
++        "p90_wall_us": _percentile(ordered_wall, 0.90),
++        "effective_gbps": traffic_bytes / median_event_us / 1.0e3,
++        "effective_wall_gbps": traffic_bytes / median_wall_us / 1.0e3,
++    }
++
++
++def _benchmark_shape(
++    n: int,
++    k: int,
++    requests: list[str],
++    *,
++    cache: str,
++    rotate: int,
++    warmup: int,
++    samples: int,
++    seed: int,
++    timing: str,
++    calibration_iterations: int,
++    target_sample_ms: float,
++) -> list[dict[str, object]]:
++    specs = {requested: _resolve_requested(requested, n, k) for requested in requests}
++
++    x, packed, reference = _make_case(n, k, seed)
++    packed_bytes = packed.numel() * packed.element_size()
++    copies = _rotation_count(cache, rotate, packed_bytes)
++    if copies == 1:
++        packed_ring = packed.unsqueeze(0)
++    else:
++        packed_ring = packed.unsqueeze(0).expand(copies, *packed.shape).clone()
++    correctness: dict[str, dict[str, float]] = {}
++    for requested in requests:
++        mapping, _ = specs[requested]
++        actual = _invoke_request(x, packed_ring[0], requested, mapping)
++        torch.cuda.synchronize()
++        torch.testing.assert_close(actual, reference, rtol=5.0e-4, atol=5.0e-3)
++        difference = actual - reference
++        difference_l2 = float(torch.linalg.vector_norm(difference).item())
++        reference_l2 = float(torch.linalg.vector_norm(reference).item())
++        correctness[requested] = {
++            "max_abs": float(difference.abs().max().item()),
++            "relative_l2": (
++                difference_l2 / reference_l2
++                if reference_l2 != 0.0
++                else difference_l2 / torch.finfo(reference.dtype).tiny
++            ),
++        }
++
++    rotation = 0
++    for round_index in range(warmup):
++        for requested in _cyclic_order(requests, round_index):
++            mapping, _ = specs[requested]
++            _invoke_request(x, packed_ring[rotation], requested, mapping)
++            rotation = (rotation + 1) % copies
++    torch.cuda.synchronize()
++
++    timing_modes = ("integration", "batched") if timing == "both" else (timing,)
++    traffic_bytes = packed_bytes + x.numel() * x.element_size() + n * 4
++    packed_ring_bytes = packed_bytes * copies
++    total_ring_bytes = packed_ring_bytes + x.numel() * x.element_size() + n * 4
++    boundary_by_timing = {
++        "integration": (
++            "single synchronized measurement around one public auto call or "
++            "allocation-equivalent private control, including output allocation; "
++            "records host wall-clock and HIP-event elapsed time"
++        ),
++        "batched": (
++            "synchronized measurement around repeated public auto calls or "
++            "allocation-equivalent private controls, each including output "
++            "allocation, divided by iterations; records host wall-clock and "
++            "HIP-event elapsed time"
++        ),
++    }
++    rows: list[dict[str, object]] = []
++    for timing_mode in timing_modes:
++        iterations = {requested: 1 for requested in requests}
++        calibration = {requested: None for requested in requests}
++        calibration_wall = {requested: None for requested in requests}
++        if timing_mode == "batched":
++            for requested in _cyclic_order(requests, seed % len(requests)):
++                mapping, _ = specs[requested]
++                calibration_us, calibration_wall_us, rotation = _time_launches(
++                    x,
++                    packed_ring,
++                    requested,
++                    mapping,
++                    calibration_iterations,
++                    rotation,
++                )
++                calibration[requested] = calibration_us
++                calibration_wall[requested] = calibration_wall_us
++                iterations[requested] = min(
++                    MAX_BATCH_ITERATIONS,
++                    max(
++                        10,
++                        math.ceil(
++                            target_sample_ms * 1000.0 / float(calibration_wall_us)
++                        ),
++                    ),
++                )
++
++        samples_by_request: dict[str, list[float]] = {
++            requested: [] for requested in requests
++        }
++        wall_samples_by_request: dict[str, list[float]] = {
++            requested: [] for requested in requests
++        }
++        records_by_request: dict[str, list[dict[str, object]]] = {
++            requested: [] for requested in requests
++        }
++        for round_index in range(samples):
++            order = _cyclic_order(requests, round_index)
++            for position, requested in enumerate(order):
++                mapping, _ = specs[requested]
++                event_us, wall_us, rotation = _time_launches(
++                    x,
++                    packed_ring,
++                    requested,
++                    mapping,
++                    iterations[requested],
++                    rotation,
++                )
++                samples_by_request[requested].append(event_us)
++                wall_samples_by_request[requested].append(wall_us)
++                records_by_request[requested].append(
++                    {
++                        "round": round_index,
++                        "position": position,
++                        "execution_order": order,
++                        "call_path": _call_path(requested),
++                        "latency_us": event_us,
++                        "event_us": event_us,
++                        "wall_us": wall_us,
++                    }
++                )
++
++        for requested in requests:
++            mapping, resolved = specs[requested]
++            summary = _summarize(
++                samples_by_request[requested],
++                wall_samples_by_request[requested],
++                traffic_bytes,
++            )
++            median_us = float(summary["median_us"])
++            median_wall_us = float(summary["median_wall_us"])
++            rows.append(
++                {
++                    "n": n,
++                    "k": k,
++                    "requested": requested,
++                    "mapping": mapping,
++                    "resolved": resolved,
++                    "candidate_mapping": (
++                        _selected_mapping(n, k) if requested == "auto" else None
++                    ),
++                    "call_path": _call_path(requested),
++                    "timing": timing_mode,
++                    "timing_boundary": boundary_by_timing[timing_mode],
++                    "execution_schedule": "cyclic_latin_by_sample_round",
++                    "cache": cache,
++                    "rotations": copies,
++                    "packed_ring_bytes": packed_ring_bytes,
++                    "total_ring_bytes": total_ring_bytes,
++                    "samples": samples,
++                    "iterations_per_sample": iterations[requested],
++                    "calibration_us": calibration[requested],
++                    "calibration_wall_us": calibration_wall[requested],
++                    **summary,
++                    "sample_records": records_by_request[requested],
++                    "effective_tflops": (2.0 * n * k) / median_us / 1.0e6,
++                    "effective_wall_tflops": (2.0 * n * k) / median_wall_us / 1.0e6,
++                    "correct": True,
++                    "correctness_max_abs": correctness[requested]["max_abs"],
++                    "correctness_relative_l2": correctness[requested]["relative_l2"],
++                }
++            )
++    return rows
++
++
++def _mapping_requests(values: list[str]) -> list[str]:
++    if values == ["all"]:
++        return list(_MAPPING_IDS)
++    if "all" in values:
++        raise ValueError("all cannot be combined with other mappings")
++    valid = {*_MAPPING_IDS, "selected"}
++    invalid = [value for value in values if value not in valid]
++    if invalid:
++        raise ValueError(f"unknown mappings: {invalid}")
++    return values
++
++
++def _legal_requests_or_raise(requests: list[str], n: int, k: int) -> list[str]:
++    legal_requests = [
++        requested
++        for requested in requests
++        if _legal_mapping(_resolve_requested(requested, n, k)[0], n)
++    ]
++    if not legal_requests:
++        raise ValueError(
++            f"no legal mapping requests for shape {(n, k)}; requested {requests}"
++        )
++    return legal_requests
++
++
++def _annotate_speedups(rows: list[dict[str, object]]) -> None:
++    old_medians = {
++        (int(row["n"]), int(row["k"]), str(row["timing"])): float(row["median_us"])
++        for row in rows
++        if row["requested"] == "old"
++    }
++    for row in rows:
++        key = (int(row["n"]), int(row["k"]), str(row["timing"]))
++        old_median = old_medians.get(key)
++        row["speedup_vs_old"] = (
++            old_median / float(row["median_us"]) if old_median is not None else None
++        )
++    old_wall_medians = {
++        (int(row["n"]), int(row["k"]), str(row["timing"])): float(row["median_wall_us"])
++        for row in rows
++        if row["requested"] == "old"
++    }
++    for row in rows:
++        key = (int(row["n"]), int(row["k"]), str(row["timing"]))
++        old_wall_median = old_wall_medians.get(key)
++        row["speedup_vs_old_wall"] = (
++            old_wall_median / float(row["median_wall_us"])
++            if old_wall_median is not None
++            else None
++        )
++    auto_medians = {
++        (int(row["n"]), int(row["k"]), str(row["timing"])): float(row["median_us"])
++        for row in rows
++        if row["requested"] == "auto"
++    }
++    for row in rows:
++        key = (int(row["n"]), int(row["k"]), str(row["timing"]))
++        auto_median = auto_medians.get(key)
++        row["latency_ratio_vs_auto"] = (
++            float(row["median_us"]) / auto_median if auto_median is not None else None
++        )
++    auto_wall_medians = {
++        (int(row["n"]), int(row["k"]), str(row["timing"])): float(row["median_wall_us"])
++        for row in rows
++        if row["requested"] == "auto"
++    }
++    for row in rows:
++        key = (int(row["n"]), int(row["k"]), str(row["timing"]))
++        auto_wall_median = auto_wall_medians.get(key)
++        row["latency_ratio_vs_auto_wall"] = (
++            float(row["median_wall_us"]) / auto_wall_median
++            if auto_wall_median is not None
++            else None
++        )
++
++
++def _write_csv(path: str, rows: list[dict[str, object]]) -> None:
++    destination = Path(path)
++    destination.parent.mkdir(parents=True, exist_ok=True)
++    csv_rows = [
++        {
++            key: value
++            for key, value in row.items()
++            if key not in {"raw_us", "raw_event_us", "raw_wall_us", "sample_records"}
++        }
++        for row in rows
++    ]
++    with destination.open("w", newline="", encoding="utf-8") as handle:
++        writer = csv.DictWriter(handle, fieldnames=list(csv_rows[0]))
++        writer.writeheader()
++        writer.writerows(csv_rows)
++
++
++def _write_json(
++    path: str,
++    rows: list[dict[str, object]],
++    args: argparse.Namespace,
++    device_identity: dict[str, object],
++) -> None:
++    destination = Path(path)
++    destination.parent.mkdir(parents=True, exist_ok=True)
++    payload = {
++        "schema": "aiter-q4-group64-benchmark-v3",
++        "configuration": {
++            "cache": args.cache,
++            "rotate": args.rotate,
++            "automatic_minimum_packed_ring_bytes": MIN_PACKED_RING_BYTES,
++            "warmup": args.warmup,
++            "samples": args.samples,
++            "timing": args.timing,
++            "calibration_iterations": args.calibration_iterations,
++            "target_sample_ms": args.target_sample_ms,
++            "mapping_execution_schedule": "cyclic_latin_by_sample_round",
++            "primary_latency_metric": "host wall-clock with a synchronized boundary",
++            "supplemental_latency_metric": "HIP event elapsed time",
++            "output_allocation_per_call": True,
++            "call_paths": {
++                "auto": "public:q4_group64_gemv",
++                "controls": (
++                    "private-allocation-equivalent:_q4_group64_gemv(out=None)"
++                ),
++            },
++            "device_identity_requirement": (
++                "gfx1201, name AMD Radeon RX 9070 XT, 32 HIP-reported "
++                "multiprocessors, PCI chip ID 0x7550; blank name is accepted "
++                "only for ROCm runtimes that do not populate it"
++            ),
++            "device_identity": device_identity,
++            "correctness_policy": {
++                "check": "torch.testing.assert_close against dequantized FP32 reference",
++                "rtol": 5.0e-4,
++                "atol": 5.0e-3,
++                "diagnostics": ["correctness_max_abs", "correctness_relative_l2"],
++            },
++        },
++        "results": rows,
++    }
++    with destination.open("w", encoding="utf-8") as handle:
++        json.dump(payload, handle, indent=2)
++        handle.write("\n")
++
++
++def _check_arch() -> dict[str, object]:
++    if not torch.cuda.is_available():
++        raise RuntimeError("benchmark requires an available ROCm GPU")
++    properties = torch.cuda.get_device_properties(0)
++    arch = getattr(properties, "gcnArchName", "")
++    normalized_arch = arch.lower().split(":", maxsplit=1)[0]
++    if normalized_arch != "gfx1201":
++        raise RuntimeError(f"benchmark requires gfx1201, got {arch!r}")
++    name = torch.cuda.get_device_name(0) or getattr(properties, "name", "")
++    multiprocessor_count = getattr(properties, "multi_processor_count", -1)
++    pci_identity = _benchmark_pci_chip_id(0)
++    pci_chip_id = int(pci_identity["effective_value"])
++    if (
++        pci_chip_id != 0x7550
++        or multiprocessor_count != 32
++        or (name and name != "AMD Radeon RX 9070 XT")
++    ):
++        raise RuntimeError(
++            "14-shape benchmark requires RX 9070 XT identity: gfx1201, PCI chip "
++            "ID 0x7550, 32 HIP-reported multiprocessors, and an empty runtime "
++            f"name or exact AMD Radeon RX 9070 XT; got arch={arch!r}, "
++            f"chip={pci_chip_id:#x}, multiprocessors={multiprocessor_count}, "
++            f"name={name!r}"
++        )
++    return {
++        "device_index": 0,
++        "arch": normalized_arch,
++        "pci_chip_id": pci_chip_id,
++        "pci_chip_id_hex": f"0x{pci_chip_id:04x}",
++        "pci_chip_id_query": pci_identity,
++        "hip_reported_multiprocessors": multiprocessor_count,
++        "name": name,
++        "blank_name_compatibility_used": name == "",
++    }
++
++
++def _benchmark_pci_chip_id(device_id: int) -> dict[str, object]:
++    """Read PCI chip ID with a benchmark-local ROCm 7.2 compatibility path."""
++
++    helper_raw = _get_pci_chip_id(device_id)
++    details: dict[str, object] = {
++        "aiter_helper_raw": helper_raw,
++        "aiter_helper_raw_hex": f"0x{helper_raw:x}",
++        "fallback_attribute_id": None,
++        "fallback_value": None,
++        "fallback_value_hex": None,
++        "fallback_used": False,
++        "effective_value": helper_raw,
++    }
++    if 0x1000 <= helper_raw <= 0xFFFF:
++        return details
++
++    # AITER's helper currently hard-codes attribute 10019. Both the ROCm 7.2
++    # container and host ROCm 7.14 headers compile hipDeviceAttributePciChipId
++    # as 10020; under ROCm 7.2, querying 10019 returned the unrelated value
++    # 0x100. Keep this version-specific workaround local to this evidence
++    # benchmark. The operator's C++ guard uses the symbolic enum directly.
++    libhip = ctypes.CDLL("libamdhip64.so")
++    fallback = ctypes.c_int(0)
++    error = libhip.hipDeviceGetAttribute(
++        ctypes.byref(fallback), PCI_CHIP_ID_ATTRIBUTE, device_id
++    )
++    if error != 0:
++        raise RuntimeError(
++            "benchmark PCI chip ID fallback failed: "
++            f"hipDeviceGetAttribute({PCI_CHIP_ID_ATTRIBUTE}) returned {error}"
++        )
++    if fallback.value != 0x7550:
++        raise RuntimeError(
++            "benchmark PCI chip ID fallback expected 0x7550, got "
++            f"{fallback.value:#x}"
++        )
++    details.update(
++        fallback_attribute_id=PCI_CHIP_ID_ATTRIBUTE,
++        fallback_value=fallback.value,
++        fallback_value_hex=f"0x{fallback.value:04x}",
++        fallback_used=True,
++        effective_value=fallback.value,
++    )
++    return details
++
++
++def parse_args() -> argparse.Namespace:
++    parser = argparse.ArgumentParser(
++        description="Benchmark gfx1201 Q4 group-64 GEMV mappings",
++        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
++    )
++    parser.add_argument(
++        "--shape", nargs=2, type=int, metavar=("N", "K"), default=(512, 3584)
++    )
++    parser.add_argument(
++        "--sweep", action="store_true", help="run all 14 measured plain shapes"
++    )
++    parser.add_argument(
++        "--mappings",
++        nargs="+",
++        default=["old", "auto", "selected"],
++        help="private mappings, selected, or all",
++    )
++    parser.add_argument("--cache", choices=("hot", "rotating"), default="rotating")
++    parser.add_argument(
++        "--rotate",
++        type=int,
++        default=0,
++        help=(
++            "packed-weight copies in rotating mode; 0 chooses the minimum count "
++            "whose packed ring is strictly larger than 64 MiB"
++        ),
++    )
++    parser.add_argument("--warmup", type=int, default=100)
++    parser.add_argument("--samples", type=int, default=30)
++    parser.add_argument(
++        "--timing",
++        choices=("integration", "batched", "both"),
++        default="both",
++        help="single-call integration, calibrated batch, or both boundaries",
++    )
++    parser.add_argument(
++        "--calibration-iterations",
++        type=int,
++        default=DEFAULT_CALIBRATION_ITERATIONS,
++    )
++    parser.add_argument(
++        "--target-sample-ms", type=float, default=DEFAULT_TARGET_SAMPLE_MS
++    )
++    parser.add_argument("--seed", type=int, default=20260827)
++    parser.add_argument("-o", type=str, help="optional CSV output path")
++    parser.add_argument("--json", type=str, help="optional raw JSON output path")
++    return parser.parse_args()
++
++
++def main() -> None:
++    args = parse_args()
++    if args.rotate < 0 or args.warmup < 0 or args.samples <= 0:
++        raise ValueError("rotate/warmup must be non-negative and samples positive")
++    if args.calibration_iterations <= 0 or args.target_sample_ms <= 0:
++        raise ValueError("calibration iterations and target sample ms must be positive")
++    shapes = SWEEP_SHAPES if args.sweep else [tuple(args.shape)]
++    requests = _mapping_requests(args.mappings)
++    legal_requests_by_shape: list[list[str]] = []
++    for n, k in shapes:
++        if n <= 0 or n % 32 or k <= 0 or k % 64:
++            raise ValueError(f"shape {(n, k)} must satisfy N%32 == 0 and K%64 == 0")
++        legal_requests_by_shape.append(_legal_requests_or_raise(requests, n, k))
++    device_identity = _check_arch()
++
++    rows: list[dict[str, object]] = []
++    header = (
++        f"{'N':>7} {'K':>7} {'requested':>10} {'resolved':>11} {'timing':>11} "
++        f"{'wall_us':>11} {'event_us':>11} {'wall_GB/s':>10} {'wall_TF':>9}"
++    )
++    print(header)
++    print("-" * len(header))
++    for shape_index, ((n, k), legal_requests) in enumerate(
++        zip(shapes, legal_requests_by_shape, strict=True)
++    ):
++        shape_rows = _benchmark_shape(
++            n,
++            k,
++            legal_requests,
++            cache=args.cache,
++            rotate=args.rotate,
++            warmup=args.warmup,
++            samples=args.samples,
++            seed=args.seed + shape_index,
++            timing=args.timing,
++            calibration_iterations=args.calibration_iterations,
++            target_sample_ms=args.target_sample_ms,
++        )
++        rows.extend(shape_rows)
++        for row in shape_rows:
++            print(
++                f"{n:7d} {k:7d} {row['requested']!s:>10} {row['resolved']!s:>11} "
++                f"{row['timing']!s:>11} {float(row['median_wall_us']):11.3f} "
++                f"{float(row['median_event_us']):11.3f} "
++                f"{float(row['effective_wall_gbps']):10.2f} "
++                f"{float(row['effective_wall_tflops']):9.3f}"
++            )
++        first = shape_rows[0]
++        print(
++            f"{'':7} {'':7} {'ring':>10} {int(first['rotations']):>11} copies "
++            f"packed={int(first['packed_ring_bytes']) / (1024**2):.2f} MiB "
++            f"total={int(first['total_ring_bytes']) / (1024**2):.2f} MiB"
++        )
++        torch.cuda.empty_cache()
++
++    _annotate_speedups(rows)
++    auto_rows = [
++        row
++        for row in rows
++        if row["requested"] == "auto" and row["speedup_vs_old"] is not None
++    ]
++    if auto_rows:
++        print("\nauto / old speedup (host wall primary; HIP event supplemental)")
++        for row in auto_rows:
++            print(
++                f"  {int(row['n'])}x{int(row['k'])} {row['timing']}: "
++                f"wall={float(row['speedup_vs_old_wall']):.3f}x "
++                f"event={float(row['speedup_vs_old']):.3f}x"
++            )
++    selected_rows = [
++        row
++        for row in rows
++        if row["requested"] == "selected" and row["latency_ratio_vs_auto"] is not None
++    ]
++    if selected_rows:
++        print(
++            "\nselected / auto latency ratio (host wall primary; HIP event supplemental)"
++        )
++        for row in selected_rows:
++            print(
++                f"  {int(row['n'])}x{int(row['k'])} {row['timing']}: "
++                f"wall={float(row['latency_ratio_vs_auto_wall']):.3f}x "
++                f"event={float(row['latency_ratio_vs_auto']):.3f}x"
++            )
++
++    if args.o and rows:
++        _write_csv(args.o, rows)
++        print(f"wrote {Path(args.o).resolve()}")
++    if args.json and rows:
++        _write_json(args.json, rows, args, device_identity)
++        print(f"wrote {Path(args.json).resolve()}")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/op_tests/q4_group64_reference.py b/op_tests/q4_group64_reference.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..f4a0a4f1203c2924929e11355b34e4ec759b0091
+--- /dev/null
++++ b/op_tests/q4_group64_reference.py
+@@ -0,0 +1,48 @@
++# SPDX-License-Identifier: MIT
++
++"""CPU reference packing helpers for the gfx1201 Q4 group-64 GEMV tests."""
++
++from __future__ import annotations
++
++import torch
++
++
++def pack_group64(q: torch.Tensor, scales: torch.Tensor) -> torch.Tensor:
++    """Pack signed INT4 weights and FP16 row scales into 1088-byte tiles."""
++
++    if q.device.type != "cpu" or scales.device.type != "cpu":
++        raise ValueError("reference packer expects CPU tensors")
++    if q.dtype != torch.int8 or q.ndim != 2:
++        raise ValueError("q must be an INT8 matrix [N,K]")
++    n, k = q.shape
++    if n <= 0:
++        raise ValueError("N must be positive")
++    if k <= 0:
++        raise ValueError("K must be positive")
++    if n % 32:
++        raise ValueError("N must be divisible by 32")
++    if k % 64:
++        raise ValueError("K must be divisible by 64")
++    groups = k // 64
++    if scales.shape != (n, groups):
++        raise ValueError("scales must have shape [N,K/64]")
++    if torch.any(q < -8) or torch.any(q > 7):
++        raise ValueError("q values must be signed INT4 (-8..7)")
++
++    row_tiles = n // 32
++    q_tiles = q.reshape(row_tiles, 32, groups, 64).permute(0, 2, 1, 3)
++    low = torch.bitwise_and(q_tiles[..., 0::2], 0xF).to(torch.uint8)
++    high = torch.bitwise_and(q_tiles[..., 1::2], 0xF).to(torch.uint8)
++    values = (low | (high << 4)).permute(0, 1, 3, 2).contiguous()
++    scale_bytes = (
++        scales.to(torch.float16)
++        .reshape(row_tiles, 32, groups)
++        .permute(0, 2, 1)
++        .contiguous()
++        .view(torch.uint8)
++        .reshape(row_tiles, groups, 64)
++    )
++    packed = torch.empty((row_tiles, groups, 1088), dtype=torch.uint8)
++    packed[..., :64] = scale_bytes
++    packed[..., 64:] = values.reshape(row_tiles, groups, 1024)
++    return packed
+diff --git a/op_tests/test_q4_group64_gemv.py b/op_tests/test_q4_group64_gemv.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..fb05a386e53525354bf4628246bee0ff5b9ba900
+--- /dev/null
++++ b/op_tests/test_q4_group64_gemv.py
+@@ -0,0 +1,526 @@
++# SPDX-License-Identifier: MIT
++
++from __future__ import annotations
++
++import re
++import sys
++from pathlib import Path
++
++import pytest
++import torch
++
++from aiter import q4_group64_gemv
++from aiter.ops.q4_group64_gemv import (
++    _AUTO_MAPPING,
++    _MAPPING_IDS,
++    _gfx_arch_for_index,
++    _q4_group64_gemv,
++    _q4_group64_gemv_out,
++    _require_experimental_enabled,
++    _selected_mapping,
++)
++from op_tests.op_benchmarks.hip import bench_q4_group64_gemv as q4_benchmark
++from op_tests.q4_group64_reference import pack_group64 as _pack_group64
++
++RTOL = 5.0e-4
++ATOL = 5.0e-3
++
++
++def _is_gfx1201() -> bool:
++    if not torch.cuda.is_available():
++        return False
++    try:
++        arch = getattr(torch.cuda.get_device_properties(0), "gcnArchName", "")
++        return arch.lower().split(":", maxsplit=1)[0] == "gfx1201"
++    except Exception:  # noqa: BLE001
++        return False
++
++
++requires_gfx1201 = pytest.mark.skipif(
++    not _is_gfx1201(), reason="q4_group64_gemv requires gfx1201"
++)
++
++
++@pytest.fixture(autouse=True)
++def _enable_experimental_operator(monkeypatch: pytest.MonkeyPatch) -> None:
++    monkeypatch.setenv("AITER_ENABLE_EXPERIMENTAL", "1")
++
++
++def _make_case(
++    n: int,
++    k: int,
++    *,
++    seed: int,
++    extremes: bool = False,
++) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
++    generator = torch.Generator(device="cpu")
++    generator.manual_seed(seed)
++    if extremes:
++        indices = torch.arange(n * k, dtype=torch.int64).reshape(n, k)
++        q = torch.where(indices.remainder(2) == 0, -8, 7).to(torch.int8)
++    else:
++        q = torch.randint(-8, 8, (n, k), generator=generator, dtype=torch.int8)
++    scales = torch.empty((n, k // 64), dtype=torch.float32).uniform_(
++        0.005, 0.05, generator=generator
++    )
++    x = torch.empty(k, dtype=torch.float32).uniform_(-0.25, 0.25, generator=generator)
++    packed = _pack_group64(q, scales)
++    return x, packed, q, scales.to(torch.float16).float()
++
++
++def _reference(x: torch.Tensor, q: torch.Tensor, scales: torch.Tensor) -> torch.Tensor:
++    n, k = q.shape
++    result = torch.zeros(n, dtype=torch.float32, device=x.device)
++    q_device = q.to(device=x.device, dtype=torch.float32)
++    scales_device = scales.to(x.device)
++    for group in range(k // 64):
++        start = group * 64
++        result += (q_device[:, start : start + 64] * x[start : start + 64]).sum(
++            dim=1
++        ) * scales_device[:, group]
++    return result
++
++
++def _assert_close(actual: torch.Tensor, expected: torch.Tensor) -> None:
++    torch.testing.assert_close(actual, expected, rtol=RTOL, atol=ATOL)
++
++
++def test_import_does_not_require_gfx1201() -> None:
++    assert callable(q4_group64_gemv)
++
++
++def test_python_experimental_gate_rejects_unset_and_disabled(monkeypatch) -> None:
++    x = torch.zeros(64, dtype=torch.float32)
++    packed = torch.zeros((1, 1, 1088), dtype=torch.uint8)
++    for value in (None, "0", "not-an-integer"):
++        if value is None:
++            monkeypatch.delenv("AITER_ENABLE_EXPERIMENTAL", raising=False)
++        else:
++            monkeypatch.setenv("AITER_ENABLE_EXPERIMENTAL", value)
++        with pytest.raises(RuntimeError, match="q4_group64_gemv is experimental"):
++            q4_group64_gemv(x, packed)
++
++    monkeypatch.setenv("AITER_ENABLE_EXPERIMENTAL", "1")
++    _require_experimental_enabled()
++
++
++def test_arch_cache_is_keyed_by_device_and_does_not_cache_errors(monkeypatch) -> None:
++    calls: list[int] = []
++
++    class Properties:
++        def __init__(self, arch: str):
++            self.gcnArchName = arch
++
++    def get_device_properties(index: int) -> Properties:
++        calls.append(index)
++        if index == 7:
++            raise RuntimeError("invalid device ordinal")
++        return Properties("gfx1201:sramecc+:xnack-" if index == 0 else "gfx1100")
++
++    _gfx_arch_for_index.cache_clear()
++    monkeypatch.setattr(torch.cuda, "get_device_properties", get_device_properties)
++    try:
++        assert _gfx_arch_for_index(0) == "gfx1201"
++        assert _gfx_arch_for_index(1) == "gfx1100"
++        assert _gfx_arch_for_index(0) == "gfx1201"
++        with pytest.raises(RuntimeError, match="invalid device ordinal"):
++            _gfx_arch_for_index(7)
++        with pytest.raises(RuntimeError, match="invalid device ordinal"):
++            _gfx_arch_for_index(7)
++    finally:
++        _gfx_arch_for_index.cache_clear()
++
++    assert calls == [0, 1, 7, 7]
++
++
++def test_auto_dispatch_has_all_measured_plain_shapes() -> None:
++    assert _AUTO_MAPPING == {
++        (512, 3584): "small32x32",
++        (1024, 3072): "small32x32",
++        (1024, 4096): "small32x32",
++        (3072, 3072): "split8",
++        (3072, 8192): "split8",
++        (3584, 3584): "split8",
++        (3584, 18944): "split8",
++        (4096, 4096): "split8",
++        (4096, 12288): "split8",
++        (4096, 14336): "split8",
++        (8192, 3072): "split4",
++        (12288, 4096): "split8",
++        (14336, 4096): "split8",
++        (18944, 3584): "split8",
++    }
++
++
++def test_python_and_cpp_auto_dispatch_tables_do_not_drift() -> None:
++    source = (Path(__file__).parents[1] / "csrc/kernels/q4_group64_gemv.cu").read_text(
++        encoding="utf-8"
++    )
++    table = source.split("constexpr DispatchEntry kMeasuredDispatch[] = {", maxsplit=1)[
++        1
++    ].split("};", maxsplit=1)[0]
++    entries = re.findall(r"\{(\d+),\s*(\d+),\s*Mapping::([A-Za-z0-9]+)\}", table)
++    cpp_mapping = {(int(n), int(k)): mapping.lower() for n, k, mapping in entries}
++
++    assert cpp_mapping == _AUTO_MAPPING
++    assert "return Mapping::Old;" in source
++
++
++def test_cpp_auto_dispatch_has_exact_rx_9070_xt_guard() -> None:
++    repository = Path(__file__).parents[1]
++    header = (repository / "csrc/include/q4_group64_gemv.h").read_text(encoding="utf-8")
++    source = (repository / "csrc/kernels/q4_group64_gemv.cu").read_text(
++        encoding="utf-8"
++    )
++    expected_static_cases = (
++        'static_assert(q4_group64_is_tuned_rx_9070_xt(0x7550, 32, "AMD Radeon RX 9070 XT"))',
++        'static_assert(q4_group64_is_tuned_rx_9070_xt(0x7550, 32, ""))',
++        'static_assert(!q4_group64_is_tuned_rx_9070_xt(0x7550, 28, "AMD Radeon RX 9070"))',
++        'static_assert(!q4_group64_is_tuned_rx_9070_xt(0x7550, 24, "AMD Radeon RX 9070 GRE"))',
++        'static_assert(!q4_group64_is_tuned_rx_9070_xt(0x7551, 32, "AMD Radeon AI PRO R9700"))',
++        'static_assert(!q4_group64_is_tuned_rx_9070_xt(0x7550, 32, "AMD Radeon AI PRO R9700"))',
++        'static_assert(!q4_group64_is_tuned_rx_9070_xt(0x7550, 32, "AMD Radeon RX 9070 XT Future"))',
++        'static_assert(!q4_group64_is_tuned_rx_9070_xt(0, 0, "unknown"))',
++    )
++    assert all(case in header for case in expected_static_cases)
++    assert "hipDeviceAttributePciChipId" in source
++    assert source.index("HipDeviceGuard device_guard") < source.index(
++        "cached_is_tuned_rx_9070_xt(x.device_id)"
++    )
++    assert (
++        "cached_is_tuned_rx_9070_xt(x.device_id) ? select_mapping(rows, columns)"
++        in source
++    )
++
++
++def test_cpu_call_is_rejected_before_jit() -> None:
++    x = torch.zeros(64, dtype=torch.float32)
++    packed = torch.zeros((1, 1, 1088), dtype=torch.uint8)
++    with pytest.raises(ValueError, match="CUDA/HIP tensors"):
++        q4_group64_gemv(x, packed)
++
++
++def test_test_packer_rejects_non_tile_rows_and_non_group_columns() -> None:
++    with pytest.raises(ValueError, match="N must be positive"):
++        _pack_group64(torch.zeros((0, 64), dtype=torch.int8), torch.ones((0, 1)))
++    with pytest.raises(ValueError, match="K must be positive"):
++        _pack_group64(torch.zeros((32, 0), dtype=torch.int8), torch.ones((32, 0)))
++    with pytest.raises(ValueError, match="N must be divisible by 32"):
++        _pack_group64(torch.zeros((33, 64), dtype=torch.int8), torch.ones((33, 1)))
++    with pytest.raises(ValueError, match="K must be divisible by 64"):
++        _pack_group64(torch.zeros((32, 65), dtype=torch.int8), torch.ones((32, 1)))
++
++
++def test_benchmark_cli_rejects_when_no_requested_mapping_is_legal(
++    monkeypatch,
++) -> None:
++    monkeypatch.setattr(
++        sys,
++        "argv",
++        [
++            "bench_q4_group64_gemv.py",
++            "--shape",
++            "32",
++            "64",
++            "--mappings",
++            "split2",
++        ],
++    )
++    with pytest.raises(ValueError, match=r"no legal mapping requests.*\(32, 64\)"):
++        q4_benchmark.main()
++
++
++def test_benchmark_auto_uses_public_call_and_controls_allocate_equally(
++    monkeypatch,
++) -> None:
++    calls: list[tuple[str, str | None]] = []
++    result = object()
++
++    def public_call(x, packed):
++        calls.append(("public", None))
++        return result
++
++    def private_call(x, packed, *, mapping, out=None):
++        assert out is None
++        calls.append(("private", mapping))
++        return result
++
++    monkeypatch.setattr(q4_benchmark, "q4_group64_gemv", public_call)
++    monkeypatch.setattr(q4_benchmark, "_q4_group64_gemv", private_call)
++    assert q4_benchmark._invoke_request(object(), object(), "auto", "auto") is result
++    assert (
++        q4_benchmark._invoke_request(object(), object(), "selected", "split8") is result
++    )
++    assert calls == [("public", None), ("private", "split8")]
++    assert q4_benchmark._call_path("auto") == "public:q4_group64_gemv"
++    assert "out=None" in q4_benchmark._call_path("selected")
++
++
++def test_benchmark_pci_chip_id_uses_valid_aiter_helper_value(monkeypatch) -> None:
++    monkeypatch.setattr(q4_benchmark, "_get_pci_chip_id", lambda _: 0x7550)
++
++    def unexpected_cdll(_):
++        raise AssertionError("fallback must not run for a valid helper value")
++
++    monkeypatch.setattr(q4_benchmark.ctypes, "CDLL", unexpected_cdll)
++    identity = q4_benchmark._benchmark_pci_chip_id(0)
++    assert identity["effective_value"] == 0x7550
++    assert identity["fallback_used"] is False
++
++
++def test_benchmark_pci_chip_id_falls_back_from_rocm72_helper_value(monkeypatch) -> None:
++    calls: list[tuple[int, int]] = []
++
++    class Libhip:
++        @staticmethod
++        def hipDeviceGetAttribute(pointer, attribute: int, device_id: int) -> int:
++            calls.append((attribute, device_id))
++            pointer._obj.value = 0x7550
++            return 0
++
++    monkeypatch.setattr(q4_benchmark, "_get_pci_chip_id", lambda _: 0x100)
++    monkeypatch.setattr(q4_benchmark.ctypes, "CDLL", lambda _: Libhip())
++    identity = q4_benchmark._benchmark_pci_chip_id(3)
++    assert identity == {
++        "aiter_helper_raw": 0x100,
++        "aiter_helper_raw_hex": "0x100",
++        "fallback_attribute_id": 10020,
++        "fallback_value": 0x7550,
++        "fallback_value_hex": "0x7550",
++        "fallback_used": True,
++        "effective_value": 0x7550,
++    }
++    assert calls == [(10020, 3)]
++
++
++def test_benchmark_pci_chip_id_fallback_fails_closed(monkeypatch) -> None:
++    class Libhip:
++        error = 0
++        value = 0
++
++        @classmethod
++        def hipDeviceGetAttribute(cls, pointer, attribute: int, device_id: int) -> int:
++            pointer._obj.value = cls.value
++            return cls.error
++
++    monkeypatch.setattr(q4_benchmark, "_get_pci_chip_id", lambda _: 0x100)
++    monkeypatch.setattr(q4_benchmark.ctypes, "CDLL", lambda _: Libhip())
++
++    Libhip.error = 17
++    with pytest.raises(RuntimeError, match="fallback failed"):
++        q4_benchmark._benchmark_pci_chip_id(0)
++    Libhip.error = 0
++    Libhip.value = 0x7551
++    with pytest.raises(RuntimeError, match="expected 0x7550"):
++        q4_benchmark._benchmark_pci_chip_id(0)
++
++
++def test_benchmark_requires_exact_rx_9070_xt_identity(monkeypatch) -> None:
++    class Properties:
++        def __init__(self, arch: str, name: str, multiprocessors: int):
++            self.gcnArchName = arch
++            self.name = name
++            self.multi_processor_count = multiprocessors
++
++    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
++    identity = {
++        "properties": Properties("gfx1201", "", 32),
++        "name": "",
++        "chip": 0x7550,
++    }
++    monkeypatch.setattr(
++        torch.cuda, "get_device_properties", lambda _: identity["properties"]
++    )
++    monkeypatch.setattr(torch.cuda, "get_device_name", lambda _: identity["name"])
++    monkeypatch.setattr(q4_benchmark, "_get_pci_chip_id", lambda _: identity["chip"])
++
++    blank = q4_benchmark._check_arch()
++    assert blank["blank_name_compatibility_used"] is True
++    identity["name"] = "AMD Radeon RX 9070 XT"
++    exact = q4_benchmark._check_arch()
++    assert exact["blank_name_compatibility_used"] is False
++
++    for properties, name, chip in (
++        (Properties("gfx1201", "", 28), "", 0x7550),
++        (Properties("gfx1201", "", 24), "", 0x7550),
++        (Properties("gfx1201", "", 32), "AMD Radeon AI PRO R9700", 0x7550),
++        (Properties("gfx1201", "", 32), "AMD Radeon RX 9070 XT Future", 0x7550),
++        (Properties("gfx1201", "", 32), "", 0x7551),
++        (Properties("gfx1100", "", 32), "", 0x7550),
++    ):
++        identity.update(properties=properties, name=name, chip=chip)
++        with pytest.raises(RuntimeError, match="benchmark requires|14-shape"):
++            q4_benchmark._check_arch()
++
++
++def test_packed_tile_round_trip_extremes_scales_and_byte_order() -> None:
++    row = torch.arange(32, dtype=torch.int64).unsqueeze(1)
++    column = torch.arange(64, dtype=torch.int64).unsqueeze(0)
++    q = torch.where((row + column).remainder(2) == 0, -8, 7).to(torch.int8)
++    scales = torch.linspace(0.0, 0.031, 32, dtype=torch.float32).unsqueeze(1)
++    packed = _pack_group64(q, scales)
++
++    decoded_scales = packed[0, 0, :64].contiguous().view(torch.float16).float()
++    torch.testing.assert_close(decoded_scales, scales[:, 0].half().float())
++
++    values = packed[0, 0, 64:].reshape(32, 32)
++    low = torch.bitwise_and(values, 0xF).to(torch.int16)
++    high = torch.bitwise_right_shift(values, 4).to(torch.int16)
++    low = torch.where(low >= 8, low - 16, low)
++    high = torch.where(high >= 8, high - 16, high)
++    decoded = torch.empty((32, 64), dtype=torch.int8)
++    decoded[:, 0::2] = low.T.to(torch.int8)
++    decoded[:, 1::2] = high.T.to(torch.int8)
++    assert torch.equal(decoded, q)
++
++
++@requires_gfx1201
++@pytest.mark.parametrize("mapping", [name for name in _MAPPING_IDS if name != "auto"])
++def test_all_explicit_mappings(mapping: str) -> None:
++    x_cpu, packed_cpu, q, scales = _make_case(256, 320, seed=2026082701)
++    x = x_cpu.cuda()
++    packed = packed_cpu.cuda()
++    expected = _reference(x, q, scales)
++
++    actual = _q4_group64_gemv(x, packed, mapping=mapping)
++    torch.cuda.synchronize()
++    _assert_close(actual, expected)
++
++
++@requires_gfx1201
++def test_public_auto_known_shape_matches_selected_mapping() -> None:
++    n, k = 512, 3584
++    assert _selected_mapping(n, k) == "small32x32"
++    x_cpu, packed_cpu, q, scales = _make_case(n, k, seed=2026082702)
++    x = x_cpu.cuda()
++    packed = packed_cpu.cuda()
++    expected = _reference(x, q, scales)
++
++    public = q4_group64_gemv(x, packed)
++    selected = _q4_group64_gemv(x, packed, mapping=_selected_mapping(n, k))
++    torch.cuda.synchronize()
++    _assert_close(public, expected)
++    _assert_close(public, selected)
++
++
++@requires_gfx1201
++def test_unseen_auto_falls_back_to_boundary_safe_old() -> None:
++    n, k = 32, 128
++    assert _selected_mapping(n, k) == "old"
++    x_cpu, packed_cpu, q, scales = _make_case(n, k, seed=2026082703)
++    x = x_cpu.cuda()
++    packed = packed_cpu.cuda()
++    expected = _reference(x, q, scales)
++
++    auto = q4_group64_gemv(x, packed)
++    old = _q4_group64_gemv(x, packed, mapping="old")
++    torch.cuda.synchronize()
++    _assert_close(auto, expected)
++    _assert_close(auto, old)
++
++
++@requires_gfx1201
++def test_extreme_int4_and_zero_scales() -> None:
++    x_cpu, packed_cpu, q, scales = _make_case(32, 64, seed=2026082704, extremes=True)
++    scales[::2] = 0.0
++    packed_cpu = _pack_group64(q, scales)
++    x = x_cpu.cuda()
++    packed = packed_cpu.cuda()
++    expected = _reference(x, q, scales)
++
++    actual = q4_group64_gemv(x, packed)
++    torch.cuda.synchronize()
++    _assert_close(actual, expected)
++    assert torch.count_nonzero(actual[::2]).item() == 0
++
++
++@requires_gfx1201
++def test_public_non_default_stream_and_preallocated_private_output() -> None:
++    x_cpu, packed_cpu, q, scales = _make_case(256, 256, seed=2026082705)
++    x = x_cpu.cuda()
++    packed = packed_cpu.cuda()
++    expected = _reference(x, q, scales)
++    out = torch.empty(256, device="cuda", dtype=torch.float32)
++    stream = torch.cuda.Stream()
++    with torch.cuda.stream(stream):
++        public = q4_group64_gemv(x, packed)
++        actual = _q4_group64_gemv(x, packed, mapping="split8", out=out)
++    stream.synchronize()
++
++    assert actual.data_ptr() == out.data_ptr()
++    _assert_close(public, expected)
++    _assert_close(actual, expected)
++
++
++@requires_gfx1201
++def test_runtime_gate_disables_loaded_public_and_direct_cpp_entries(
++    monkeypatch,
++) -> None:
++    x_cpu, packed_cpu, _, _ = _make_case(32, 64, seed=2026082707)
++    x = x_cpu.cuda()
++    packed = packed_cpu.cuda()
++    out = torch.empty(32, device=x.device, dtype=torch.float32)
++
++    monkeypatch.setenv("AITER_ENABLE_EXPERIMENTAL", "1")
++    q4_group64_gemv(x, packed)
++    _q4_group64_gemv_out(x, packed, out, _MAPPING_IDS["old"])
++    torch.cuda.synchronize()
++
++    for disabled_value in (None, "0", "1junk"):
++        if disabled_value is None:
++            monkeypatch.delenv("AITER_ENABLE_EXPERIMENTAL", raising=False)
++        else:
++            monkeypatch.setenv("AITER_ENABLE_EXPERIMENTAL", disabled_value)
++        with pytest.raises(RuntimeError, match="q4_group64_gemv is experimental"):
++            q4_group64_gemv(x, packed)
++        with pytest.raises(RuntimeError, match="q4_group64_gemv is experimental"):
++            _q4_group64_gemv_out(x, packed, out, _MAPPING_IDS["old"])
++
++    monkeypatch.setenv("AITER_ENABLE_EXPERIMENTAL", "1")
++    q4_group64_gemv(x, packed)
++    _q4_group64_gemv_out(x, packed, out, _MAPPING_IDS["old"])
++    torch.cuda.synchronize()
++
++
++@requires_gfx1201
++def test_invalid_shapes_dtypes_layout_and_mapping() -> None:
++    x = torch.zeros(64, device="cuda", dtype=torch.float32)
++    packed = torch.zeros((1, 1, 1088), device="cuda", dtype=torch.uint8)
++
++    with pytest.raises(ValueError, match="K must be positive and divisible by 64"):
++        q4_group64_gemv(torch.zeros(65, device="cuda"), packed)
++    with pytest.raises(ValueError, match="dtype uint8"):
++        q4_group64_gemv(x, packed.float())
++    with pytest.raises(ValueError, match="contiguous FP32"):
++        q4_group64_gemv(x.half(), packed)
++    with pytest.raises(ValueError, match="shape"):
++        q4_group64_gemv(x, torch.zeros((1, 1, 1087), device="cuda", dtype=torch.uint8))
++    with pytest.raises(ValueError, match="does not match"):
++        q4_group64_gemv(x, torch.zeros((1, 2, 1088), device="cuda", dtype=torch.uint8))
++
++    noncontiguous_x = torch.zeros(128, device="cuda", dtype=torch.float32)[::2]
++    with pytest.raises(ValueError, match="contiguous FP32"):
++        q4_group64_gemv(noncontiguous_x, packed)
++    noncontiguous_packed = torch.zeros((1, 1, 2176), device="cuda", dtype=torch.uint8)[
++        ..., ::2
++    ]
++    with pytest.raises(ValueError, match="must be contiguous"):
++        q4_group64_gemv(x, noncontiguous_packed)
++    with pytest.raises(ValueError, match="unknown mapping"):
++        _q4_group64_gemv(x, packed, mapping="unsupported")
++
++    packed_storage = torch.zeros(1089, device="cuda", dtype=torch.uint8)
++    misaligned_packed = packed_storage[1:].reshape(1, 1, 1088)
++    with pytest.raises(ValueError, match="2-byte aligned"):
++        q4_group64_gemv(x, misaligned_packed)
++
++
++@requires_gfx1201
++def test_invalid_explicit_split_shape_is_rejected() -> None:
++    x_cpu, packed_cpu, _, _ = _make_case(32, 64, seed=2026082706)
++    with pytest.raises(ValueError, match="split2 requires N divisible by 128"):
++        _q4_group64_gemv(x_cpu.cuda(), packed_cpu.cuda(), mapping="split2")
++
++
++if __name__ == "__main__":
++    raise SystemExit(pytest.main([__file__, "-v"]))

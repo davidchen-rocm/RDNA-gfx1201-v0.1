@@ -1,0 +1,3533 @@
+{
+  "schema": "q4rdna-static-profile-v1",
+  "generated_at_utc": "2026-08-27T19:01:44.887252+00:00",
+  "status": "ok",
+  "scope": {
+    "description": "Direct AMDHSA code-object metadata for every Q4_RDNA kernel instance embedded in q4rdna_splitk_bench.",
+    "recompiled_for_profile": false,
+    "kernel_instance_count": 30,
+    "modes": [
+      "plain",
+      "add",
+      "gate-up"
+    ],
+    "mappings": [
+      "old",
+      "split2",
+      "split4",
+      "split8",
+      "small8x8",
+      "small8x16",
+      "small8x32",
+      "small16x16",
+      "small16x32",
+      "small32x32"
+    ],
+    "device_topology_context": {
+      "gpu": "AMD Radeon RX 9070 XT",
+      "gfx": "gfx1201",
+      "rocminfo_physical_compute_unit_count": 64,
+      "hip_multiprocessor_count": 32,
+      "hip_multiprocessor_count_reporting_unit": "WGP (Work Group Processor) on this gfx1201 HIP stack",
+      "interpretation": "Do not call both values compute units: rocminfo reports 64 physical Compute Units, while hipGetDeviceProperties().multiProcessorCount reports 32 WGPs."
+    }
+  },
+  "source_executable": {
+    "path": "/home/david/Desktop/q4rdna-gfx1201-public-evidence/build/q4rdna_splitk_bench",
+    "size_bytes": 181816,
+    "mtime_utc": "2026-08-27T18:59:35.460040+00:00",
+    "sha256": "472a80684b091fddba3a3b879c852cdcfa8bb5ef043ed93db9deb780b2ea279c",
+    "embedded_section": ".hip_fatbin"
+  },
+  "code_object": {
+    "temporary_path": "/tmp/q4rdna_static_final.zJnBnW/q4rdna_gfx1201.hsaco",
+    "temporary_fatbin_path": "/tmp/q4rdna_static_final.zJnBnW/q4rdna_splitk_bench.hip_fatbin",
+    "temporary_notes_path": "/tmp/q4rdna_static_final.zJnBnW/q4rdna_notes.txt",
+    "size_bytes": 96560,
+    "sha256": "a866da21c1f42ad2967616a0ca1cbf5b06dbfe95087ce914f2fa0f7560130e10",
+    "target": "amdgcn-amd-amdhsa--gfx1201",
+    "amdhsa_metadata_version": [
+      1,
+      2
+    ],
+    "elf": {
+      "class": "ELF64",
+      "type": "DYN",
+      "machine": "EM_AMDGPU",
+      "os_abi": "AMDGPU - HSA",
+      "abi_version": 4,
+      "flags": "0x4e, gfx1201"
+    },
+    "compiler_comments": [
+      "Linker: AMD LLD 23.0.0 (https://github.com/ROCm/llvm-project.git 46fcb339fb61119b337f973c7ca9e710a319fdd0+PATCHED:440716f8b87be9d8e20ed910e10e5b6d14d57cf6)",
+      "AMD clang version 23.0.0git (https://github.com/ROCm/llvm-project.git 46fcb339fb61119b337f973c7ca9e710a319fdd0+PATCHED:440716f8b87be9d8e20ed910e10e5b6d14d57cf6)"
+    ]
+  },
+  "extraction": {
+    "commands": [
+      "cp build/q4rdna_splitk_bench /tmp/q4rdna_static_final.zJnBnW/q4rdna_splitk_bench.host_copy",
+      "objcopy --dump-section .hip_fatbin=/tmp/q4rdna_static_final.zJnBnW/q4rdna_splitk_bench.hip_fatbin /tmp/q4rdna_static_final.zJnBnW/q4rdna_splitk_bench.host_copy",
+      "/opt/rocm/llvm/bin/clang-offload-bundler --unbundle --type=o --targets=hipv4-amdgcn-amd-amdhsa--gfx1201 --input=/tmp/q4rdna_static_final.zJnBnW/q4rdna_splitk_bench.hip_fatbin --output=/tmp/q4rdna_static_final.zJnBnW/q4rdna_gfx1201.hsaco",
+      "/opt/rocm/llvm/bin/llvm-readelf --notes /tmp/q4rdna_static_final.zJnBnW/q4rdna_gfx1201.hsaco",
+      "/opt/rocm/llvm/bin/llvm-readelf -sW /tmp/q4rdna_static_final.zJnBnW/q4rdna_gfx1201.hsaco",
+      "rocminfo > /tmp/q4rdna_static_final.zJnBnW/rocminfo_full.txt",
+      "build/q4rdna_splitk_bench --rows 32 --columns 64 --mode plain --mapping split8 --pattern zero --warmup 0 --samples 0 --output /tmp/q4rdna_static_final.zJnBnW/hip_device_probe.json"
+    ],
+    "tools": {
+      "llvm_readelf": [
+        "AMD LLVM version 23.0.0git",
+        "  Optimized build."
+      ],
+      "clang_offload_bundler": [
+        "AMD clang-offload-bundler version 23.0.0git (https://github.com/ROCm/llvm-project.git 46fcb339fb61119b337f973c7ca9e710a319fdd0+PATCHED:440716f8b87be9d8e20ed910e10e5b6d14d57cf6)"
+      ],
+      "objcopy": [
+        "GNU objcopy (GNU Binutils for Ubuntu) 2.42"
+      ],
+      "yaml_parser": "PyYAML 6.0.1"
+    }
+  },
+  "field_provenance": {
+    "vgpr_count": "AMDHSA .vgpr_count",
+    "sgpr_count": "AMDHSA .sgpr_count",
+    "lds_group_segment_fixed_size_bytes": "AMDHSA .group_segment_fixed_size",
+    "scratch_private_segment_fixed_size_bytes_per_workitem": "AMDHSA .private_segment_fixed_size",
+    "kernarg": "AMDHSA .kernarg_segment_size/.kernarg_segment_align/.args",
+    "wavefront_and_workgroup_limits": "AMDHSA .wavefront_size/.max_flat_workgroup_size/.uniform_work_group_size/.workgroup_processor_mode",
+    "symbols": "AMDHSA .name/.symbol plus ELF symbol table",
+    "device_topology_counts": {
+      "rocminfo_physical_compute_unit_count": {
+        "value": 64,
+        "source_file": "/tmp/q4rdna_static_final.zJnBnW/rocminfo_gfx1201.txt",
+        "source_field": "gfx1201 Agent: Compute Unit",
+        "meaning": "physical Compute Unit count"
+      },
+      "hip_multiprocessor_count": {
+        "value": 32,
+        "source_file": "/tmp/q4rdna_static_final.zJnBnW/hip_device_probe.json",
+        "source_api_field": "hipGetDeviceProperties().multiProcessorCount",
+        "json_field": "environment.hip_multiprocessor_count",
+        "meaning": "WGP count reported by HIP for this gfx1201 device/stack"
+      },
+      "warning": "64 physical Compute Units and 32 HIP-reported WGPs are different counting units and must not be labeled interchangeably."
+    }
+  },
+  "unavailable_or_not_reliably_derivable": [
+    {
+      "field": "required_workgroup_size",
+      "value": null,
+      "reason": "No required-workgroup-size field is present in the AMDHSA metadata for these kernels."
+    },
+    {
+      "field": "actual_launch_workgroup_size",
+      "value": null,
+      "reason": "Launch size is a runtime call-site property; the code object reports only max_flat_workgroup_size here."
+    },
+    {
+      "field": "workgroup_dimensions",
+      "value": null,
+      "reason": "No fixed X/Y/Z workgroup dimensions are encoded in the reported AMDHSA metadata."
+    },
+    {
+      "field": "dynamic_lds_bytes",
+      "value": null,
+      "reason": "The metadata directly reports only group_segment_fixed_size; no per-launch dynamic LDS amount is encoded here."
+    },
+    {
+      "field": "kernel_argument_names_and_source_types",
+      "value": null,
+      "reason": "The code-object argument records contain offset, size, value kind and address space but no argument names/source type names."
+    },
+    {
+      "field": "occupancy",
+      "value": null,
+      "reason": "Not reported by the code object and not inferred from register/LDS counts alone."
+    }
+  ],
+  "kernels": [
+    {
+      "mode": "plain",
+      "mapping": "old",
+      "family": "old",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": false,
+        "split_waves": null,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel8gemv_oldILb0ELb0EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_old<false, false>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel8gemv_oldILb0ELb0EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x13500",
+          "size_bytes": 3544,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8940",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 81,
+        "sgpr_count": 10,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "plain",
+      "mapping": "split2",
+      "family": "split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": false,
+        "split_waves": 2,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb0ELi2EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_split_k<false, false, 2>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb0ELi2EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x14300",
+          "size_bytes": 960,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8980",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 32,
+        "sgpr_count": 11,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "plain",
+      "mapping": "split4",
+      "family": "split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": false,
+        "split_waves": 4,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb0ELi4EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_split_k<false, false, 4>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb0ELi4EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x14700",
+          "size_bytes": 984,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x89c0",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 32,
+        "sgpr_count": 11,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "plain",
+      "mapping": "split8",
+      "family": "split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": false,
+        "split_waves": 8,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb0ELi8EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_split_k<false, false, 8>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb0ELi8EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x14b00",
+          "size_bytes": 1004,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8a00",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 30,
+        "sgpr_count": 11,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "plain",
+      "mapping": "small8x8",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": false,
+        "split_waves": 8,
+        "slice_rows": 8
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi8ELi8EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, false, 8, 8>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi8ELi8EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x14f00",
+          "size_bytes": 1052,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8a40",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 31,
+        "sgpr_count": 15,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "plain",
+      "mapping": "small8x16",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": false,
+        "split_waves": 8,
+        "slice_rows": 16
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi8ELi16EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, false, 8, 16>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi8ELi16EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x15400",
+          "size_bytes": 1048,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8a80",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 31,
+        "sgpr_count": 15,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "plain",
+      "mapping": "small8x32",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": false,
+        "split_waves": 8,
+        "slice_rows": 32
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi8ELi32EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, false, 8, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi8ELi32EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x15900",
+          "size_bytes": 1004,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8ac0",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 30,
+        "sgpr_count": 12,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "plain",
+      "mapping": "small16x16",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": false,
+        "split_waves": 16,
+        "slice_rows": 16
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi16ELi16EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, false, 16, 16>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi16ELi16EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x15d00",
+          "size_bytes": 1156,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8b00",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 31,
+        "sgpr_count": 15,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 512,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "plain",
+      "mapping": "small16x32",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": false,
+        "split_waves": 16,
+        "slice_rows": 32
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi16ELi32EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, false, 16, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi16ELi32EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x16200",
+          "size_bytes": 1108,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8b40",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 30,
+        "sgpr_count": 12,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 512,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "plain",
+      "mapping": "small32x32",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": false,
+        "split_waves": 32,
+        "slice_rows": 32
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi32ELi32EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, false, 32, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb0ELi32ELi32EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x16700",
+          "size_bytes": 1316,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8b80",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 30,
+        "sgpr_count": 12,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 4096,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 1024,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "add",
+      "mapping": "old",
+      "family": "old",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": true,
+        "split_waves": null,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel8gemv_oldILb0ELb1EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_old<false, true>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel8gemv_oldILb0ELb1EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0xfb00",
+          "size_bytes": 3572,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x86c0",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 81,
+        "sgpr_count": 13,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "add",
+      "mapping": "split2",
+      "family": "split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": true,
+        "split_waves": 2,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb1ELi2EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_split_k<false, true, 2>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb1ELi2EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x10900",
+          "size_bytes": 988,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8700",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 32,
+        "sgpr_count": 14,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "add",
+      "mapping": "split4",
+      "family": "split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": true,
+        "split_waves": 4,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb1ELi4EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_split_k<false, true, 4>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb1ELi4EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x10d00",
+          "size_bytes": 1016,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8740",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 32,
+        "sgpr_count": 14,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "add",
+      "mapping": "split8",
+      "family": "split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": true,
+        "split_waves": 8,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb1ELi8EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_split_k<false, true, 8>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel12gemv_split_kILb0ELb1ELi8EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x11100",
+          "size_bytes": 1048,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8780",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 30,
+        "sgpr_count": 14,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "add",
+      "mapping": "small8x8",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": true,
+        "split_waves": 8,
+        "slice_rows": 8
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi8ELi8EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, true, 8, 8>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi8ELi8EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x11600",
+          "size_bytes": 1084,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x87c0",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 31,
+        "sgpr_count": 17,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "add",
+      "mapping": "small8x16",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": true,
+        "split_waves": 8,
+        "slice_rows": 16
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi8ELi16EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, true, 8, 16>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi8ELi16EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x11b00",
+          "size_bytes": 1080,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8800",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 31,
+        "sgpr_count": 17,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "add",
+      "mapping": "small8x32",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": true,
+        "split_waves": 8,
+        "slice_rows": 32
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi8ELi32EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, true, 8, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi8ELi32EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x12000",
+          "size_bytes": 1044,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8840",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 30,
+        "sgpr_count": 15,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 1024,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "add",
+      "mapping": "small16x16",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": true,
+        "split_waves": 16,
+        "slice_rows": 16
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi16ELi16EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, true, 16, 16>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi16ELi16EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x12500",
+          "size_bytes": 1176,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8880",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 31,
+        "sgpr_count": 17,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 512,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "add",
+      "mapping": "small16x32",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": true,
+        "split_waves": 16,
+        "slice_rows": 32
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi16ELi32EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, true, 16, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi16ELi32EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x12a00",
+          "size_bytes": 1140,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x88c0",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 30,
+        "sgpr_count": 15,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 512,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "add",
+      "mapping": "small32x32",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": false,
+        "use_add": true,
+        "split_waves": 32,
+        "slice_rows": 32
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi32ELi32EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<false, true, 32, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb0ELb1ELi32ELi32EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x12f00",
+          "size_bytes": 1356,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8900",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 30,
+        "sgpr_count": 15,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 4096,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 1024,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "gate-up",
+      "mapping": "old",
+      "family": "old",
+      "template_parameters": {
+        "use_gate": true,
+        "use_add": false,
+        "split_waves": null,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel8gemv_oldILb1ELb0EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_old<true, false>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel8gemv_oldILb1ELb0EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0x9c00",
+          "size_bytes": 6860,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8440",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 89,
+        "sgpr_count": 12,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "gate-up",
+      "mapping": "split2",
+      "family": "split_k",
+      "template_parameters": {
+        "use_gate": true,
+        "use_add": false,
+        "split_waves": 2,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel12gemv_split_kILb1ELb0ELi2EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_split_k<true, false, 2>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel12gemv_split_kILb1ELb0ELi2EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0xb700",
+          "size_bytes": 1608,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8480",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 45,
+        "sgpr_count": 13,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "gate-up",
+      "mapping": "split4",
+      "family": "split_k",
+      "template_parameters": {
+        "use_gate": true,
+        "use_add": false,
+        "split_waves": 4,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel12gemv_split_kILb1ELb0ELi4EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_split_k<true, false, 4>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel12gemv_split_kILb1ELb0ELi4EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0xbe00",
+          "size_bytes": 1660,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x84c0",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 45,
+        "sgpr_count": 13,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "gate-up",
+      "mapping": "split8",
+      "family": "split_k",
+      "template_parameters": {
+        "use_gate": true,
+        "use_add": false,
+        "split_waves": 8,
+        "slice_rows": null
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel12gemv_split_kILb1ELb0ELi8EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_split_k<true, false, 8>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel12gemv_split_kILb1ELb0ELi8EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0xc500",
+          "size_bytes": 1724,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8500",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 43,
+        "sgpr_count": 13,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "gate-up",
+      "mapping": "small8x8",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": true,
+        "use_add": false,
+        "split_waves": 8,
+        "slice_rows": 8
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi8ELi8EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<true, false, 8, 8>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi8ELi8EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0xcc00",
+          "size_bytes": 1772,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8540",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 44,
+        "sgpr_count": 17,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "gate-up",
+      "mapping": "small8x16",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": true,
+        "use_add": false,
+        "split_waves": 8,
+        "slice_rows": 16
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi8ELi16EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<true, false, 8, 16>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi8ELi16EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0xd300",
+          "size_bytes": 1764,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8580",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 44,
+        "sgpr_count": 17,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "gate-up",
+      "mapping": "small8x32",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": true,
+        "use_add": false,
+        "split_waves": 8,
+        "slice_rows": 32
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi8ELi32EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<true, false, 8, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi8ELi32EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0xda00",
+          "size_bytes": 1704,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x85c0",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 43,
+        "sgpr_count": 14,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 2048,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 256,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "gate-up",
+      "mapping": "small16x16",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": true,
+        "use_add": false,
+        "split_waves": 16,
+        "slice_rows": 16
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi16ELi16EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<true, false, 16, 16>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi16ELi16EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0xe100",
+          "size_bytes": 1960,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8600",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 44,
+        "sgpr_count": 17,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 4096,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 512,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "gate-up",
+      "mapping": "small16x32",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": true,
+        "use_add": false,
+        "split_waves": 16,
+        "slice_rows": 32
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi16ELi32EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<true, false, 16, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi16ELi32EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0xe900",
+          "size_bytes": 1908,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8640",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 43,
+        "sgpr_count": 14,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 4096,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 512,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "mode": "gate-up",
+      "mapping": "small32x32",
+      "family": "small_split_k",
+      "template_parameters": {
+        "use_gate": true,
+        "use_add": false,
+        "split_waves": 32,
+        "slice_rows": 32
+      },
+      "symbols": {
+        "kernel_name_mangled": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi32ELi32EEEvPKhS2_PKfS4_Pfi",
+        "kernel_name_demangled": "void q4rdna_kernel::gemv_small_split_k<true, false, 32, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",
+        "kernel_descriptor_symbol": "_ZN13q4rdna_kernel18gemv_small_split_kILb1ELb0ELi32ELi32EEEvPKhS2_PKfS4_Pfi.kd",
+        "kernel_function_symbol_table": {
+          "address_hex": "0xf100",
+          "size_bytes": 2312,
+          "type": "FUNC",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 7
+        },
+        "kernel_descriptor_symbol_table": {
+          "address_hex": "0x8680",
+          "size_bytes": 64,
+          "type": "OBJECT",
+          "binding": "GLOBAL",
+          "visibility": "PROTECTED",
+          "section_index": 6
+        }
+      },
+      "resources": {
+        "vgpr_count": 43,
+        "sgpr_count": 14,
+        "vgpr_spill_count": 0,
+        "sgpr_spill_count": 0,
+        "lds_group_segment_fixed_size_bytes": 8192,
+        "scratch_private_segment_fixed_size_bytes_per_workitem": 0,
+        "uses_dynamic_stack": false
+      },
+      "kernarg": {
+        "segment_size_bytes": 44,
+        "segment_alignment_bytes": 8,
+        "arguments": [
+          {
+            "index": 0,
+            "name": null,
+            "offset_bytes": 0,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 1,
+            "name": null,
+            "offset_bytes": 8,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 2,
+            "name": null,
+            "offset_bytes": 16,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 3,
+            "name": null,
+            "offset_bytes": 24,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 4,
+            "name": null,
+            "offset_bytes": 32,
+            "size_bytes": 8,
+            "value_kind": "global_buffer",
+            "address_space": "global"
+          },
+          {
+            "index": 5,
+            "name": null,
+            "offset_bytes": 40,
+            "size_bytes": 4,
+            "value_kind": "by_value",
+            "address_space": null
+          }
+        ],
+        "argument_names_available": false
+      },
+      "execution": {
+        "wavefront_size": 32,
+        "max_flat_workgroup_size": 1024,
+        "uniform_work_group_size_flag": 1,
+        "workgroup_processor_mode": 1,
+        "required_workgroup_size": null,
+        "actual_launch_workgroup_size": null
+      },
+      "other_reported_metadata": {
+        "gfx1250_revision": "B0",
+        "language": "OpenCL C",
+        "language_version": [
+          2,
+          0
+        ]
+      }
+    }
+  ],
+  "validation": {
+    "previous_profile_executable_sha256": "559f19700ef6540d2998bc1c656d90b21eccfc0ba51c3fc66c08dacc84573db6",
+    "final_executable_sha256": "472a80684b091fddba3a3b879c852cdcfa8bb5ef043ed93db9deb780b2ea279c",
+    "executable_changed": true,
+    "previous_profile_code_object_sha256": "a866da21c1f42ad2967616a0ca1cbf5b06dbfe95087ce914f2fa0f7560130e10",
+    "final_code_object_sha256": "a866da21c1f42ad2967616a0ca1cbf5b06dbfe95087ce914f2fa0f7560130e10",
+    "gfx1201_code_object_unchanged": true,
+    "kernel_instance_count_compared": 30,
+    "kernel_resource_and_execution_metadata_unchanged": true,
+    "compared_fields": [
+      "kernarg_segment_alignment_bytes",
+      "kernarg_segment_size_bytes",
+      "kernel_descriptor_symbol",
+      "lds_group_segment_fixed_size_bytes",
+      "max_flat_workgroup_size",
+      "scratch_private_segment_fixed_size_bytes_per_workitem",
+      "sgpr_count",
+      "sgpr_spill_count",
+      "vgpr_count",
+      "vgpr_spill_count",
+      "wavefront_size"
+    ],
+    "json_parse_validation": "performed after write"
+  }
+}

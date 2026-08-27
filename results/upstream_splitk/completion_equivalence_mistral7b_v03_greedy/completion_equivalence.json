@@ -1,0 +1,745 @@
+{
+  "schema": "q4rdna-completion-equivalence-v2",
+  "derived_from_schema": "q4rdna-completion-equivalence-v1",
+  "created_utc": "2026-08-27T19:58:58.864684Z",
+  "verdict": "fail",
+  "all_byte_identical": false,
+  "all_runtime_valid": true,
+  "first_difference": {
+    "run": "prompt3",
+    "offset": 11,
+    "old_byte": 116,
+    "split_byte": 115,
+    "old_length": 121,
+    "split_length": 182
+  },
+  "runtime": {
+    "os": "Linux david-MS-7E12 7.0.0-30-generic #30~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug  7 13:27:52 UTC 2 x86_64 x86_64",
+    "gpu": "AMD Radeon RX 9070 XT",
+    "gpu_arch": "gfx1201",
+    "binary": "/tmp/q4rdna-llama-audit.2vKpBB/build/bin/llama-completion",
+    "binary_version": "1 (a7a6d0d)",
+    "binary_size_bytes": 15968,
+    "binary_sha256": "02adf6fbf0b6f8eb5c679e263d4334fa2c0c9a92f946838952ade915a8c93b17",
+    "ggml_hip": "/tmp/q4rdna-llama-audit.2vKpBB/build/bin/libggml-hip.so.0.18.0",
+    "ggml_hip_size_bytes": 64828312,
+    "ggml_hip_sha256": "2424eb1ec0be45aec76f83eabfa38350b79c6e5dd205f8e1a775f37785f7ce83",
+    "model": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+    "model_size_bytes": 4372812000,
+    "model_sha256": "1270d22c0fbb3d092fb725d4d96c457b7b687a5f5a715abe1e818da303e562b6",
+    "sidecar": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+    "sidecar_size_bytes": 3707789312,
+    "sidecar_sha256": "9f1eedf1132e9ed2cc0e710249cf72dcd712f8801276f06e9cb2df292b0ed6b4",
+    "ld_library_path": "/tmp/q4rdna-llama-audit.2vKpBB/build/bin:/opt/rocm/core-7.14/lib",
+    "hip_visible_devices": "0",
+    "rocr_visible_devices": "0"
+  },
+  "generation": {
+    "model_label": "Mistral-7B-Instruct-v0.3",
+    "prompts": [
+      "The first three prime numbers are",
+      "Write one short sentence about the moon:",
+      "In Python, a list comprehension for squares from 0 to 4 is"
+    ],
+    "samplers": "greedy",
+    "sampler_implementation": "temperature sampler with temperature 0 (argmax)",
+    "temperature": 0.0,
+    "seed": 20260827,
+    "n_predict": 64,
+    "threads": 12,
+    "gpu_layers": "all",
+    "common_arguments": [
+      "--samplers",
+      "temperature",
+      "--temp",
+      "0",
+      "--seed",
+      "20260827",
+      "-n",
+      "64",
+      "--no-display-prompt",
+      "--no-conversation",
+      "--simple-io"
+    ],
+    "old_environment": {
+      "LLAMA_Q4_RDNA_MAPPING": "old",
+      "LLAMA_Q4_RDNA_SCOPE": null,
+      "LLAMA_Q4_RDNA_COOP": null,
+      "LLAMA_Q4_RDNA_SMALL_ROWS": null
+    },
+    "split_environment": {
+      "LLAMA_Q4_RDNA_MAPPING": null,
+      "LLAMA_Q4_RDNA_SCOPE": null,
+      "LLAMA_Q4_RDNA_COOP": null,
+      "LLAMA_Q4_RDNA_SMALL_ROWS": null
+    },
+    "shared_environment": {
+      "LLAMA_Q4_RDNA_TRACE": "1",
+      "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna"
+    },
+    "environment_contract": {
+      "cleared_inherited_q4rdna_variables": [],
+      "library_directories_prepended": [
+        "/tmp/q4rdna-llama-audit.2vKpBB/build/bin",
+        "/opt/rocm/core-7.14/lib",
+        "/opt/rocm/core-7.14/lib"
+      ],
+      "effective_ld_library_path": "/tmp/q4rdna-llama-audit.2vKpBB/build/bin:/opt/rocm/core-7.14/lib"
+    }
+  },
+  "runs": [
+    {
+      "id": "prompt1",
+      "prompt": "The first three prime numbers are",
+      "old_exit_code": 0,
+      "split_exit_code": 0,
+      "byte_identical": true,
+      "first_difference": null,
+      "runtime_valid": true,
+      "passed": true,
+      "errors": [],
+      "stdout_bytes": 67,
+      "split_stdout_bytes": 67,
+      "stdout_sha256": "9a8eff6f063282986107757e0117d41e9157aca5bda5b2ad3e3acc15b7bf35fc",
+      "old_stdout_sha256": "9a8eff6f063282986107757e0117d41e9157aca5bda5b2ad3e3acc15b7bf35fc",
+      "split_stdout_sha256": "9a8eff6f063282986107757e0117d41e9157aca5bda5b2ad3e3acc15b7bf35fc",
+      "old_stdout": "raw/prompt1.old.stdout",
+      "split_stdout": "raw/prompt1.split.stdout",
+      "old_stderr": "raw/prompt1.old.stderr",
+      "split_stderr": "raw/prompt1.split.stderr",
+      "old_stderr_sha256": "2482321b434514e7f719f85d5adca75e904b1180f809c02766d407add0e447b5",
+      "split_stderr_sha256": "c7e7e998645fb226b845797714f5610ec53fa703fdab09c1a36e759c58fd5ca8",
+      "old_q4rdna_launches": 388,
+      "split_q4rdna_launches": 388,
+      "old_unique_tensors": 224,
+      "split_unique_tensors": 224,
+      "old_sidecar_loaded": true,
+      "split_sidecar_loaded": true,
+      "old_runtime_validation": {
+        "started_at": "2026-08-27T19:58:43.124042Z",
+        "duration_seconds": 2.2943130650000967,
+        "timed_out": false,
+        "passed": true,
+        "errors": [],
+        "command": [
+          "/tmp/q4rdna-llama-audit.2vKpBB/build/bin/llama-completion",
+          "-m",
+          "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+          "-ngl",
+          "all",
+          "-t",
+          "12",
+          "--samplers",
+          "temperature",
+          "--temp",
+          "0",
+          "--seed",
+          "20260827",
+          "-n",
+          "64",
+          "--no-display-prompt",
+          "--no-conversation",
+          "--simple-io",
+          "-p",
+          "The first three prime numbers are"
+        ],
+        "expected_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1",
+          "LLAMA_Q4_RDNA_MAPPING": "old"
+        },
+        "observed_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_MAPPING": "old",
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1"
+        },
+        "runtime_evidence": {
+          "sidecar_loads": [
+            {
+              "tensors": 224,
+              "device_gib": 3.45,
+              "device": 0,
+              "path": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna"
+            }
+          ],
+          "exact_sidecar_loaded": true,
+          "launch_counts": [
+            388
+          ],
+          "launch_total": 388,
+          "unique_tensor_counts": [
+            224
+          ],
+          "unique_tensor_maximum": 224,
+          "hit_summaries": [
+            {
+              "12288x4096": 0,
+              "4096x12288": 0,
+              "4096x4096": 128,
+              "1024x4096": 128,
+              "other": 198
+            }
+          ],
+          "q4rdna_error_lines": [],
+          "sampler_name_errors": [],
+          "sampler_chains": [
+            "logits -> temp-ext -> dist"
+          ],
+          "sampler_temperatures": [
+            0.0
+          ],
+          "sampler_seeds": [
+            20260827
+          ]
+        }
+      },
+      "split_runtime_validation": {
+        "started_at": "2026-08-27T19:58:45.419804Z",
+        "duration_seconds": 1.737139319000562,
+        "timed_out": false,
+        "passed": true,
+        "errors": [],
+        "command": [
+          "/tmp/q4rdna-llama-audit.2vKpBB/build/bin/llama-completion",
+          "-m",
+          "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+          "-ngl",
+          "all",
+          "-t",
+          "12",
+          "--samplers",
+          "temperature",
+          "--temp",
+          "0",
+          "--seed",
+          "20260827",
+          "-n",
+          "64",
+          "--no-display-prompt",
+          "--no-conversation",
+          "--simple-io",
+          "-p",
+          "The first three prime numbers are"
+        ],
+        "expected_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1"
+        },
+        "observed_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1"
+        },
+        "runtime_evidence": {
+          "sidecar_loads": [
+            {
+              "tensors": 224,
+              "device_gib": 3.45,
+              "device": 0,
+              "path": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna"
+            }
+          ],
+          "exact_sidecar_loaded": true,
+          "launch_counts": [
+            388
+          ],
+          "launch_total": 388,
+          "unique_tensor_counts": [
+            224
+          ],
+          "unique_tensor_maximum": 224,
+          "hit_summaries": [
+            {
+              "12288x4096": 0,
+              "4096x12288": 0,
+              "4096x4096": 128,
+              "1024x4096": 128,
+              "other": 198
+            }
+          ],
+          "q4rdna_error_lines": [],
+          "sampler_name_errors": [],
+          "sampler_chains": [
+            "logits -> temp-ext -> dist"
+          ],
+          "sampler_temperatures": [
+            0.0
+          ],
+          "sampler_seeds": [
+            20260827
+          ]
+        }
+      }
+    },
+    {
+      "id": "prompt2",
+      "prompt": "Write one short sentence about the moon:",
+      "old_exit_code": 0,
+      "split_exit_code": 0,
+      "byte_identical": true,
+      "first_difference": null,
+      "runtime_valid": true,
+      "passed": true,
+      "errors": [],
+      "stdout_bytes": 120,
+      "split_stdout_bytes": 120,
+      "stdout_sha256": "f2f3c2b1a5315921df888c874b375192a199f8bcfac924df4f43b0a388f6dd66",
+      "old_stdout_sha256": "f2f3c2b1a5315921df888c874b375192a199f8bcfac924df4f43b0a388f6dd66",
+      "split_stdout_sha256": "f2f3c2b1a5315921df888c874b375192a199f8bcfac924df4f43b0a388f6dd66",
+      "old_stdout": "raw/prompt2.old.stdout",
+      "split_stdout": "raw/prompt2.split.stdout",
+      "old_stderr": "raw/prompt2.old.stderr",
+      "split_stderr": "raw/prompt2.split.stderr",
+      "old_stderr_sha256": "9fdbe2e6733f688698f67adab67a184842fed00fbb69361d261ec047bfd75037",
+      "split_stderr_sha256": "cf2eefe2a9de9133e5e28ce6526d66962c74346608c1f97f7d699274118c8dd6",
+      "old_q4rdna_launches": 388,
+      "split_q4rdna_launches": 388,
+      "old_unique_tensors": 224,
+      "split_unique_tensors": 224,
+      "old_sidecar_loaded": true,
+      "split_sidecar_loaded": true,
+      "old_runtime_validation": {
+        "started_at": "2026-08-27T19:58:47.158342Z",
+        "duration_seconds": 2.2111897680006223,
+        "timed_out": false,
+        "passed": true,
+        "errors": [],
+        "command": [
+          "/tmp/q4rdna-llama-audit.2vKpBB/build/bin/llama-completion",
+          "-m",
+          "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+          "-ngl",
+          "all",
+          "-t",
+          "12",
+          "--samplers",
+          "temperature",
+          "--temp",
+          "0",
+          "--seed",
+          "20260827",
+          "-n",
+          "64",
+          "--no-display-prompt",
+          "--no-conversation",
+          "--simple-io",
+          "-p",
+          "Write one short sentence about the moon:"
+        ],
+        "expected_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1",
+          "LLAMA_Q4_RDNA_MAPPING": "old"
+        },
+        "observed_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_MAPPING": "old",
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1"
+        },
+        "runtime_evidence": {
+          "sidecar_loads": [
+            {
+              "tensors": 224,
+              "device_gib": 3.45,
+              "device": 0,
+              "path": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna"
+            }
+          ],
+          "exact_sidecar_loaded": true,
+          "launch_counts": [
+            388
+          ],
+          "launch_total": 388,
+          "unique_tensor_counts": [
+            224
+          ],
+          "unique_tensor_maximum": 224,
+          "hit_summaries": [
+            {
+              "12288x4096": 0,
+              "4096x12288": 0,
+              "4096x4096": 128,
+              "1024x4096": 128,
+              "other": 198
+            }
+          ],
+          "q4rdna_error_lines": [],
+          "sampler_name_errors": [],
+          "sampler_chains": [
+            "logits -> temp-ext -> dist"
+          ],
+          "sampler_temperatures": [
+            0.0
+          ],
+          "sampler_seeds": [
+            20260827
+          ]
+        }
+      },
+      "split_runtime_validation": {
+        "started_at": "2026-08-27T19:58:49.370628Z",
+        "duration_seconds": 1.7705616670009476,
+        "timed_out": false,
+        "passed": true,
+        "errors": [],
+        "command": [
+          "/tmp/q4rdna-llama-audit.2vKpBB/build/bin/llama-completion",
+          "-m",
+          "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+          "-ngl",
+          "all",
+          "-t",
+          "12",
+          "--samplers",
+          "temperature",
+          "--temp",
+          "0",
+          "--seed",
+          "20260827",
+          "-n",
+          "64",
+          "--no-display-prompt",
+          "--no-conversation",
+          "--simple-io",
+          "-p",
+          "Write one short sentence about the moon:"
+        ],
+        "expected_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1"
+        },
+        "observed_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1"
+        },
+        "runtime_evidence": {
+          "sidecar_loads": [
+            {
+              "tensors": 224,
+              "device_gib": 3.45,
+              "device": 0,
+              "path": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna"
+            }
+          ],
+          "exact_sidecar_loaded": true,
+          "launch_counts": [
+            388
+          ],
+          "launch_total": 388,
+          "unique_tensor_counts": [
+            224
+          ],
+          "unique_tensor_maximum": 224,
+          "hit_summaries": [
+            {
+              "12288x4096": 0,
+              "4096x12288": 0,
+              "4096x4096": 128,
+              "1024x4096": 128,
+              "other": 198
+            }
+          ],
+          "q4rdna_error_lines": [],
+          "sampler_name_errors": [],
+          "sampler_chains": [
+            "logits -> temp-ext -> dist"
+          ],
+          "sampler_temperatures": [
+            0.0
+          ],
+          "sampler_seeds": [
+            20260827
+          ]
+        }
+      }
+    },
+    {
+      "id": "prompt3",
+      "prompt": "In Python, a list comprehension for squares from 0 to 4 is",
+      "old_exit_code": 0,
+      "split_exit_code": 0,
+      "byte_identical": false,
+      "first_difference": {
+        "offset": 11,
+        "old_byte": 116,
+        "split_byte": 115,
+        "old_length": 121,
+        "split_length": 182
+      },
+      "runtime_valid": true,
+      "passed": false,
+      "errors": [
+        "stdout differs at byte offset 11"
+      ],
+      "stdout_bytes": 121,
+      "split_stdout_bytes": 182,
+      "stdout_sha256": "e3e1f76e3c8f4499c9acccb02a6ef147a8524f0d2642166eb5a6ecd57f03ba86",
+      "old_stdout_sha256": "e3e1f76e3c8f4499c9acccb02a6ef147a8524f0d2642166eb5a6ecd57f03ba86",
+      "split_stdout_sha256": "871ce59f34ceaab5d15d1cda1100db92c23faceade0048338b0cfc8e2935f46e",
+      "old_stdout": "raw/prompt3.old.stdout",
+      "split_stdout": "raw/prompt3.split.stdout",
+      "old_stderr": "raw/prompt3.old.stderr",
+      "split_stderr": "raw/prompt3.split.stderr",
+      "old_stderr_sha256": "1d0e902176942653eb0f71175c2efa0eede3d0c45f8ccd6fd25cf430c4e1129a",
+      "split_stderr_sha256": "f21756a5b2342741132596795c04df2d68f81303555dd4dd20059cb9fc270cc9",
+      "old_q4rdna_launches": 388,
+      "split_q4rdna_launches": 388,
+      "old_unique_tensors": 224,
+      "split_unique_tensors": 224,
+      "old_sidecar_loaded": true,
+      "split_sidecar_loaded": true,
+      "old_runtime_validation": {
+        "started_at": "2026-08-27T19:58:51.142462Z",
+        "duration_seconds": 2.209813805999147,
+        "timed_out": false,
+        "passed": true,
+        "errors": [],
+        "command": [
+          "/tmp/q4rdna-llama-audit.2vKpBB/build/bin/llama-completion",
+          "-m",
+          "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+          "-ngl",
+          "all",
+          "-t",
+          "12",
+          "--samplers",
+          "temperature",
+          "--temp",
+          "0",
+          "--seed",
+          "20260827",
+          "-n",
+          "64",
+          "--no-display-prompt",
+          "--no-conversation",
+          "--simple-io",
+          "-p",
+          "In Python, a list comprehension for squares from 0 to 4 is"
+        ],
+        "expected_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1",
+          "LLAMA_Q4_RDNA_MAPPING": "old"
+        },
+        "observed_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_MAPPING": "old",
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1"
+        },
+        "runtime_evidence": {
+          "sidecar_loads": [
+            {
+              "tensors": 224,
+              "device_gib": 3.45,
+              "device": 0,
+              "path": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna"
+            }
+          ],
+          "exact_sidecar_loaded": true,
+          "launch_counts": [
+            388
+          ],
+          "launch_total": 388,
+          "unique_tensor_counts": [
+            224
+          ],
+          "unique_tensor_maximum": 224,
+          "hit_summaries": [
+            {
+              "12288x4096": 0,
+              "4096x12288": 0,
+              "4096x4096": 128,
+              "1024x4096": 128,
+              "other": 198
+            }
+          ],
+          "q4rdna_error_lines": [],
+          "sampler_name_errors": [],
+          "sampler_chains": [
+            "logits -> temp-ext -> dist"
+          ],
+          "sampler_temperatures": [
+            0.0
+          ],
+          "sampler_seeds": [
+            20260827
+          ]
+        }
+      },
+      "split_runtime_validation": {
+        "started_at": "2026-08-27T19:58:53.353395Z",
+        "duration_seconds": 1.7670195390001027,
+        "timed_out": false,
+        "passed": true,
+        "errors": [],
+        "command": [
+          "/tmp/q4rdna-llama-audit.2vKpBB/build/bin/llama-completion",
+          "-m",
+          "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_K_M/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+          "-ngl",
+          "all",
+          "-t",
+          "12",
+          "--samplers",
+          "temperature",
+          "--temp",
+          "0",
+          "--seed",
+          "20260827",
+          "-n",
+          "64",
+          "--no-display-prompt",
+          "--no-conversation",
+          "--simple-io",
+          "-p",
+          "In Python, a list comprehension for squares from 0 to 4 is"
+        ],
+        "expected_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1"
+        },
+        "observed_q4rdna_environment": {
+          "LLAMA_Q4_RDNA_SIDECAR": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna",
+          "LLAMA_Q4_RDNA_TRACE": "1"
+        },
+        "runtime_evidence": {
+          "sidecar_loads": [
+            {
+              "tensors": 224,
+              "device_gib": 3.45,
+              "device": 0,
+              "path": "/home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna"
+            }
+          ],
+          "exact_sidecar_loaded": true,
+          "launch_counts": [
+            388
+          ],
+          "launch_total": 388,
+          "unique_tensor_counts": [
+            224
+          ],
+          "unique_tensor_maximum": 224,
+          "hit_summaries": [
+            {
+              "12288x4096": 0,
+              "4096x12288": 0,
+              "4096x4096": 128,
+              "1024x4096": 128,
+              "other": 198
+            }
+          ],
+          "q4rdna_error_lines": [],
+          "sampler_name_errors": [],
+          "sampler_chains": [
+            "logits -> temp-ext -> dist"
+          ],
+          "sampler_temperatures": [
+            0.0
+          ],
+          "sampler_seeds": [
+            20260827
+          ]
+        }
+      }
+    }
+  ],
+  "launch_summary_per_run": {
+    "loaded_tensors": 224,
+    "loaded_device_gib": 3.45,
+    "unique_tensors_hit": 224,
+    "hits_by_shape": {
+      "12288x4096": 0,
+      "4096x12288": 0,
+      "4096x4096": 128,
+      "1024x4096": 128,
+      "other": 198
+    },
+    "consistent_across_runs": true,
+    "observations": [
+      {
+        "run": "prompt1",
+        "route": "old",
+        "loaded_tensors": 224,
+        "loaded_device_gib": 3.45,
+        "unique_tensors_hit": 224,
+        "hits_by_shape": {
+          "12288x4096": 0,
+          "4096x12288": 0,
+          "4096x4096": 128,
+          "1024x4096": 128,
+          "other": 198
+        }
+      },
+      {
+        "run": "prompt1",
+        "route": "split",
+        "loaded_tensors": 224,
+        "loaded_device_gib": 3.45,
+        "unique_tensors_hit": 224,
+        "hits_by_shape": {
+          "12288x4096": 0,
+          "4096x12288": 0,
+          "4096x4096": 128,
+          "1024x4096": 128,
+          "other": 198
+        }
+      },
+      {
+        "run": "prompt2",
+        "route": "old",
+        "loaded_tensors": 224,
+        "loaded_device_gib": 3.45,
+        "unique_tensors_hit": 224,
+        "hits_by_shape": {
+          "12288x4096": 0,
+          "4096x12288": 0,
+          "4096x4096": 128,
+          "1024x4096": 128,
+          "other": 198
+        }
+      },
+      {
+        "run": "prompt2",
+        "route": "split",
+        "loaded_tensors": 224,
+        "loaded_device_gib": 3.45,
+        "unique_tensors_hit": 224,
+        "hits_by_shape": {
+          "12288x4096": 0,
+          "4096x12288": 0,
+          "4096x4096": 128,
+          "1024x4096": 128,
+          "other": 198
+        }
+      },
+      {
+        "run": "prompt3",
+        "route": "old",
+        "loaded_tensors": 224,
+        "loaded_device_gib": 3.45,
+        "unique_tensors_hit": 224,
+        "hits_by_shape": {
+          "12288x4096": 0,
+          "4096x12288": 0,
+          "4096x4096": 128,
+          "1024x4096": 128,
+          "other": 198
+        }
+      },
+      {
+        "run": "prompt3",
+        "route": "split",
+        "loaded_tensors": 224,
+        "loaded_device_gib": 3.45,
+        "unique_tensors_hit": 224,
+        "hits_by_shape": {
+          "12288x4096": 0,
+          "4096x12288": 0,
+          "4096x4096": 128,
+          "1024x4096": 128,
+          "other": 198
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,250 @@
+0.00.018.593 I llama_completion: llama backend init
+0.00.018.600 I llama_completion: load the model and apply lora adapter, if any
+Q4_RDNA: loaded 224 tensors, 3.45 GiB on device 0 from /home/david/Desktop/model-library/derived/Mistral-7B-Instruct-v0.3/Q4_RDNA/Mistral-7B-Instruct-v0.3.q4rdna
+0.01.073.192 I llama_completion: llama threadpool init, n_threads = 12
+0.01.073.215 I 
+0.01.073.269 I system_info: n_threads = 12 (n_threads_batch = 12) / 24 | ROCm : NO_VMM = 1 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.01.073.270 I 
+0.01.073.370 I sampler seed: 20260827
+0.01.073.376 I sampler params: 
+	repeat_last_n = 64, repeat_penalty = 1.000, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = -1
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.000
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+0.01.073.380 I sampler chain: logits -> temp-ext -> dist 
+0.01.073.381 I generate: n_ctx = 32768, n_batch = 2048, n_predict = 64, n_keep = 1
+0.01.073.381 I 
+0.01.618.754 I common_perf_print:    sampling time =      13.36 ms
+0.01.618.756 I common_perf_print:    samplers time =      12.22 ms /    82 tokens
+0.01.618.759 I common_perf_print:        load time =     985.16 ms
+0.01.618.762 I common_perf_print: prompt eval time =      34.31 ms /    18 tokens (    1.91 ms per token,   524.55 tokens per second)
+0.01.618.762 I common_perf_print:        eval time =     497.48 ms /    63 runs   (    7.90 ms per token,   126.64 tokens per second)
+0.01.618.763 I common_perf_print:       total time =     545.57 ms /    81 tokens
+0.01.618.763 I common_perf_print: unaccounted time =       0.42 ms /   0.1 %      (total - sampling - prompt eval - eval) / (total)
+0.01.618.763 I common_perf_print:    graphs reused =         62
+Q4_RDNA: launched 388 decode GEMV kernels
+Q4_RDNA: hit blk.31.attn_output.weight       2
+Q4_RDNA: hit blk.31.attn_q.weight            2
+Q4_RDNA: hit blk.30.ffn_gate.weight          2
+Q4_RDNA: hit blk.30.attn_v.weight            2
+Q4_RDNA: hit blk.30.attn_k.weight            2
+Q4_RDNA: hit blk.29.ffn_up.weight            2
+Q4_RDNA: hit blk.29.attn_k.weight            2
+Q4_RDNA: hit blk.29.attn_q.weight            2
+Q4_RDNA: hit blk.28.ffn_down.weight          2
+Q4_RDNA: hit blk.28.ffn_up.weight            2
+Q4_RDNA: hit blk.28.attn_v.weight            2
+Q4_RDNA: hit blk.28.attn_q.weight            2
+Q4_RDNA: hit blk.27.ffn_down.weight          2
+Q4_RDNA: hit blk.27.attn_output.weight       2
+Q4_RDNA: hit blk.27.attn_v.weight            2
+Q4_RDNA: hit blk.27.attn_k.weight            2
+Q4_RDNA: hit blk.27.attn_q.weight            2
+Q4_RDNA: hit blk.26.ffn_down.weight          2
+Q4_RDNA: hit blk.26.ffn_gate.weight          2
+Q4_RDNA: hit blk.26.attn_output.weight       2
+Q4_RDNA: hit blk.26.attn_k.weight            2
+Q4_RDNA: hit blk.25.ffn_down.weight          2
+Q4_RDNA: hit blk.25.ffn_gate.weight          2
+Q4_RDNA: hit blk.25.attn_q.weight            2
+Q4_RDNA: hit blk.24.attn_output.weight       2
+Q4_RDNA: hit blk.24.attn_k.weight            2
+Q4_RDNA: hit blk.24.attn_q.weight            2
+Q4_RDNA: hit blk.31.ffn_down.weight          4
+Q4_RDNA: hit blk.23.attn_output.weight       2
+Q4_RDNA: hit blk.26.attn_v.weight            2
+Q4_RDNA: hit blk.23.attn_v.weight            2
+Q4_RDNA: hit blk.22.ffn_down.weight          2
+Q4_RDNA: hit blk.22.ffn_gate.weight          2
+Q4_RDNA: hit blk.22.attn_output.weight       2
+Q4_RDNA: hit blk.22.attn_v.weight            2
+Q4_RDNA: hit blk.22.attn_q.weight            2
+Q4_RDNA: hit blk.21.ffn_up.weight            2
+Q4_RDNA: hit blk.21.attn_output.weight       2
+Q4_RDNA: hit blk.21.attn_v.weight            2
+Q4_RDNA: hit blk.21.attn_q.weight            2
+Q4_RDNA: hit blk.20.ffn_down.weight          2
+Q4_RDNA: hit blk.25.attn_output.weight       2
+Q4_RDNA: hit blk.23.ffn_down.weight          2
+Q4_RDNA: hit blk.21.ffn_gate.weight          2
+Q4_RDNA: hit blk.20.ffn_gate.weight          2
+Q4_RDNA: hit blk.20.attn_v.weight            2
+Q4_RDNA: hit blk.19.ffn_up.weight            2
+Q4_RDNA: hit blk.19.ffn_gate.weight          2
+Q4_RDNA: hit blk.19.attn_output.weight       2
+Q4_RDNA: hit blk.19.attn_v.weight            2
+Q4_RDNA: hit blk.19.attn_k.weight            2
+Q4_RDNA: hit blk.19.attn_q.weight            2
+Q4_RDNA: hit blk.31.ffn_gate.weight          4
+Q4_RDNA: hit blk.28.ffn_gate.weight          2
+Q4_RDNA: hit blk.18.ffn_up.weight            2
+Q4_RDNA: hit blk.18.ffn_gate.weight          2
+Q4_RDNA: hit blk.23.ffn_gate.weight          2
+Q4_RDNA: hit blk.18.attn_output.weight       2
+Q4_RDNA: hit blk.8.attn_q.weight             2
+Q4_RDNA: hit blk.30.attn_q.weight            2
+Q4_RDNA: hit blk.11.ffn_down.weight          2
+Q4_RDNA: hit blk.29.ffn_down.weight          2
+Q4_RDNA: hit blk.17.attn_k.weight            2
+Q4_RDNA: hit blk.7.attn_output.weight        2
+Q4_RDNA: hit blk.27.ffn_gate.weight          2
+Q4_RDNA: hit blk.6.ffn_down.weight           2
+Q4_RDNA: hit blk.0.attn_q.weight             2
+Q4_RDNA: hit blk.5.attn_q.weight             2
+Q4_RDNA: hit blk.17.attn_output.weight       2
+Q4_RDNA: hit blk.4.ffn_down.weight           2
+Q4_RDNA: hit blk.10.attn_output.weight       2
+Q4_RDNA: hit blk.5.attn_v.weight             2
+Q4_RDNA: hit blk.15.attn_q.weight            2
+Q4_RDNA: hit blk.20.attn_output.weight       2
+Q4_RDNA: hit blk.8.attn_v.weight             2
+Q4_RDNA: hit blk.2.attn_v.weight             2
+Q4_RDNA: hit blk.7.attn_k.weight             2
+Q4_RDNA: hit blk.27.ffn_up.weight            2
+Q4_RDNA: hit blk.25.attn_v.weight            2
+Q4_RDNA: hit blk.15.ffn_up.weight            2
+Q4_RDNA: hit blk.4.attn_v.weight             2
+Q4_RDNA: hit blk.12.attn_q.weight            2
+Q4_RDNA: hit blk.5.ffn_up.weight             2
+Q4_RDNA: hit blk.7.ffn_down.weight           2
+Q4_RDNA: hit blk.1.attn_output.weight        2
+Q4_RDNA: hit blk.6.attn_q.weight             2
+Q4_RDNA: hit blk.4.attn_q.weight             2
+Q4_RDNA: hit blk.1.attn_k.weight             2
+Q4_RDNA: hit blk.26.ffn_up.weight            2
+Q4_RDNA: hit blk.0.ffn_down.weight           2
+Q4_RDNA: hit blk.6.attn_v.weight             2
+Q4_RDNA: hit blk.1.attn_q.weight             2
+Q4_RDNA: hit blk.23.ffn_up.weight            2
+Q4_RDNA: hit blk.1.ffn_down.weight           2
+Q4_RDNA: hit blk.13.ffn_up.weight            2
+Q4_RDNA: hit blk.15.ffn_down.weight          2
+Q4_RDNA: hit blk.30.ffn_down.weight          2
+Q4_RDNA: hit blk.1.ffn_up.weight             2
+Q4_RDNA: hit blk.13.ffn_down.weight          2
+Q4_RDNA: hit blk.23.attn_q.weight            2
+Q4_RDNA: hit blk.0.attn_v.weight             2
+Q4_RDNA: hit blk.26.attn_q.weight            2
+Q4_RDNA: hit blk.6.attn_output.weight        2
+Q4_RDNA: hit blk.10.attn_k.weight            2
+Q4_RDNA: hit blk.3.ffn_up.weight             2
+Q4_RDNA: hit blk.20.ffn_up.weight            2
+Q4_RDNA: hit blk.0.attn_output.weight        2
+Q4_RDNA: hit blk.31.ffn_up.weight            4
+Q4_RDNA: hit blk.0.ffn_up.weight             2
+Q4_RDNA: hit blk.0.attn_k.weight             2
+Q4_RDNA: hit blk.6.ffn_up.weight             2
+Q4_RDNA: hit blk.24.ffn_up.weight            2
+Q4_RDNA: hit blk.5.attn_k.weight             2
+Q4_RDNA: hit blk.8.ffn_down.weight           2
+Q4_RDNA: hit blk.1.attn_v.weight             2
+Q4_RDNA: hit blk.6.attn_k.weight             2
+Q4_RDNA: hit blk.3.ffn_gate.weight           2
+Q4_RDNA: hit blk.24.ffn_down.weight          2
+Q4_RDNA: hit blk.15.attn_output.weight       2
+Q4_RDNA: hit blk.2.attn_output.weight        2
+Q4_RDNA: hit blk.3.attn_v.weight             2
+Q4_RDNA: hit blk.7.attn_v.weight             2
+Q4_RDNA: hit blk.29.attn_v.weight            2
+Q4_RDNA: hit blk.6.ffn_gate.weight           2
+Q4_RDNA: hit blk.14.attn_k.weight            2
+Q4_RDNA: hit blk.1.ffn_gate.weight           2
+Q4_RDNA: hit blk.2.ffn_gate.weight           2
+Q4_RDNA: hit blk.8.attn_k.weight             2
+Q4_RDNA: hit blk.20.attn_q.weight            2
+Q4_RDNA: hit blk.7.attn_q.weight             2
+Q4_RDNA: hit blk.7.ffn_gate.weight           2
+Q4_RDNA: hit blk.4.ffn_up.weight             2
+Q4_RDNA: hit blk.7.ffn_up.weight             2
+Q4_RDNA: hit blk.12.attn_v.weight            2
+Q4_RDNA: hit blk.0.ffn_gate.weight           2
+Q4_RDNA: hit blk.2.ffn_up.weight             2
+Q4_RDNA: hit blk.2.ffn_down.weight           2
+Q4_RDNA: hit blk.5.ffn_gate.weight           2
+Q4_RDNA: hit blk.10.ffn_gate.weight          2
+Q4_RDNA: hit blk.3.attn_output.weight        2
+Q4_RDNA: hit blk.31.attn_k.weight            2
+Q4_RDNA: hit blk.16.ffn_gate.weight          2
+Q4_RDNA: hit blk.4.attn_k.weight             2
+Q4_RDNA: hit blk.17.attn_v.weight            2
+Q4_RDNA: hit blk.17.ffn_down.weight          2
+Q4_RDNA: hit blk.4.ffn_gate.weight           2
+Q4_RDNA: hit blk.2.attn_q.weight             2
+Q4_RDNA: hit blk.3.ffn_down.weight           2
+Q4_RDNA: hit blk.30.attn_output.weight       2
+Q4_RDNA: hit blk.16.attn_output.weight       2
+Q4_RDNA: hit blk.8.ffn_gate.weight           2
+Q4_RDNA: hit blk.8.attn_output.weight        2
+Q4_RDNA: hit blk.8.ffn_up.weight             2
+Q4_RDNA: hit blk.24.ffn_gate.weight          2
+Q4_RDNA: hit blk.3.attn_q.weight             2
+Q4_RDNA: hit blk.9.attn_q.weight             2
+Q4_RDNA: hit blk.22.attn_k.weight            2
+Q4_RDNA: hit blk.12.attn_output.weight       2
+Q4_RDNA: hit blk.28.attn_k.weight            2
+Q4_RDNA: hit blk.9.attn_k.weight             2
+Q4_RDNA: hit blk.10.ffn_up.weight            2
+Q4_RDNA: hit blk.18.attn_v.weight            2
+Q4_RDNA: hit blk.9.attn_v.weight             2
+Q4_RDNA: hit blk.11.attn_output.weight       2
+Q4_RDNA: hit blk.18.ffn_down.weight          2
+Q4_RDNA: hit blk.17.ffn_up.weight            2
+Q4_RDNA: hit blk.9.attn_output.weight        2
+Q4_RDNA: hit blk.9.ffn_gate.weight           2
+Q4_RDNA: hit blk.14.attn_output.weight       2
+Q4_RDNA: hit blk.12.ffn_up.weight            2
+Q4_RDNA: hit blk.9.ffn_up.weight             2
+Q4_RDNA: hit blk.30.ffn_up.weight            2
+Q4_RDNA: hit blk.28.attn_output.weight       2
+Q4_RDNA: hit blk.20.attn_k.weight            2
+Q4_RDNA: hit blk.14.attn_q.weight            2
+Q4_RDNA: hit blk.25.attn_k.weight            2
+Q4_RDNA: hit blk.5.attn_output.weight        2
+Q4_RDNA: hit blk.9.ffn_down.weight           2
+Q4_RDNA: hit blk.10.attn_v.weight            2
+Q4_RDNA: hit blk.13.attn_v.weight            2
+Q4_RDNA: hit blk.10.ffn_down.weight          2
+Q4_RDNA: hit blk.29.attn_output.weight       2
+Q4_RDNA: hit blk.21.ffn_down.weight          2
+Q4_RDNA: hit blk.19.ffn_down.weight          2
+Q4_RDNA: hit blk.11.attn_q.weight            2
+Q4_RDNA: hit blk.25.ffn_up.weight            2
+Q4_RDNA: hit blk.11.attn_v.weight            2
+Q4_RDNA: hit blk.11.ffn_gate.weight          2
+Q4_RDNA: hit blk.11.ffn_up.weight            2
+Q4_RDNA: hit blk.21.attn_k.weight            2
+Q4_RDNA: hit blk.17.attn_q.weight            2
+Q4_RDNA: hit blk.16.ffn_down.weight          2
+Q4_RDNA: hit blk.3.attn_k.weight             2
+Q4_RDNA: hit blk.12.attn_k.weight            2
+Q4_RDNA: hit blk.12.ffn_gate.weight          2
+Q4_RDNA: hit blk.5.ffn_down.weight           2
+Q4_RDNA: hit blk.12.ffn_down.weight          2
+Q4_RDNA: hit blk.22.ffn_up.weight            2
+Q4_RDNA: hit blk.15.ffn_gate.weight          2
+Q4_RDNA: hit blk.13.attn_k.weight            2
+Q4_RDNA: hit blk.13.attn_output.weight       2
+Q4_RDNA: hit blk.29.ffn_gate.weight          2
+Q4_RDNA: hit blk.24.attn_v.weight            2
+Q4_RDNA: hit blk.13.ffn_gate.weight          2
+Q4_RDNA: hit blk.2.attn_k.weight             2
+Q4_RDNA: hit blk.14.ffn_down.weight          2
+Q4_RDNA: hit blk.13.attn_q.weight            2
+Q4_RDNA: hit blk.14.attn_v.weight            2
+Q4_RDNA: hit blk.14.ffn_gate.weight          2
+Q4_RDNA: hit blk.10.attn_q.weight            2
+Q4_RDNA: hit blk.14.ffn_up.weight            2
+Q4_RDNA: hit blk.15.attn_k.weight            2
+Q4_RDNA: hit blk.4.attn_output.weight        2
+Q4_RDNA: hit blk.16.attn_q.weight            2
+Q4_RDNA: hit blk.16.attn_k.weight            2
+Q4_RDNA: hit blk.15.attn_v.weight            2
+Q4_RDNA: hit blk.16.attn_v.weight            2
+Q4_RDNA: hit blk.16.ffn_up.weight            2
+Q4_RDNA: hit blk.31.attn_v.weight            2
+Q4_RDNA: hit blk.17.ffn_gate.weight          2
+Q4_RDNA: hit blk.23.attn_k.weight            2
+Q4_RDNA: hit blk.18.attn_k.weight            2
+Q4_RDNA: hit blk.11.attn_k.weight            2
+Q4_RDNA: hit blk.18.attn_q.weight            2
+Q4_RDNA: unique=224, hits by rows x columns: 12288x4096=0, 4096x12288=0, 4096x4096=128, 1024x4096=128, other=198

@@ -1,0 +1,3 @@
+"Name","Calls","TotalDurationNs","AverageNs","Percentage","MinNs","MaxNs","StdDev"
+"__amd_rocclr_copyBuffer",4,20840,5210.000000,72.06,2520,10600,3664.514520
+"void q4rdna_kernel::gemv_small_split_k<false, false, 32, 32>(unsigned char const*, unsigned char const*, float const*, float const*, float*, int)",1,8080,8080.000000,27.94,8080,8080,0.00000000e+00

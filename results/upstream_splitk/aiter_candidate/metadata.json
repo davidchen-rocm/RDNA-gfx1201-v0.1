@@ -1,0 +1,193 @@
+{
+  "schema": "aiter-q4-group64-candidate-evidence-v1",
+  "generated_utc": "2026-08-27T23:05:03Z",
+  "status": {
+    "integration_uncached": "superseded",
+    "integration_cached": "current-historical-pybind-boundary",
+    "container_wrapper_fixed_order": "superseded",
+    "container_wrapper_interleaved": "superseded",
+    "container_public_api": "authoritative",
+    "kernel_batched": "current-direct-kernel-reference",
+    "rocm714_native_smoke": "supplemental-non-authoritative"
+  },
+  "source": {
+    "repository": "ROCm/aiter",
+    "local_branch": "perf/q4-group64-gemv",
+    "upstream_base_commit": "48718fa7bb1b73d0800130144449fca3c625aba1",
+    "candidate_commit": "c60cc076871cc849d2f6e18d595beefbbf18e954",
+    "candidate_parent_commit": "48718fa7bb1b73d0800130144449fca3c625aba1",
+    "candidate_commit_subject": "Add gfx1201 Q4 group-64 GEMV",
+    "candidate_commit_dco_signed_off": true,
+    "validation_source_state": "the authoritative GPU run used the same nine runtime/test/benchmark source files as the candidate commit; the only post-run candidate change is the roofline documentation section",
+    "path_semantics": "all files[].path values are relative to the AITER repository root",
+    "aggregate_candidate_files_sha256": "3ad3ef6153be3830fc3f675d69bb84b5dbfd20165dc0c1e436077b62f476dcdc",
+    "aggregate_hash_method": "SHA-256 over the UTF-8 concatenation of '<sha256>  <relative_path>\\n' for source.files in listed order",
+    "patch": {
+      "path": "aiter-q4-group64-gemv.patch",
+      "size_bytes": 91416,
+      "sha256": "3301a8a17dab5ec023d633c8fc0671f6e371f11230219830fab9ee2c4f018f2c",
+      "format": "git-diff-binary",
+      "applies_to_upstream_base_commit": "48718fa7bb1b73d0800130144449fca3c625aba1",
+      "candidate_commit": "c60cc076871cc849d2f6e18d595beefbbf18e954",
+      "post_image_manifest_sha256": "3ad3ef6153be3830fc3f675d69bb84b5dbfd20165dc0c1e436077b62f476dcdc"
+    },
+    "dco_format_patch": {
+      "path": "0001-Add-gfx1201-Q4-group-64-GEMV.patch",
+      "size_bytes": 92755,
+      "sha256": "be954fe6a593bc09f6fd2e3c7e04e9207331aa595a4a9cf65c7acfd9d2fe8dde",
+      "candidate_commit": "c60cc076871cc849d2f6e18d595beefbbf18e954",
+      "signed_off_by": "David Chen <davidchenyujun@gmail.com>"
+    },
+    "files": [
+      {
+        "path": "aiter/__init__.py",
+        "sha256": "3557d78dbfb197399a1d156ca4f3e67d61cc6c8742ebcd94ca658110484f3480"
+      },
+      {
+        "path": "aiter/jit/optCompilerConfig.json",
+        "sha256": "8ecccffbb437eaae4f436977dd6c95a547fb3a68cddd758f98622a6cd266ccdd"
+      },
+      {
+        "path": "aiter/ops/q4_group64_gemv.py",
+        "sha256": "cecb53260abe07555e6c3a41d65e2922edd78ccb0c611d70a948bfefd30847ea"
+      },
+      {
+        "path": "csrc/include/q4_group64_gemv.h",
+        "sha256": "045bca28d315bf0e7fdd2d1d8914ff69f2806db047c9824f8d1a0d2629a0f517"
+      },
+      {
+        "path": "csrc/kernels/q4_group64_gemv.cu",
+        "sha256": "8baacf5ecec2ac4d717c5ccbec17a8f8f97a6f4ddf8f5be7acc9d2b7b5e724cc"
+      },
+      {
+        "path": "csrc/pybind/q4_group64_gemv_pybind.cu",
+        "sha256": "8bfc8d5d0a9b6c521c420bd9fe78e196acd9e6bb7071f0f3ef69b4595a3558cf"
+      },
+      {
+        "path": "docs/q4_group64_gemv.md",
+        "sha256": "e3700cc55247f3d666a27f7bf96ac2f2b1a70843863427de36b83a0c2f8c9859"
+      },
+      {
+        "path": "op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py",
+        "sha256": "3641b69d00fe9e1a2e901dbb5c20e551ab5f8785cb3e21f65bc3d73361b79ef8"
+      },
+      {
+        "path": "op_tests/q4_group64_reference.py",
+        "sha256": "4c3b15436b941658e39a781e76a3bb1340fa5f61f633d1235255c96f4a2a4290"
+      },
+      {
+        "path": "op_tests/test_q4_group64_gemv.py",
+        "sha256": "a6feb9384475776911f59f4b5c766bd05eaaad1959cf371c321139d5cda17827"
+      }
+    ]
+  },
+  "binaries": {
+    "integration_pybind_so": {
+      "path_at_execution": "/tmp/aiter-q4-build/module_q4_group64_gemv.benchmark.so",
+      "sha256": "edfb7da972de4e3218bdc4dd8449f4d4ff9611bf83c6b3dddf3a64ca48a7457b"
+    },
+    "direct_kernel_benchmark": {
+      "path_at_execution": "/tmp/aiter-q4-build/direct_kernel_benchmark",
+      "sha256": "386138c7c38058f3542f81874965d61035ae10040ff690250f7b6409d9e4a503",
+      "executed_driver_sha256": "ae6bd30fe708f4ba6cdadf48ff4718a62abd9e89de4cb0b03988b780f2fae18c",
+      "portable_reproduction_driver_sha256": "db45f5e984cce8c26b96a1f71428411391832d2192f75ba38cc668706a66d1b8"
+    },
+    "container_jit_aiter_core_so": {
+      "path_at_execution": "/jit/aiter/module_aiter_core.so",
+      "size_bytes": 649496,
+      "sha256": "74769011e35750cf9aaf5ea503ac59a0b48dacc6091da663df828f9b299928a5"
+    },
+    "container_jit_q4_group64_gemv_so": {
+      "path_at_execution": "/jit/aiter/module_q4_group64_gemv.so",
+      "size_bytes": 397976,
+      "sha256": "01364884834b231ac2e0d1c58c1003d950faae69aa88068591328f0cc98f82e9"
+    }
+  },
+  "environment": {
+    "gpu": "AMD Radeon RX 9070 XT",
+    "architecture": "gfx1201",
+    "hip_version": "7.14.60850-0000000",
+    "hip_runtime_version": 71460850,
+    "hip_driver_version": 71460850,
+    "compiler": "AMD clang 23.0.0git 46fcb339fb61119b337f973c7ca9e710a319fdd0+PATCHED:440716f8b87be9d8e20ed910e10e5b6d14d57cf6",
+    "available_torch": "2.13.0+cu130",
+    "available_torch_hip": null,
+    "host_rocm_torch_public_wrapper_executed": false,
+    "container_rocm_torch_public_wrapper_status": "passed",
+    "container_image": "math-rule-loop-training-rocm@sha256:3e9406fbb3f5426d9c5efd7faaea9f5f23c15a3e9c32d14af90617c730f80877",
+    "container_python": "3.12.13",
+    "container_torch": "2.11.0+gitd0c8b1f",
+    "container_torch_hip": "7.2.53211"
+  },
+  "architecture_cache_fix": {
+    "python": "functools.cache keyed by explicit torch device index",
+    "cpp": "mutex-protected unordered_map<int,string> keyed by HIP device id",
+    "ordering": "HipDeviceGuard first calls hipGetDevice and selects/validates x.device_id before cached_gpu_arch(x.device_id)",
+    "semantics_test": "CPU monkeypatch test switches indices 0,1,0 and calls invalid index 7 twice; valid devices remain distinct and exceptions are not cached",
+    "static_audit": "passed: device selection precedes keyed C++ cache lookup",
+    "exact_device_identity": "Auto tuning requires PCI chip ID 0x7550, 32 HIP-reported multiprocessors, and exact AMD Radeon RX 9070 XT name when the runtime populates a name",
+    "runtime_gate": "Python and loaded C++ entries re-check AITER_ENABLE_EXPERIMENTAL; unset, 0, and malformed 1junk are rejected"
+  },
+  "validation": {
+    "python_cpu": "static Python/source checks completed; authoritative ROCm container suite is the exhaustive recorded run",
+    "rocm_torch_public_pytest": "32 passed, 0 failed, 0 errors, 0 skipped; JIT compiled and exercised the public API, device identity guard, runtime gate, stream, and invalid cases",
+    "rocm_torch_public_benchmark": "passed: schema v3, 84 rows for 14 shapes x 3 requests x 2 timing boundaries; 30 cyclic-Latin samples per row; public auto and allocation-equivalent controls",
+    "correctness_policy": "AITER public results pass torch.testing.assert_close with rtol=5e-4 and atol=5e-3; max-absolute and relative-L2 values are diagnostics, not alternate gates",
+    "native_correctness": "all 10 explicit mappings, non-default stream, unseen-auto old fallback, known-auto selected mapping, and invalid mapping/shape exception propagation passed",
+    "pybind_abi_smoke": "passed with direct HIP allocations; max_abs_error 0 for smoke case",
+    "small32x32": "1024-thread kernel compiled and launched successfully on gfx1201",
+    "dispatch_consistency": "passed: Python and C++ 14-shape dispatch tables match; unseen Auto remains Old",
+    "device_identity": "v3 raw records blank-name compatibility and ROCm 7.2 helper fallback 0x100 -> numeric attribute 10020 (the symbolic PCI-chip-ID enum value in the recorded ROCm headers) -> PCI chip ID 0x7550",
+    "benchmark_static": "all 14 rings exceed 64 MiB; each request occupies every position exactly 10 times across 30 cyclic-Latin rounds",
+    "patch": "portable upstream-base-to-candidate patch exact-match checked against the candidate tree; 10 paths, 8 new-file post-images independently reconstructed, reverse apply check passed",
+    "rocm714_native_smoke": "supplemental only: fresh native ROCm 7.14 compile/link/symbol/runtime-gate/dispatch/stream/correctness smoke passed; it excludes the Python public wrapper and performance measurement",
+    "format_static": "the repository pre-commit hook passed with Black 26.3.0, Ruff 0.16.0, and clang-format 18.1.8; py_compile, JSON validation, git diff --check, per-device cache audit, and direct-harness hipcc syntax check also passed",
+    "compiler_warnings": "only pre-existing aiter_tensor.h ignored hipFree/hipFreeAsync return-value warnings"
+  },
+  "timing": {
+    "integration_uncached": "single HIP-event interval around one AITER pybind C++ entry; superseded",
+    "integration_cached": "historical single-launch pybind boundary after per-device cache fix; not the authoritative public-API comparison",
+    "container_wrapper_fixed_order": "superseded due temporal-order confounding",
+    "container_interleaved": "superseded v2 cyclic-Latin wrapper run; event-primary and call paths not explicit",
+    "container_public_api": "authoritative v3: synchronized host wall-clock primary, HIP event supplemental; public auto vs private out=None allocation-equivalent controls",
+    "kernel_batched": "direct-launch reference: 100 warmups, 100 calibration launches, 30 samples, approximately 100 ms per sample, 72 rotating weight copies"
+  },
+  "artifacts": {
+    "cache_audit.py": "978b0bf08c5146017416f860cecaa92d77d53ff6e3fe93cfa8da4567b4205ce7",
+    "integration_benchmark_driver.py": "c8c200eb5a1ba2e901da180ffe4f48dc4dde6719c386e13814982700df051490",
+    "integration_cached_raw.json": "09b76e467933254427e5761239ccb7339ebcefef37404972b220ed6514d107b5",
+    "integration_cached_summary.csv": "f15e902128665dd993897bc498f6aad637dea6db2df91738a26833e446395db0",
+    "integration_uncached_raw.json": "3e93c7d927b9f1385fd6f2b60e95ce9e9536758305d695f7eb20124f0fe64338",
+    "integration_uncached_summary.csv": "9d2833adbf8617800bf3a4af606f1e7c71e0d2782ca58e40b5762fb8b22e2182",
+    "kernel_benchmark_driver.cu": "db45f5e984cce8c26b96a1f71428411391832d2192f75ba38cc668706a66d1b8",
+    "kernel_raw.json": "deca1aec983242385033cf21c232be49ad029be4adc4b5bed8ec18f349710e54",
+    "kernel_summary.csv": "31f80258deb01ccceee4e69a74fdeb295c7a39d7fbeb506fb7ef8fff3d4ea60a",
+    "upstream_benchmark_candidate.py": "3641b69d00fe9e1a2e901dbb5c20e551ab5f8785cb3e21f65bc3d73361b79ef8",
+    "q4_group64_reference.py": "4c3b15436b941658e39a781e76a3bb1340fa5f61f633d1235255c96f4a2a4290",
+    "q4_group64_gemv.md": "e3700cc55247f3d666a27f7bf96ac2f2b1a70843863427de36b83a0c2f8c9859",
+    "aiter-q4-group64-gemv.patch": "3301a8a17dab5ec023d633c8fc0671f6e371f11230219830fab9ee2c4f018f2c",
+    "0001-Add-gfx1201-Q4-group-64-GEMV.patch": "be954fe6a593bc09f6fd2e3c7e04e9207331aa595a4a9cf65c7acfd9d2fe8dde",
+    "container_public_api_pytest.xml": "d41ad468987dbd31909d99630a6cc9151684997afeb109df841e0fab0fb942e1",
+    "container_public_api_pytest.log": "072a2d39f7af30700e600b022fcc2384d3627ba3a6cdfc9f1559e728a72493d0",
+    "container_public_api_raw.json": "af7c047d4bdb20ea3be35c6a466f0028fdf01f915abe8b53cf1c071f262ffece",
+    "container_public_api_summary.csv": "33a00f520d99860d47ac97055875957795c96b443cb783014c5f9c8d428ab69d",
+    "container_public_api_benchmark.log": "a85c3488c58edb2f5d8cdadd9aa5b9880d9fab08542b5c4facee83689cc4a1e5",
+    "container_public_api_pytest_attempt1.xml": "fe552bfa816aa2cc7e605122778084e5d17b1c7c370818b466833b1db912849a",
+    "container_public_api_pytest_attempt1.log": "665092df55c93ad0d4fa620adaf91a89c0088b67596aeba699b6c3030ce0908e",
+    "container_public_api_benchmark_attempt1.log": "0834af6323a0432e33a80814d0dda6968c7c3c2c384b7402b8e8bd9dc0c58754",
+    "container_public_api_pytest_attempt2.xml": "3d87e3fed97b3b074b79e0cb7e6b20b4e226f228a2e1f4231ab7c8254c5e2c90",
+    "container_public_api_pytest_attempt2.log": "bd7f0fae692ca8c09107246f6056d4ca19fc7f716a05ff7b33deb60b099aa853",
+    "container_public_api_benchmark_attempt2.log": "e9278cff3207641007de035f6a0edb0869d19ff720b041d35f4af2975b24ddef",
+    "rocm714_final_smoke.json": "9ffe51858780677b0855f95e456c95298114cd93f2ef20b8daf28fe2cec1c565",
+    "rocm714_final_smoke.log": "fff41245d3ddd11397c150c180f380519273d6c734832dfd17a34f873ad51de1",
+    "container_interleaved_pytest.xml": "df30fe2dec1dccb51c8c0973293ed81bb793ac98eecedbf37fe173abb8ab5333",
+    "container_wrapper_interleaved_raw.json": "981f9e38c5e006eff85b1bed19d0cfd409d5e34ff1c092ccbfa56dc7bea4fcfd",
+    "container_wrapper_interleaved_summary.csv": "f13ecd01b6f69ff13a4d6e91620207b3a54e4cfb70673006f4ce15de89f25b9c",
+    "container_pytest.xml": "05a3d48187be66640767f87db3aff0869f63aea234ead08e1d7e2296782ea5be",
+    "container_validation.json": "02b25d2f5f4f3d16ebd1b1e202aedf0fb3f8b5de377b7be857d4a610205d9da1",
+    "container_wrapper_final_raw.json": "fb811c0b330e6285ae91d6ffd945c5afe9b6e7bbc0ebbcb746a9d65aad062cde",
+    "container_wrapper_final_summary.csv": "540bc1943280f25d7e283d8247b4c1e4ac62ce8aea548571e00c1cab510e24a1",
+    "container_wrapper_raw.json": "a6e2f737b21cbb56f9fdaf2dfb379b525355ed659b80ca2bacc924cd22b21174",
+    "container_wrapper_summary.csv": "868b86f0bee8414f93696d663801bbadb0c27f43cf234419ce8b68829b92807a"
+  }
+}

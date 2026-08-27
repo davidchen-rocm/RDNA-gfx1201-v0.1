@@ -1,0 +1,22 @@
+{
+  "schema": "q4rdna-splitk-suite-v1",
+  "generated_at": "2026-08-27T19:09:51.105394Z",
+  "harness_environment": {
+    "gpu": "AMD Radeon RX 9070 XT",
+    "gfx": "gfx1201",
+    "hip_multiprocessor_count": 32,
+    "warp_size": 32,
+    "runtime_version": 71460850,
+    "driver_version": 71460850
+  },
+  "runtime_setup": {
+    "hipconfig": "/usr/bin/hipconfig",
+    "rocm_path": "/opt/rocm/core-7.14",
+    "prepended_library_path": "/opt/rocm/core-7.14/lib",
+    "effective_ld_library_path": [
+      "/opt/rocm/core-7.14/lib"
+    ],
+    "binary_sha256": "472a80684b091fddba3a3b879c852cdcfa8bb5ef043ed93db9deb780b2ea279c"
+  },
+  "binary": "/home/david/Desktop/q4rdna-gfx1201-public-evidence/build/q4rdna_splitk_bench"
+}

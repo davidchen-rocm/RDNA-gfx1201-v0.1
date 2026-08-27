@@ -1,0 +1,49 @@
+{
+  "schema": "q4rdna-splitk-bench-v1",
+  "environment": {
+    "gpu": "AMD Radeon RX 9070 XT",
+    "gfx": "gfx1201",
+    "hip_multiprocessor_count": 32,
+    "warp_size": 32,
+    "runtime_version": 71460850,
+    "driver_version": 71460850
+  },
+  "case": {
+    "rows": 12288,
+    "columns": 4096,
+    "groups": 64,
+    "mode": "plain",
+    "requested_mapping": "auto",
+    "resolved_mapping": "split8",
+    "pattern": "random",
+    "seed": 4064174098,
+    "packed_weight_bytes": 26738688,
+    "cache_mode": "rotating",
+    "weight_copies": 72
+  },
+  "correctness": {
+    "relative_l2": 1.08865900996e-06,
+    "relative_l2_limit": 1e-05,
+    "max_absolute": 2.28881835938e-05,
+    "max_reference_absolute": 12.1996622086,
+    "expected_at_max_error": 8.31014919281,
+    "actual_at_max_error": 8.31012630463,
+    "max_error_row": 614,
+    "finite": true,
+    "all_written": true,
+    "canary_ok": true,
+    "passed": true
+  },
+  "benchmark": {
+    "warmup": 100,
+    "target_sample_ms": 100,
+    "iterations_per_sample": 1945,
+    "samples_us": [51.5289077759, 51.6479911804, 51.9547233582, 51.9354171753, 51.9943771362, 51.9918212891, 51.9740943909, 51.9553222656, 51.9518470764, 51.9821205139, 51.9608573914, 51.9476737976, 51.9938240051, 51.975353241, 51.9662246704, 51.9783782959, 51.9811134338, 51.9803695679, 51.9837875366, 51.9928131104, 52.0192832947, 52.0327339172, 52.026008606, 51.9644317627, 52.0151863098, 51.9993133545, 51.9587173462, 52.0130996704, 51.9565544128, 51.9799995422],
+    "mean_us": 51.9547448476,
+    "sample_stddev_us": 0.1036210319,
+    "median_us": 51.9791889191,
+    "p10_us": 51.9464481354,
+    "p90_us": 52.0155960083,
+    "effective_weight_gbs": 514.411412645
+  }
+}

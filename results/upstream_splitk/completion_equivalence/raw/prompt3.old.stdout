@@ -1,0 +1,2 @@
+ [x**2 for x in range(5)], which gives [0, 1, 4, 9, 16]. Now, I want to write a comprehension that will give me the squares of the numbers 2, 4, 6, 8, 10, 1
+

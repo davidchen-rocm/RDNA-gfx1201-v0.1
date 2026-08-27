@@ -1,0 +1,400 @@
+{
+  "schema": "aiter-q4-group64-container-validation-v3",
+  "generated_at": "2026-08-27T22:08:28Z",
+  "status": "passed",
+  "scope": {
+    "operation": "q4_group64_gemv",
+    "public_python_wrapper_exercised": true,
+    "jit_compiled_in_test_environment": true,
+    "gpu": "AMD Radeon RX 9070 XT",
+    "architecture": "gfx1201",
+    "layout": "uint8 [N/32,K/64,1088] with 32 FP16 scales and 1024 signed-INT4 payload bytes per tile"
+  },
+  "aiter_source": {
+    "repository": "ROCm/aiter",
+    "upstream_base_commit": "48718fa7bb1b73d0800130144449fca3c625aba1",
+    "candidate_commit": "c60cc076871cc849d2f6e18d595beefbbf18e954",
+    "candidate_parent_commit": "48718fa7bb1b73d0800130144449fca3c625aba1",
+    "candidate_commit_subject": "Add gfx1201 Q4 group-64 GEMV",
+    "candidate_commit_dco_signed_off": true,
+    "branch": "perf/q4-group64-gemv",
+    "path_semantics": "all files[].path values are relative to the AITER repository root",
+    "aggregate_candidate_files_sha256": "3ad3ef6153be3830fc3f675d69bb84b5dbfd20165dc0c1e436077b62f476dcdc",
+    "aggregate_hash_method": "SHA-256 over the UTF-8 concatenation of '<sha256>  <relative_path>\\n' for aiter_source.files in listed order",
+    "patch": {
+      "path": "aiter-q4-group64-gemv.patch",
+      "size_bytes": 91416,
+      "sha256": "3301a8a17dab5ec023d633c8fc0671f6e371f11230219830fab9ee2c4f018f2c",
+      "format": "git-diff-binary",
+      "applies_to_upstream_base_commit": "48718fa7bb1b73d0800130144449fca3c625aba1",
+      "candidate_commit": "c60cc076871cc849d2f6e18d595beefbbf18e954",
+      "post_image_manifest_sha256": "3ad3ef6153be3830fc3f675d69bb84b5dbfd20165dc0c1e436077b62f476dcdc"
+    },
+    "dco_format_patch": {
+      "path": "0001-Add-gfx1201-Q4-group-64-GEMV.patch",
+      "size_bytes": 92755,
+      "sha256": "be954fe6a593bc09f6fd2e3c7e04e9207331aa595a4a9cf65c7acfd9d2fe8dde",
+      "candidate_commit": "c60cc076871cc849d2f6e18d595beefbbf18e954",
+      "signed_off_by": "David Chen <davidchenyujun@gmail.com>"
+    },
+    "candidate_commit_recorded": true,
+    "validation_predated_candidate_commit": true,
+    "validation_source_state": "the authoritative GPU run used the same nine runtime/test/benchmark source files as the candidate commit; the only post-run candidate change is the roofline documentation section",
+    "worktree_status_context": "captured at authoritative container validation before the DCO commit was created",
+    "worktree_status": [
+      "M aiter/__init__.py",
+      "M aiter/jit/optCompilerConfig.json",
+      "?? aiter/ops/q4_group64_gemv.py",
+      "?? csrc/include/q4_group64_gemv.h",
+      "?? csrc/kernels/q4_group64_gemv.cu",
+      "?? csrc/pybind/q4_group64_gemv_pybind.cu",
+      "?? docs/q4_group64_gemv.md",
+      "?? op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py",
+      "?? op_tests/q4_group64_reference.py",
+      "?? op_tests/test_q4_group64_gemv.py"
+    ],
+    "files": [
+      {
+        "path": "aiter/__init__.py",
+        "size_bytes": 6238,
+        "sha256": "3557d78dbfb197399a1d156ca4f3e67d61cc6c8742ebcd94ca658110484f3480"
+      },
+      {
+        "path": "aiter/jit/optCompilerConfig.json",
+        "size_bytes": 70917,
+        "sha256": "8ecccffbb437eaae4f436977dd6c95a547fb3a68cddd758f98622a6cd266ccdd"
+      },
+      {
+        "path": "aiter/ops/q4_group64_gemv.py",
+        "size_bytes": 5629,
+        "sha256": "cecb53260abe07555e6c3a41d65e2922edd78ccb0c611d70a948bfefd30847ea"
+      },
+      {
+        "path": "csrc/include/q4_group64_gemv.h",
+        "size_bytes": 1359,
+        "sha256": "045bca28d315bf0e7fdd2d1d8914ff69f2806db047c9824f8d1a0d2629a0f517"
+      },
+      {
+        "path": "csrc/kernels/q4_group64_gemv.cu",
+        "size_bytes": 19995,
+        "sha256": "8baacf5ecec2ac4d717c5ccbec17a8f8f97a6f4ddf8f5be7acc9d2b7b5e724cc"
+      },
+      {
+        "path": "csrc/pybind/q4_group64_gemv_pybind.cu",
+        "size_bytes": 440,
+        "sha256": "8bfc8d5d0a9b6c521c420bd9fe78e196acd9e6bb7071f0f3ef69b4595a3558cf"
+      },
+      {
+        "path": "docs/q4_group64_gemv.md",
+        "size_bytes": 9290,
+        "sha256": "e3700cc55247f3d666a27f7bf96ac2f2b1a70843863427de36b83a0c2f8c9859"
+      },
+      {
+        "path": "op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py",
+        "size_bytes": 27401,
+        "sha256": "3641b69d00fe9e1a2e901dbb5c20e551ab5f8785cb3e21f65bc3d73361b79ef8"
+      },
+      {
+        "path": "op_tests/q4_group64_reference.py",
+        "size_bytes": 1753,
+        "sha256": "4c3b15436b941658e39a781e76a3bb1340fa5f61f633d1235255c96f4a2a4290"
+      },
+      {
+        "path": "op_tests/test_q4_group64_gemv.py",
+        "size_bytes": 19748,
+        "sha256": "a6feb9384475776911f59f4b5c766bd05eaaad1959cf371c321139d5cda17827"
+      }
+    ]
+  },
+  "container": {
+    "image": "math-rule-loop-training-rocm:hqq-0.2.8",
+    "image_id": "sha256:3e9406fbb3f5426d9c5efd7faaea9f5f23c15a3e9c32d14af90617c730f80877",
+    "repo_digest": "math-rule-loop-training-rocm@sha256:3e9406fbb3f5426d9c5efd7faaea9f5f23c15a3e9c32d14af90617c730f80877",
+    "created": "2026-08-01T15:55:47.159395915-04:00",
+    "python": "3.12.13",
+    "torch": "2.11.0+gitd0c8b1f",
+    "torch_hip": "7.2.53211",
+    "hipcc": "HIP 7.2.53211-c2d9476115, AMD clang 22.0.0git",
+    "gpu_visible": true,
+    "visible_device_count": 1,
+    "device_gcn_arch_name": "gfx1201",
+    "device_total_memory_bytes": 17095983104,
+    "controlled_environment": {
+      "HIP_VISIBLE_DEVICES": "0",
+      "ROCR_VISIBLE_DEVICES": "0",
+      "GPU_ARCHS": "gfx1201",
+      "PYTORCH_ROCM_ARCH": "gfx1201",
+      "AITER_ENABLE_EXPERIMENTAL": "1",
+      "PYTHONPATH": "/workspace/aiter",
+      "AITER_JIT_DIR": "/jit/aiter",
+      "TORCH_EXTENSIONS_DIR": "/jit/torch"
+    }
+  },
+  "jit_modules": [
+    {
+      "path": "/jit/aiter/module_aiter_core.so",
+      "size_bytes": 649496,
+      "sha256": "74769011e35750cf9aaf5ea503ac59a0b48dacc6091da663df828f9b299928a5"
+    },
+    {
+      "path": "/jit/aiter/module_q4_group64_gemv.so",
+      "size_bytes": 397976,
+      "sha256": "01364884834b231ac2e0d1c58c1003d950faae69aa88068591328f0cc98f82e9"
+    }
+  ],
+  "pytest": {
+    "completed_at": "2026-08-27T22:03:29Z",
+    "command": [
+      "python",
+      "-m",
+      "pytest",
+      "op_tests/test_q4_group64_gemv.py",
+      "-q",
+      "--junitxml=/evidence/container_public_api_pytest.xml"
+    ],
+    "exit_code": 0,
+    "tests": 32,
+    "passed": 32,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "duration_seconds": 22.313,
+    "junit": {
+      "path": "results/upstream_splitk/aiter_candidate/container_public_api_pytest.xml",
+      "size_bytes": 4154,
+      "sha256": "d41ad468987dbd31909d99630a6cc9151684997afeb109df841e0fab0fb942e1"
+    },
+    "log": {
+      "path": "results/upstream_splitk/aiter_candidate/container_public_api_pytest.log",
+      "size_bytes": 208,
+      "sha256": "072a2d39f7af30700e600b022fcc2384d3627ba3a6cdfc9f1559e728a72493d0"
+    }
+  },
+  "benchmark": {
+    "artifact_filesystem_mtime_utc": "2026-08-27T22:05:26.475314Z",
+    "command": [
+      "python",
+      "op_tests/op_benchmarks/hip/bench_q4_group64_gemv.py",
+      "--sweep",
+      "--mappings",
+      "old",
+      "auto",
+      "selected",
+      "--cache",
+      "rotating",
+      "--rotate",
+      "0",
+      "--warmup",
+      "100",
+      "--samples",
+      "30",
+      "--timing",
+      "both",
+      "--calibration-iterations",
+      "100",
+      "--target-sample-ms",
+      "100",
+      "-o",
+      "/evidence/container_public_api_summary.csv",
+      "--json",
+      "/evidence/container_public_api_raw.json"
+    ],
+    "exit_code": 0,
+    "schema": "aiter-q4-group64-benchmark-v3",
+    "shape_count": 14,
+    "requested_mappings": [
+      "old",
+      "auto",
+      "selected"
+    ],
+    "timing_boundaries": [
+      "integration",
+      "batched"
+    ],
+    "result_rows": 84,
+    "raw_samples_per_row": 30,
+    "mapping_execution_schedule": "cyclic Latin rotation by sample round; each request occupies each of three positions exactly 10 times per timing boundary",
+    "primary_latency_metric": "host wall-clock with a synchronized boundary",
+    "supplemental_latency_metric": "HIP event elapsed time",
+    "public_call_path": "public:q4_group64_gemv",
+    "control_call_path": "private-allocation-equivalent:_q4_group64_gemv(out=None)",
+    "rotating_packed_ring_strictly_greater_than_bytes": 67108864,
+    "correctness": {
+      "policy": "torch.testing.assert_close against dequantized FP32 reference",
+      "rtol": 0.0005,
+      "atol": 0.005,
+      "all_rows_correct": true,
+      "maximum_abs_error_observed": 4.9114227294921875e-05,
+      "maximum_relative_l2_observed": 2.3062485573181395e-06,
+      "relative_l2_is_diagnostic_not_the_pass_gate": true
+    },
+    "auto_over_old_primary_wall": {
+      "integration": {
+        "median": 1.5500803708086957,
+        "geomean": 1.6074346612614536,
+        "range": [
+          1.1750602825787935,
+          2.229009900010792
+        ]
+      },
+      "batched": {
+        "median": 2.126335767158571,
+        "geomean": 1.9031250740344883,
+        "range": [
+          1.0835640860563844,
+          2.7816369611611305
+        ]
+      }
+    },
+    "auto_over_old_supplemental_event": {
+      "integration": {
+        "median": 1.9090277612744866,
+        "geomean": 1.8762782884581506,
+        "range": [
+          1.258547656630743,
+          2.651477650549226
+        ]
+      },
+      "batched": {
+        "median": 2.126085904244105,
+        "geomean": 1.902819168326889,
+        "range": [
+          1.0833492770480606,
+          2.781512982208923
+        ]
+      }
+    },
+    "selected_over_auto_primary_wall": {
+      "integration": {
+        "range": [
+          0.9731044503005533,
+          1.0151071394352653
+        ],
+        "max_absolute_deviation_from_one": 0.02689554969944674
+      },
+      "batched": {
+        "range": [
+          0.994299048361553,
+          1.0352674810885485
+        ],
+        "max_absolute_deviation_from_one": 0.03526748108854849
+      }
+    },
+    "selected_over_auto_supplemental_event": {
+      "integration": {
+        "range": [
+          0.992513874945564,
+          1.0162528195633749
+        ],
+        "max_absolute_deviation_from_one": 0.016252819563374876
+      },
+      "batched": {
+        "range": [
+          0.9942527983017067,
+          1.0353103355530198
+        ],
+        "max_absolute_deviation_from_one": 0.03531033555301977
+      }
+    },
+    "roofline": {
+      "packed_tile_weights": 2048,
+      "packed_tile_bytes": 1088,
+      "flops_per_weight": 2,
+      "weight_only_arithmetic_intensity_flops_per_byte": 3.764705882352941,
+      "measured_shape_arithmetic_intensity_range_flops_per_byte": [
+        3.7024793388429753,
+        3.755829185223998
+      ],
+      "rx9070xt_peak_fp32_tflops": 48.7,
+      "rx9070xt_nominal_memory_bandwidth_gbps": 640.0,
+      "rx9070xt_ridge_point_flops_per_byte": 76.09375,
+      "asymptotic_dram_roof_tflops": 2.409411764705882,
+      "batched_auto_effective_wall_gbps": {
+        "minimum": 58.863441615917495,
+        "median": 498.7873833353679,
+        "maximum": 696.7216306250256
+      },
+      "traffic_definition": "packed bytes plus FP32 activation bytes plus FP32 output bytes divided by synchronized host-wall time",
+      "interpretation": "timing-derived logical bandwidth is cache-sensitive and is not a physical DRAM counter; no measured percent-of-peak bandwidth claim is made",
+      "hardware_specification": "https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070xt.html"
+    },
+    "raw_json": {
+      "path": "results/upstream_splitk/aiter_candidate/container_public_api_raw.json",
+      "size_bytes": 1291898,
+      "sha256": "af7c047d4bdb20ea3be35c6a466f0028fdf01f915abe8b53cf1c071f262ffece"
+    },
+    "summary_csv": {
+      "path": "results/upstream_splitk/aiter_candidate/container_public_api_summary.csv",
+      "size_bytes": 61015,
+      "sha256": "33a00f520d99860d47ac97055875957795c96b443cb783014c5f9c8d428ab69d"
+    },
+    "log": {
+      "path": "results/upstream_splitk/aiter_candidate/container_public_api_benchmark.log",
+      "size_bytes": 13103,
+      "sha256": "a85c3488c58edb2f5d8cdadd9aa5b9880d9fab08542b5c4facee83689cc4a1e5"
+    },
+    "superseded_runs": [
+      {
+        "reason": "The v2 cyclic-Latin run used HIP-event latency as the primary metric and did not make the public-vs-control call paths explicit.",
+        "raw_json_sha256": "981f9e38c5e006eff85b1bed19d0cfd409d5e34ff1c092ccbfa56dc7bea4fcfd",
+        "summary_csv_sha256": "f13ecd01b6f69ff13a4d6e91620207b3a54e4cfb70673006f4ce15de89f25b9c"
+      },
+      {
+        "reason": "Fixed old-then-auto-then-selected whole-run ordering could confound mapping comparisons with temporal drift.",
+        "raw_json_sha256": "fb811c0b330e6285ae91d6ffd945c5afe9b6e7bbc0ebbcb746a9d65aad062cde",
+        "summary_csv_sha256": "540bc1943280f25d7e283d8247b4c1e4ac62ce8aea548571e00c1cab510e24a1"
+      },
+      {
+        "reason": "Earlier fixed-order run also predated derived speedup fields.",
+        "raw_json_sha256": "a6e2f737b21cbb56f9fdaf2dfb379b525355ed659b80ca2bacc924cd22b21174",
+        "summary_csv_sha256": "868b86f0bee8414f93696d663801bbadb0c27f43cf234419ce8b68829b92807a"
+      }
+    ]
+  },
+  "native_direct_kernel_reference": {
+    "timing_boundary": "HIP events around calibrated direct kernel launch batches; excludes Python, pybind, tensor validation, architecture guard, and public dispatch",
+    "host_rocm_runtime_version": 71460850,
+    "shape_count": 14,
+    "weight_copies": 72,
+    "samples_per_mapping": 30,
+    "target_sample_microseconds": 100000,
+    "raw_json": {
+      "path": "results/upstream_splitk/aiter_candidate/kernel_raw.json",
+      "size_bytes": 26672,
+      "sha256": "deca1aec983242385033cf21c232be49ad029be4adc4b5bed8ec18f349710e54"
+    },
+    "summary_csv": {
+      "path": "results/upstream_splitk/aiter_candidate/kernel_summary.csv",
+      "size_bytes": 4383,
+      "sha256": "31f80258deb01ccceee4e69a74fdeb295c7a39d7fbeb506fb7ef8fff3d4ea60a"
+    },
+    "executed_driver_sha256": "ae6bd30fe708f4ba6cdadf48ff4718a62abd9e89de4cb0b03988b780f2fae18c",
+    "portable_reproduction_driver": {
+      "path": "results/upstream_splitk/aiter_candidate/kernel_benchmark_driver.cu",
+      "size_bytes": 16414,
+      "sha256": "db45f5e984cce8c26b96a1f71428411391832d2192f75ba38cc668706a66d1b8",
+      "normalization": "source include made AITER-root-relative and output directory made an argument; kernel/timing logic is unchanged"
+    }
+  },
+  "rocm714_native_smoke_supplemental": {
+    "role": "supplemental_native_cross_validation_not_authoritative_public_api",
+    "authoritative_public_api_evidence": false,
+    "json": {
+      "path": "results/upstream_splitk/aiter_candidate/rocm714_final_smoke.json",
+      "size_bytes": 7832,
+      "sha256": "9ffe51858780677b0855f95e456c95298114cd93f2ef20b8daf28fe2cec1c565"
+    },
+    "log": {
+      "path": "results/upstream_splitk/aiter_candidate/rocm714_final_smoke.log",
+      "size_bytes": 14705,
+      "sha256": "fff41245d3ddd11397c150c180f380519273d6c734832dfd17a34f873ad51de1"
+    }
+  },
+  "notes": [
+    "The authoritative source payload is the portable patch from the explicitly named upstream base commit to the explicitly named DCO-signed candidate commit; source manifest paths are repository-relative.",
+    "JIT module paths are paths inside the now-removed validation container; their recorded size and SHA-256 remain authoritative.",
+    "The host Python installation is CUDA-only; the public wrapper validation therefore ran in the hash-identified ROCm-PyTorch container.",
+    "The v3 public benchmark uses synchronized host wall-clock latency as primary and HIP-event latency as supplemental; direct-kernel absolute latencies use a different host ROCm toolchain and are not interchangeable.",
+    "The ROCm 7.14 native smoke is supplemental compile/link/gate/dispatch/stream/correctness evidence only; it excludes the Python public wrapper and performance measurement."
+  ]
+}
