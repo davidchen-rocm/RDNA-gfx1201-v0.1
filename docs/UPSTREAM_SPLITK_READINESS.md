@@ -28,6 +28,12 @@ upstream-base-to-candidate patch is
 `results/upstream_splitk/aiter_candidate/aiter-q4-group64-gemv.patch`, SHA-256
 `3301a8a17dab5ec023d633c8fc0671f6e371f11230219830fab9ee2c4f018f2c`.
 
+The upstream PR later added DCO-signed test-only commit
+`f6b900dcbbedb557f4761723a951cfb525038621` to follow AITER's standard op-test
+format. Only `op_tests/test_q4_group64_gemv.py` changes; runtime, kernel,
+benchmark, and reference sources remain byte-identical to the measured
+`c60cc076...` tree.
+
 ## Duplicate-work audit
 
 AITER `main` was audited at

@@ -9,11 +9,18 @@ shape evidence, reproducible source patches, and independent verification.
 
 ## AITER upstream candidate
 
-The formal candidate is commit
+The performance-tested implementation is commit
 `c60cc076871cc849d2f6e18d595beefbbf18e954`, whose parent and tested upstream
 AITER base is `48718fa7bb1b73d0800130144449fca3c625aba1`. The repository
 pre-commit hook and a fresh targeted GPU regression passed; the commit contains
 the required DCO `Signed-off-by` trailer.
+
+The upstream PR later added DCO-signed test-only commit
+`f6b900dcbbedb557f4761723a951cfb525038621` to follow AITER's standard op-test
+format. That follow-up changes only `op_tests/test_q4_group64_gemv.py`; the
+runtime, kernel, benchmark, and reference sources remain byte-identical to the
+performance-tested commit above. The original patches and raw measurements
+therefore remain intentionally pinned to `c60cc076...`.
 
 On the RX 9070 XT, public `auto` beat `old` for all 14 model-derived shapes.
 Synchronized host-wall geometric-mean speedup was 1.6074x at the single-call

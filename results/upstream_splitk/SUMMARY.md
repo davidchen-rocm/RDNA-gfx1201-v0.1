@@ -56,7 +56,7 @@ Raw per-invocation harness JSON is retained under `raw/`. Derived statistics are
   `old` versus automatic Split-K ablations at tg128 and tg512; automatic
   Split-K improved throughput by 81.225% to 84.430% versus `old` across the
   four model/generation pairs.
-- AITER public path: the ROCm-PyTorch container test passed 23/23 tests. All
+- AITER public path: the ROCm-PyTorch container test passed 32/32 tests. All
   14 measured dispatch shapes were faster through both the single-call and
   calibrated-batched public AITER timing boundaries in the authoritative
   cyclically interleaved run.

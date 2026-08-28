@@ -7,6 +7,13 @@ base is `48718fa7bb1b73d0800130144449fca3c625aba1`. The authoritative public-API
 benchmark covers all 14 dispatch keys on an AMD Radeon RX 9070 XT (`gfx1201`)
 inside the hash-identified ROCm-PyTorch container.
 
+The upstream PR later added DCO-signed test-only commit
+`f6b900dcbbedb557f4761723a951cfb525038621` to follow AITER's standard op-test
+format. It changes only `op_tests/test_q4_group64_gemv.py`; all runtime, kernel,
+benchmark, and reference sources remain byte-identical to `c60cc076...`. This
+directory intentionally keeps the measured implementation and raw performance
+artifacts pinned to that earlier commit.
+
 ## Source provenance
 
 `aiter-q4-group64-gemv.patch` is the authoritative, portable source artifact.

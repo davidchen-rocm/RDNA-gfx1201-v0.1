@@ -236,6 +236,14 @@ The adjacent `0001-Add-gfx1201-Q4-group-64-GEMV.patch` is a Git email patch
 that preserves the candidate commit ID, author, subject, and `Signed-off-by`
 trailer; its SHA-256 is
 `be954fe6a593bc09f6fd2e3c7e04e9207331aa595a4a9cf65c7acfd9d2fe8dde`.
+
+The upstream PR later added DCO-signed test-only commit
+`f6b900dcbbedb557f4761723a951cfb525038621` to follow AITER's standard op-test
+format. It changes only `op_tests/test_q4_group64_gemv.py`; the runtime, kernel,
+benchmark, and reference sources remain byte-identical to the performance-tested
+`c60cc076...` tree. The artifact below intentionally reproduces that measured
+tree rather than rewriting historical performance provenance.
+
 Apply it from the evidence-repository root:
 
 ```bash

@@ -153,6 +153,13 @@ the tree of DCO-signed candidate commit
 The accompanying Git email patch
 `0001-Add-gfx1201-Q4-group-64-GEMV.patch` preserves the commit subject,
 author, and `Signed-off-by` trailer.
+
+The upstream PR later added DCO-signed test-only commit
+`f6b900dcbbedb557f4761723a951cfb525038621` to follow AITER's standard op-test
+format. It changes only `op_tests/test_q4_group64_gemv.py`; the measured runtime,
+kernel, benchmark, and reference sources remain byte-identical to
+`c60cc076...`.
+
 From the evidence-repository root:
 
 ```bash
