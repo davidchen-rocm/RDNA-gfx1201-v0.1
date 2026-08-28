@@ -111,6 +111,7 @@ The measurements do not cover:
 ## Report contents
 
 ```text
+LICENSE                           repository-level MIT license
 README.md                         report summary and results
 docs/METHOD.md                    exact scope and evaluation method
 docs/OPTIMIZATION_JOURNEY.md      complete baseline-to-final process
@@ -133,6 +134,15 @@ verify_report.py                  local integrity and arithmetic verifier
 verify_upstream_splitk.py          independent upstream-evidence verifier
 MANIFEST.sha256                   hashes of report files
 ```
+
+## License
+
+Unless otherwise noted, original code, documentation, and generated evidence
+in this repository are available under the [MIT License](LICENSE). Third-party
+material retains its original terms. In particular, the llama.cpp-derived
+source snapshot and integration material are accompanied by
+[`source/LLAMA_CPP_LICENSE`](source/LLAMA_CPP_LICENSE). Model weights and the
+Q4_RDNA sidecar are not distributed by this repository.
 
 ## Status
 
