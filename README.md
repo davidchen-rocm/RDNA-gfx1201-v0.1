@@ -1,5 +1,7 @@
 # Q4_RDNA on gfx1201
 
+> **Open upstream PR:** [ROCm/AITER PR #5064](https://github.com/ROCm/aiter/pull/5064) — gfx1201 Q4 group-64 Split-K GEMV optimization.
+
 This technical report began as an experimental Qwen3-8B model-to-kernel
 optimization on an AMD Radeon RX 9070 XT (`gfx1201`, wave32). It now also
 contains a DCO-signed, standalone AITER Q4 group-64 GEMV candidate, multi-model
